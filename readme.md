@@ -16,6 +16,10 @@ To get started with Lilypad, follow the steps below:
 
 Please note that since Lilypad is still a work in progress, there might be some incomplete or missing features. Development is ongoing, and updates will be made to improve the overall functionality of the application.
 
+### Repository
+Currently we have not created a forum to provide a repository, but you can create a new one using the example files that we provide
+Example Songdb: [songdb.json](https://droid2.prjktla.workers.dev/KPoe/songdb.json)
+
 ## Contributing
 Contributions to Lilypad are welcome! If you have any ideas, suggestions, or would like to contribute to the project, please feel free to open an issue or submit a pull request on the GitHub repository.
 
