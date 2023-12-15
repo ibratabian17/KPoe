@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Karaoke</title>
+  <link rel="stylesheet" href="base.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <script src="library/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="gamevar" style="--song-codename:Sus"></div>
+  <div class="audio-container">
+    <audio id="bkg_audio" loop src="assets/audio/ui/MainMenu_JD5.mp3"></audio>
+  </div>
+
+  <div id="Game" blackscreen="false">
+    <div id="video-player">
+      <video class="video"></video>
+      <div class="video-loading"></div>
+    </div>
+    <div class="sceneTransition"></div>
+    <div id="sceneDraw"></div>
+  </div>
+
+  <script src="base.js"></script>
+  <script src="keymap.js"></script>
+</body>
+
+</html>

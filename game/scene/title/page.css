@@ -1,0 +1,63 @@
+input {
+    user-select: all;
+}
+#video-player {
+    display: none;
+}
+#TitleScreen {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#play {
+    height: 2em;
+    width: 30%;
+    font-weight: bold;
+    background-color: #2069f0;
+    border: 0;
+    font-size: 0.156em;
+    padding: 0.3em;
+    color: #fff;
+    position: absolute;
+    border-radius: 1em;
+    bottom: 16%;
+}
+
+.songdb {
+    width: 60%;
+    height: 5%;
+    position: absolute;
+}
+.txt-about {
+    color: #fff;
+    white-space: pre-line;
+    font-size: 0.17em;
+    top: -9em;
+    position: relative;
+}
+
+@keyframes JDBounce {
+
+    0%,
+    50%,
+    100% {
+        transform: scale(1);
+        filter: none
+    }
+
+    10% {}
+
+    60% {
+        transform: scale(0.9);
+        filter: drop-shadow(0 -.5rem 0.3rem rgba(255, 255, 255, 0.158))
+    }
+
+    90% {
+        filter: drop-shadow(0 -2rem 0.3rem #0000);
+        transform: scale(1);
+    }
+}

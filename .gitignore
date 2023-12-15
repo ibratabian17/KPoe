@@ -1,0 +1,30 @@
+# Node.js
+node_modules/
+
+# Electron
+node_modules/electron/
+dist/
+out/
+*.asar
+
+# macOS
+.DS_Store
+build/
+*.dmg
+*.app/
+
+# Windows
+*.exe
+*.msi
+*.msix
+*.msixbundle
+*.pdb
+
+# Linux
+*.deb
+*.rpm
+*.AppImage
+
+# Build artifacts
+release-builds/
+

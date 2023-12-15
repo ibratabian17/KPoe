@@ -1,0 +1,171 @@
+/*Preview*/
+html:focus-within {
+    scroll-behavior: smooth;
+  }
+ #preview {
+    height: 60%;
+    width: 100%;
+    position: absolute;
+    overflow: hidden;
+    will-change: opacity;
+}
+#video-player {
+    display: none;
+}
+#banner {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    overflow: hidden;
+    background: #000000;
+    transition: background 0.5s;
+    will-change: background;
+    opacity: 0.2;
+}
+.video--preview {
+    width: 4.19em;
+    height: 2.36em;
+    border-radius: 0.1em;
+    background-color: #00000051;
+    position: absolute;
+    bottom: 0.4em;
+    left: 0.5em;
+}
+.button--sing {
+    width: 1.8em;
+    height: 0.4em;
+    position: absolute;
+    z-index: 22;
+    top: 2.77em;
+    left: 3.3em;
+    background: #601acf;
+    border: none!important;
+    outline: none!important;
+    border-radius: 5em;
+    color: #fff;
+    padding: auto 0 auto 0;
+    display: flex;
+    align-items: center ;
+    justify-content: center;
+    will-change: transform;
+}
+.button--sing.clicked {
+    animation: clicksing 1s, showgrad 2s;
+}
+.button--sing .txt-sing {
+    font-size: 0.2em;
+}
+.song--details {
+    font-size: 0.25em;
+    color: #fff;
+    top: 60%;
+    left: 47%;
+    position: absolute;
+}
+.song--details .song-artist {
+    color: #ffffff9d;
+    font-size: 67%;
+}
+
+.song--details.show .song-artist {
+    animation: slideRight 1s;
+}
+.song--details.show .song-title {
+    animation: slideRight 1s;
+    width: 100%;
+}
+
+@keyframes clicksing {
+    0%, 50% {
+        transform: scale(1);
+    }
+    5% {
+        transform: scale(0.8);
+    }
+}
+@keyframes showgrad {
+    0% {
+        background-image: linear-gradient(to right, #601acf, #0eaedf, #601acf);
+        background-size: 1000% 100%;
+    }
+    100% {
+        background-size: 200% 100%;
+        background-position: -15em 0;
+    }
+}
+
+@keyframes slideRight {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+/*Songselection*/
+#songselection {
+    position: absolute;
+    display: block;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    padding: 0.2em;
+    box-sizing: border-box;
+}
+.itemsong {
+    width: 1.4em;
+    height: 1.8em;
+    top: 0;
+    display: inline-block;
+}
+.song--decoration {
+    width: 100%;
+    height: 80%;
+    padding: 0.09em;
+    position: relative;
+    box-sizing: border-box;
+}.list-wrapper {
+    top: 60%;
+    width: 100%;
+    height: 40%;
+    display: block;
+    position: relative;
+    /* overflow: scroll; */
+    box-sizing: border-box;
+}
+.itemsong.selected {
+    scroll-snap-align: start;
+    scroll-behavior: smooth;
+  }
+.songlist-container::-webkit-scrollbar{
+    display: none;
+  }
+.songlist-container {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scroll-snap-type: x mandatory;
+}
+.itemsong .song-title {
+    color: #fff;
+    width: 100%;
+    font-size: 0.17em;
+    position: relative;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+    z-index: 3;
+    display: block;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: clip;
+    overflow: hidden
+}
+.itemsong img {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.13em;
+    object-fit: cover;
+}

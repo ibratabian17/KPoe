@@ -1,0 +1,131 @@
+
+@font-face {
+    font-family: "Font1";
+    src: url('assets/textures/font1.images');
+    
+}
+@font-face {
+  font-family: "Font2";
+  src: url('assets/texture/ui/HNLTW1G65.wf') format('woff');
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #000;
+    font-family: "Font1", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  #sceneDraw {
+    z-index: 10;
+  }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #Game[blackscreen="false"], .sceneTransition {
+    background-color: #111;
+        background-position: center;
+        background-size: 100% 100%;
+    /* Add your content styling here */
+  }
+  #Game {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  ::selection {
+    color: none;
+    background: none;
+}
+/* For Mozilla Firefox */
+::-moz-selection {
+    color: none;
+    background: none;
+}
+
+  #sceneDraw, .sceneTransition {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .sceneTransition {
+    position: absolute;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    background-size: 200% 200%;
+}
+
+ .sceneTransition::after{
+    width: 60%;
+    height: 60%;
+    content: '';
+    display: block;
+    position: absolute;
+    background-image: url(assets/textures/ui/JD_Series.webp);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.sceneTransition.fadeIn::after{
+  animation: startTransition .4s;
+}
+.sceneTransition.fadeIn{
+  animation: fadeIn .4s;
+}
+.sceneTransition.fadeOut{
+  opacity: 0;
+  animation: fadeOut .4s;
+}
+
+  @keyframes startTransition {
+    0% {
+        opacity: 0;
+        transform: translateX(-1em);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0em);
+    }
+}
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+      opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
+#video-player {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+#video-player .video {
+  width: 100%;
+  height: 100%;
+}

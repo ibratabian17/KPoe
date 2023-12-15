@@ -1,0 +1,17 @@
+{
+  "name": "karaoke-poe",
+  "version": "1.0.0",
+  "main": "game.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . karaoke-poe --overwrite --asar=true --platform=win32 --arch=ia32 --out=./compiled"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron-packager": "^17.1.1",
+    "electron": "^23.1.1"
+  }
+}
