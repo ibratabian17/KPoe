@@ -2,6 +2,10 @@
 
 KaraokePoe is a work-in-progress karaoke player, built using the Electron framework. This project aims to make an free karaoke (not including songlist) (you could get that in repository) and also, this files uses same format with Just Dance Now files.
 
+## Screenshots
+<img src="https://github.com/ibratabian17/KPoe/assets/71920907/b551132d-fb31-4e35-877d-7a0d0166f040" width=50% height=50%>
+<img src="https://github.com/ibratabian17/KPoe/assets/71920907/ee1eeda9-0249-4a81-908d-9b210f985526" width=50% height=50%>
+
 ## Features (Work in Progress)
 
 ### Working Karaoke System
