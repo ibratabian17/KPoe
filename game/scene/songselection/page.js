@@ -77,6 +77,7 @@ function sing() {
     if (!$('.button--sing').hasClass('clicked')) {
         globalfunc.playSfx(63559, 63757)
         $('.button--sing').addClass('clicked')
+        $('.itemsong.selected').addClass('choosed')
         setTimeout(function () {
             globalfunc.startTransition(true, 'scene/ingame/page.html', 'scene/ingame/page.js')
             $('.video--preview').animate({ volume: 0 }, 500);

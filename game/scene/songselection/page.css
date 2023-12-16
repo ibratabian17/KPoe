@@ -54,7 +54,12 @@ html:focus-within {
     display: flex;
     align-items: center;
     justify-content: center;
-    will-change: transform;
+    will-change: transform, background-position;
+    transition: .5s all;
+}
+.button--sing:hover {
+    background: rgb(26, 83, 207);
+    transform: scale(1.1);
 }
 
 .button--sing.clicked {
@@ -71,11 +76,13 @@ html:focus-within {
     top: 60%;
     left: 47%;
     position: absolute;
+    overflow: hidden;
 }
 
 .song--details .song-artist {
     color: #ffffff9d;
     font-size: 67%;
+    width: max-content;
 }
 
 .song--details.show .song-artist {
@@ -210,10 +217,29 @@ html:focus-within {
     transition: opacity .2s, transform .2s .2s;
     transform: scale(1.1);
     opacity: 0;
-    will-change: transform, opacity;
+    will-change: transform, opacity, border;
+}
+.itemsong.choosed .song--decoration::after {
+    animation: selectedbounce 1s;
+    border: 0.03em solid #0eaedf;
 }
 .itemsong.selected .song--decoration::after {
     opacity: 1;
     transform: none;
     transition: all .2s;
+}
+@keyframes selectedbounce {
+    0%, 20%, 50%, 100% {
+        transform: scale(1.0);
+    }
+    10%, 30%, 40% {
+        transform: scale(1.05);
+    }
+    0% {
+        border: 0.03em solid #fff;
+    }
+    20%, 100% {
+        border: 0.03em solid #0eaedf;
+    }
+    
 }
