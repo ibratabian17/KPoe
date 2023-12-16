@@ -5,14 +5,14 @@ let clickCooldown = {
 function keymap(event) {
     if (event.key === 'Enter') {
         //Title Scene
-        if (getState() == 'title.js') {
-            setAudiobkgVol(0)
-            gfunc.startTransition(true, 'scene/ui/home.html', 'scene/act/home.js', 0)
-            gfunc.onkeypressed = null;
-            document.removeEventListener('keydown', dance);
-        }
         if (getState() == 'songselection') {
             document.querySelector('.button--sing').click();
+        }
+        if (getState() == 'start') {
+            document.querySelector('.button--initgame').click()
+        }
+        if (getState() == 'title') {
+            document.querySelector('#play').click()
         }
     }
     if (event.key === 'ArrowLeft') {

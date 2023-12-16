@@ -1,8 +1,6 @@
 var warningtext = ""
 if (navigator.userAgent.includes('Electron')) {
-    warningtext = "Loading All Files"
-    cacheFile() 
-    globalfunc.startTransition(true, 'scene/title/page.html', 'scene/title/page.js')
+    loadAnotherHTML('scene/title/page.html', 'scene/title/page.js')
 } else {
     warningtext = "Downloading all files and caching them, may take some time"
     cacheFile() 
@@ -21,6 +19,7 @@ async function cacheFile() {
         const ingamehtml = await a('scene/ingame/page.html');
         const ingamejs = await a('scene/ingame/page.js');
         const ingamecss = await a('scene/ingame/page.css');
+        document.querySelector('.txt-wait').innerHTML = `Fetching Done!`
         document.querySelector('.button--initgame').classList.add('readya')
     } catch (error) {
         console.error('Error fetching data:', error);

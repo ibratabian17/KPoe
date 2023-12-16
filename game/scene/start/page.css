@@ -11,7 +11,7 @@
     font-weight: bold;
     background-color: #2069f000;
     border: 0;
-    font-size: 0.106em;
+    font-size: 0.146em;
     padding: 0.3em;
     color: #fff;
     position: absolute;
@@ -19,6 +19,7 @@
     bottom: 16%;
     white-space: pre-line;
 }
+
 .txt-warning {
     width: 60%;
     font-weight: bold;
@@ -26,7 +27,7 @@
     border: 0;
     text-align: center;
     white-space: pre-line;
-    font-size: 0.116em;
+    font-size: 0.156em;
     color: #fff;
     position: absolute;
     font-family: 'Font1';
@@ -39,12 +40,15 @@
     object-fit: scale-down;
     opacity: 0;
 }
+
 .button--initgame {
     display: none;
 }
+
 .button--initgame.readya {
     display: flex;
 }
+
 .button--initgame {
     width: 2.5em;
     height: 0.29em;
@@ -52,18 +56,20 @@
     top: 0.57em;
     position: relative;
     background: #601acf;
-    border: none!important;
-    outline: none!important;
+    border: none !important;
+    outline: none !important;
     border-radius: 5em;
     color: #fff;
     padding: auto 0 auto 0;
-    align-items: center ;
+    align-items: center;
     justify-content: center;
     will-change: transform;
 }
+
 .button--initgame.clicked {
     animation: clicksing 1s, showgrad 2s;
 }
+
 .button--initgame .txt-initgame {
     font-size: 0.13em;
 }

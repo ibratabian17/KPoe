@@ -1,39 +1,48 @@
+#video-player {
+    display: block!important;
+  }
+
 .hud {
     width: 100%;
     height: 100%;
-    display: inline!important;
+    display: inline !important;
     transition: opacity 0.2s;
 }
+
 .hud:not(.show) {
     opacity: 0;
 }
-#in-game-video{
+
+#in-game-video {
     position: absolute;
     z-index: 0;
     width: 100%;
-     height: 100%;
-     background-size: 100%;
+    height: 100%;
+    background-size: 100%;
 }
+
 .videoplayer {
-     width: 100%;
-     height: 100%;
+    width: 100%;
+    height: 100%;
 }
+
 #debugger {
     z-index: 99;
     font-size: 0.2em;
     color: #fff;
     position: absolute;
-    white-space: pre-line; 
-    text-shadow: 4px 2px 2px rgba(0,0,0,0.25);
+    white-space: pre-line;
+    text-shadow: 4px 2px 2px rgba(0, 0, 0, 0.25);
 }
+
 #pictos {
     width: 19.6%;
     height: 21%;
     position: absolute;
     bottom: 5.3%;
     right: 0;
-    border-bottom: solid 2px rgba(255,255,255,0.35);
-    box-shadow: 0px 4px 2px -2px rgba(0,0,0,0.25);
+    border-bottom: solid 2px rgba(255, 255, 255, 0.35);
+    box-shadow: 0px 4px 2px -2px rgba(0, 0, 0, 0.25);
     transition: .2s all !important;
 }
 
@@ -45,22 +54,26 @@
     left: 0;
     font-size: 0.257em;
     bottom: 5.2em;
-    font-weight: bolder!important;
+    font-weight: bolder !important;
     letter-spacing: 0.02em;
     text-align: center;
     justify-content: center;
 }
+
 #lyrics:has(.line.current) #beat {
     opacity: 1;
 }
-#lyrics .line .layer-top, #lyrics .line .layer-bottom {
+
+#lyrics .line .layer-top,
+#lyrics .line .layer-bottom {
     display: block;
     z-index: 1;
     top: 0;
     left: 0;
-    text-shadow: 0.045em 0.045em 0.04em #00000070!important;
+    text-shadow: 0.045em 0.045em 0.04em #00000070 !important;
     position: relative;
 }
+
 #lyrics .line .layer-top {
     position: absolute;
     display: block;
@@ -70,8 +83,10 @@
     transition: width 0.2s ease;
     white-space: nowrap;
     transition-timing-function: linear;
-  
+    will-change: width;
+
 }
+
 #lyrics .line.current,
 #lyrics .line.previous {
     color: #d9d9d9fa;
@@ -79,16 +94,19 @@
     z-index: 2;
     transform: translateY(-101%);
 }
+
 #lyrics .line {
     display: block;
     position: absolute;
     width: max-content;
     color: #888;
+    will-change: color, transform, opacity;
 }
+
 #lyrics .line.next {
     opacity: 1.0;
     -webkit-animation: nextLineInf 0.28s;
-    animation: nextLineInf 0.28s!important;
+    animation: nextLineInf 0.28s !important;
     margin-top: 0.13% !important;
     transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9);
 }
@@ -100,15 +118,18 @@
 
 #lyrics .line.previous {
     transition: .07s opacity !important;
-    transition-delay: .01s!important;
+    transition-delay: .01s !important;
     opacity: .0;
 }
+
 #lyrics .line.hidden {
     visibility: hidden;
 }
+
 #lyrics .line.previous.show {
     opacity: 1;
 }
+
 #beat {
     width: 20%;
     height: 0.1em !important;
@@ -119,26 +140,31 @@
     border-bottom: none;
     opacity: 0;
     transition: opacity .3s, .3s width;
-    visibility: visible!important;
-    display: block!important;
+    visibility: visible !important;
+    display: block !important;
     position: absolute;
     text-align: center;
 }
-#lyrics.one-line .line.next, #lyrics.one-line #beat {
-    opacity: 0!important;
-    
+
+#lyrics.one-line .line.next,
+#lyrics.one-line #beat {
+    opacity: 0 !important;
+
 }
+
 #lyrics.one-line .line.current {
-    transition: opacity 0.1s, color 0.1s!important;
+    transition: opacity 0.1s, color 0.1s !important;
 }
+
 #lyrics.one-line {
     transform: scale(1.1) translateY(2em);
 }
 
-html:not(.ipad) .hud.beat > #lyrics > #beat {
+html:not(.ipad) .hud.beat>#lyrics>#beat {
     -webkit-animation-name: BeatCoach !important;
     animation-name: BeatCoach !important;
 }
+
 .picto {
     display: block;
     height: 1.46em;
@@ -149,14 +175,17 @@ html:not(.ipad) .hud.beat > #lyrics > #beat {
     position: absolute;
     transform-origin: bottom;
 }
+
 #pictos.multi-coach {
     width: 30.6%;
 }
+
 #pictos.multi-coach .picto {
     height: 1.36em;
     width: 1.95703125em;
     left: -44.7%;
 }
+
 #pictos .picto .texture {
     width: 100%;
     height: 100%;
@@ -168,68 +197,85 @@ html:not(.ipad) .hud.beat > #lyrics > #beat {
 }
 
 .hud.even #camera-container video {
-    animation: BeatPictos .35s!important;
+    animation: BeatPictos .35s !important;
 }
+
 .hud.odd #camera-container video {
-    animation: BeatPictos2 .35s!important;
+    animation: BeatPictos2 .35s !important;
 }
+
 .hud.odd #camera-container {
-    animation: ShadowDu .35s!important;
+    animation: ShadowDu .35s !important;
 }
+
 @keyframes BeatPictos {
     0% {
         transform: scale(1.1);
     }
+
     15% {
         transform: scale(1.045678);
     }
+
     100% {
         transform: scale(1.1);
     }
 }
+
 @keyframes BeatPictos2 {
     0% {
         transform: scale(1.1);
     }
+
     15% {
         transform: scale(1.095678);
     }
+
     100% {
         transform: scale(1.1);
     }
 }
+
 @keyframes BeatCoach {
     0% {
         transform: scale(1.0);
     }
+
     15% {
         transform: scale(1.05, 1.1);
     }
+
     100% {
         transform: scale(1.0);
     }
 }
+
 @keyframes PictosScroll {
     0% {
         transform: translateX(6em);
     }
+
     100% {
         transform: translateX(0em);
     }
 }
+
 @keyframes PictosScrollSolo {
     0% {
         transform: translateX(3.8em);
     }
+
     100% {
         transform: translateX(0em);
     }
 }
+
 @keyframes PictosHide {
     0% {
         transform: scale(1);
         opacity: 1;
     }
+
     100% {
         transform: scale(1.12);
         opacity: 0;
@@ -237,15 +283,18 @@ html:not(.ipad) .hud.beat > #lyrics > #beat {
 }
 
 @keyframes nextLineInf {
+
     0%,
     20% {
         opacity: 0;
         -webkit-transform: perspective(0px) translateY(1.5em) rotateX(0deg);
         transform: perspective(0px) translateY(1.5em) rotateX(0deg)scale(0.8);
     }
+
     40% {
         opacity: 1;
     }
+
     100% {
         opacity: 1;
         -webkit-transform: translateY(0.3em) perspective(0px) rotateX(0deg);
@@ -259,14 +308,16 @@ html:not(.ipad) .hud.beat > #lyrics > #beat {
     transform: scale(1.1);
     object-fit: cover;
 }
+
 #camera-container span {
-display: block;
-position: absolute;
-z-index: 1;   
-font-size: 0.2em; 
-bottom: 0.1em;
-left: 0.1em;
+    display: block;
+    position: absolute;
+    z-index: 1;
+    font-size: 0.2em;
+    bottom: 0.1em;
+    left: 0.1em;
 }
+
 #camera-container {
     position: absolute;
     width: 1.7em;
@@ -280,20 +331,3 @@ left: 0.1em;
     box-sizing: border-box;
     border: 0.02em solid var(--menu-color)
 }
-.video-loading {
-    border: 0.1em solid #f3f3f326;
-    border-top: 0.1em solid #ffffff;
-    border-radius: 50%;
-    width: 0.5em;
-    height: 0.5em;
-    animation: spin 0.6s linear infinite;
-    top: calc(50% - 0.25em);
-    position: absolute;
-    left: calc(50% - 0.25em);
-    filter: drop-shadow(0em 0px 0.1em rgba(255, 255, 255, 0.671));
-}
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }

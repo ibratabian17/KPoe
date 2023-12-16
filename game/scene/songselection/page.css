@@ -1,17 +1,16 @@
 /*Preview*/
 html:focus-within {
     scroll-behavior: smooth;
-  }
- #preview {
+}
+
+#preview {
     height: 60%;
     width: 100%;
     position: absolute;
     overflow: hidden;
     will-change: opacity;
 }
-#video-player {
-    display: none;
-}
+
 #banner {
     height: 100%;
     width: 100%;
@@ -22,7 +21,8 @@ html:focus-within {
     will-change: background;
     opacity: 0.2;
 }
-.video--preview {
+
+.video--preview-container {
     width: 4.19em;
     height: 2.36em;
     border-radius: 0.1em;
@@ -30,7 +30,14 @@ html:focus-within {
     position: absolute;
     bottom: 0.4em;
     left: 0.5em;
+    overflow: hidden;
 }
+
+.video--preview {
+    width: 100%;
+    height: 100%;
+}
+
 .button--sing {
     width: 1.8em;
     height: 0.4em;
@@ -39,22 +46,25 @@ html:focus-within {
     top: 2.77em;
     left: 3.3em;
     background: #601acf;
-    border: none!important;
-    outline: none!important;
+    border: none !important;
+    outline: none !important;
     border-radius: 5em;
     color: #fff;
     padding: auto 0 auto 0;
     display: flex;
-    align-items: center ;
+    align-items: center;
     justify-content: center;
     will-change: transform;
 }
+
 .button--sing.clicked {
     animation: clicksing 1s, showgrad 2s;
 }
+
 .button--sing .txt-sing {
     font-size: 0.2em;
 }
+
 .song--details {
     font-size: 0.25em;
     color: #fff;
@@ -62,6 +72,7 @@ html:focus-within {
     left: 47%;
     position: absolute;
 }
+
 .song--details .song-artist {
     color: #ffffff9d;
     font-size: 67%;
@@ -70,24 +81,30 @@ html:focus-within {
 .song--details.show .song-artist {
     animation: slideRight 1s;
 }
+
 .song--details.show .song-title {
     animation: slideRight 1s;
     width: 100%;
 }
 
 @keyframes clicksing {
-    0%, 50% {
+
+    0%,
+    50% {
         transform: scale(1);
     }
+
     5% {
         transform: scale(0.8);
     }
 }
+
 @keyframes showgrad {
     0% {
         background-image: linear-gradient(to right, #601acf, #0eaedf, #601acf);
         background-size: 1000% 100%;
     }
+
     100% {
         background-size: 200% 100%;
         background-position: -15em 0;
@@ -98,6 +115,7 @@ html:focus-within {
     0% {
         transform: translateX(-100%);
     }
+
     100% {
         transform: translateX(0%);
     }
@@ -113,19 +131,23 @@ html:focus-within {
     padding: 0.2em;
     box-sizing: border-box;
 }
+
 .itemsong {
     width: 1.4em;
     height: 1.8em;
     top: 0;
     display: inline-block;
 }
+
 .song--decoration {
     width: 100%;
     height: 80%;
     padding: 0.09em;
     position: relative;
     box-sizing: border-box;
-}.list-wrapper {
+}
+
+.list-wrapper {
     top: 60%;
     width: 100%;
     height: 40%;
@@ -134,13 +156,16 @@ html:focus-within {
     /* overflow: scroll; */
     box-sizing: border-box;
 }
+
 .itemsong.selected {
     scroll-snap-align: start;
     scroll-behavior: smooth;
-  }
-.songlist-container::-webkit-scrollbar{
+}
+
+.songlist-container::-webkit-scrollbar {
     display: none;
-  }
+}
+
 .songlist-container {
     width: 100%;
     box-sizing: border-box;
@@ -149,6 +174,7 @@ html:focus-within {
     white-space: nowrap;
     scroll-snap-type: x mandatory;
 }
+
 .itemsong .song-title {
     color: #fff;
     width: 100%;
@@ -163,9 +189,31 @@ html:focus-within {
     text-overflow: clip;
     overflow: hidden
 }
+
 .itemsong img {
     width: 100%;
     height: 100%;
     border-radius: 0.13em;
     object-fit: cover;
+}
+.itemsong .song--decoration::after {
+    content: '';
+    width: 92%;
+    height: 92.4%;
+    position: absolute;
+    border: 0.03em solid white;
+    border-radius: 0.2em;
+    display: block;
+    z-index: 1;
+    top: 2%;
+    left: 2%;
+    transition: opacity .2s, transform .2s .2s;
+    transform: scale(1.1);
+    opacity: 0;
+    will-change: transform, opacity;
+}
+.itemsong.selected .song--decoration::after {
+    opacity: 1;
+    transform: none;
+    transition: all .2s;
 }

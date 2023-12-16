@@ -79,6 +79,7 @@ function adjustGameDimensions() {
 function adjustElementSize(newWidth, newHeight, element) {
   element.style.width = `${newWidth}px`;
   element.style.height = `${newHeight}px`;
+  element.style.aspectRatio = `16 / 9`;
 
   const baseFontSize = 120; // Base font size in pixels
   const scaleFactor = Math.min(newWidth / initialWidth, newHeight / initialHeight);

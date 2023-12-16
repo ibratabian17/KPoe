@@ -21,9 +21,11 @@ fetch(fetchUrl).then(response => response.json()).then(data => {
                 globalfunc.playSfx(23892, 24137);
             }
 
+            if (selectedSong != index){
             document.querySelector('.itemsong.selected') && document.querySelector('.itemsong.selected').classList.remove('selected')
-            if (selectedSong != index) setSelectedItem(item.id, item, index)
+            setSelectedItem(item.id, item, index)
             document.querySelector('#gamevar').style.setProperty('--song-codename', item.id)
+            }
         })
         list.appendChild(li);
     })
@@ -31,16 +33,15 @@ fetch(fetchUrl).then(response => response.json()).then(data => {
 })
 
 function setSelectedItem(cdn, list, offset) {
+    document.querySelector('.video--preview-container .video-loading').style.display = "block"
     $("#preview").css('opacity', '0')
     $("#preview").animate({ "opacity": "1" }, 500)
     $('.song--details').removeClass('show');
     $('.song--details').width()
     $('.song--details').addClass('show')
-    console.log(offset)
     gamevar.selectedSong = offset
     selectedSong = offset
     gamevar.selectedBase = list
-    document.querySelectorAll(`.itemsong`)[offset].classList.add('selected')
     const preview = document.querySelector("#preview")
     const videoplayer = preview.querySelector('.video--preview')
     const songtitle = preview.querySelector('.song-title')
@@ -57,8 +58,17 @@ function setSelectedItem(cdn, list, offset) {
     videoplayer.src = list.video.preview
     videoplayer.currentTime = list.previewOffset / 1000
     videoplayer.volume = 0
-    videoplayer.play()
-    $('.video--preview').animate({ volume: 0.6 }, 500)
+    videoplayer.oncanplay = function() {
+        videoplayer.play()
+        $('.video--preview').animate({ volume: 0.6 }, 500)
+    };
+    videoplayer.addEventListener('waiting', () => {
+        document.querySelector('.video--preview-container .video-loading').style.display = "block"
+    });
+    videoplayer.addEventListener('playing', () => {
+        document.querySelector('.video--preview-container .video-loading').style.display = "none"
+    });
+    document.querySelectorAll(`.itemsong`)[offset].classList.add('selected')
 }
 function startsWithNumber(str) {
     return /^\d/.test(str);

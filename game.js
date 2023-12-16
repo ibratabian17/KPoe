@@ -14,7 +14,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       sandbox: false,
-    }
+    },
+    icon: path.join(__dirname, 'game/assets/textures/ui/JD_Series.webp')
   });
    /*const emptyMenu = Menu.buildFromTemplate([]);
    mainWindow.setMenu(emptyMenu);*/

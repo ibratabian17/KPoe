@@ -124,7 +124,7 @@ playSong = (cdn, data) => {
 
     try {
         setTimeout(function () { LyricsScroll(songVar.LyricsLine[offset.lyricsLine].text) }, (songVar.LyricsLine[offset.lyricsLine].time - 9000))
-    } catch (err) { 
+    } catch (err) {
         console.log(err)
     }
     var loopUI = setInterval(function () {
