@@ -1,6 +1,6 @@
 #video-player {
-    display: block!important;
-  }
+    display: block !important;
+}
 
 .hud {
     width: 100%;
@@ -64,27 +64,47 @@
     opacity: 1;
 }
 
-#lyrics .line .layer-top,
-#lyrics .line .layer-bottom {
-    display: block;
+#lyrics .line  {
+    display: flex;
+    white-space: pre;
     z-index: 1;
     top: 0;
     left: 0;
     text-shadow: 0.045em 0.045em 0.04em #00000070 !important;
     position: relative;
+    will-change: width;
+    float: left;
 }
 
-#lyrics .line .layer-top {
-    position: absolute;
-    display: block;
-    z-index: 99;
-    color: var(--menu-color, #fff);
-    overflow: hidden;
-    transition: width 0.2s ease;
-    white-space: nowrap;
-    transition-timing-function: linear;
-    will-change: width;
+#lyrics .line .fill {
+    position: relative;
+    float: left;
+    white-space: pre;
+    font-weight: normal;
+}
 
+#lyrics .line .filler {
+    width: 0;
+    overflow: hidden;
+    transition: width;
+    will-change: width;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: var(--menu-color, #fff);
+    transition-timing-function: linear;
+}
+#lyrics .line .fill.done{
+    color: var(--menu-color, #fff);
+}
+#lyrics .line .fill.filled  .filler{
+    overflow: hidden;
+    width: 100%;
+    transition: width;
+    will-change: width;
 }
 
 #lyrics .line.current,
@@ -98,9 +118,9 @@
 #lyrics .line {
     display: block;
     position: absolute;
-    width: max-content;
     color: #888;
     will-change: color, transform, opacity;
+    left: auto;
 }
 
 #lyrics .line.next {
@@ -159,9 +179,10 @@
 #lyrics.one-line {
     transform: scale(1.1) translateY(2em);
 }
-#lyrics.no-animation *{
-    transition: none!important;
-    animation: none!important;
+
+#lyrics.no-animation * {
+    transition: none !important;
+    animation: none !important;
 }
 
 html:not(.ipad) .hud.beat>#lyrics>#beat {

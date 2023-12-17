@@ -57,7 +57,7 @@ html:focus-within {
     will-change: transform, background-position;
     transition: .5s all;
 }
-.button--sing:hover {
+.button--sing:not(.readya):hover {
     background: rgb(26, 83, 207);
     transform: scale(1.1);
 }

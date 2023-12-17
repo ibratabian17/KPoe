@@ -1,6 +1,6 @@
 var bkg_audio = document.getElementById("bkg_audio");
 const gamevar = {
-    "songlistUrl": "songlist.json"
+  "songlistUrl": "songlist.json"
 }
 const globalfunc = {}
 
@@ -126,22 +126,22 @@ globalfunc.playSfx = async (start, end, volume = 1) => {
 };
 
 
- globalfunc.startTransition = (changeScene = false, htmlPath, jsPath, scrollTime = 1) => {
-const transitionScene = document.querySelector('.sceneTransition');
-transitionScene.classList.add('fadeIn');
-transitionScene.style.visibility = "visible"
-if(scrollTime == 0)globalfunc.playSfx(3000, 4800, 1)
-setTimeout(function(){
+globalfunc.startTransition = (changeScene = false, htmlPath, jsPath, scrollTime = 1) => {
+  const transitionScene = document.querySelector('.sceneTransition');
+  transitionScene.classList.add('fadeIn');
+  transitionScene.style.visibility = "visible"
+  if (scrollTime == 0) globalfunc.playSfx(3000, 4800, 1)
+  setTimeout(function () {
     transitionScene.classList.remove('fadeIn');
     transitionScene.classList.add('fadeOut');
-    if(changeScene)loadAnotherHTML(htmlPath, jsPath);
-    if(scrollTime == 1)globalfunc.playSfx(2900, 4800, 1)
-    setTimeout(function(){
-        transitionScene.classList.remove('fadeOut');
-        transitionScene.style.visibility = "hidden"
-        if(scrollTime == 3)globalfunc.playSfx(2900, 4800, 1)
+    if (changeScene) loadAnotherHTML(htmlPath, jsPath);
+    if (scrollTime == 1) globalfunc.playSfx(2900, 4800, 1)
+    setTimeout(function () {
+      transitionScene.classList.remove('fadeOut');
+      transitionScene.style.visibility = "hidden"
+      if (scrollTime == 3) globalfunc.playSfx(2900, 4800, 1)
     }, 500)
-}, 500)
+  }, 500)
 }
 
 globalfunc.getFileText = (url) => {

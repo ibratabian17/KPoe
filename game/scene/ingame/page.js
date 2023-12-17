@@ -25,7 +25,7 @@ generateLineLyrics = (data) => {
 
         if (textObj.isLineEnding === 1) {
             if (currentTime == 0) currentTime = textObj.time
-            currentText += textObj.text;
+            currentText += `<span class="fill" offset="${i}">${textObj.text}<span class="filler" style="transition-duration:${textObj.duration}ms">${textObj.text}</span></span>`;
             mergedTexts.push({ text: currentText, time: currentTime, offset: i });
             currentText = "";
             currentTime = 0;
@@ -33,7 +33,7 @@ generateLineLyrics = (data) => {
             if (currentTime === 0) {
                 currentTime = textObj.time;
             }
-            currentText += textObj.text;
+            currentText += `<span class="fill" offset="${i}">${textObj.text}<span class="filler" style="transition-duration:${textObj.duration}ms">${textObj.text}</span></span>`;
         }
     }
     console.log(mergedTexts)
@@ -178,7 +178,7 @@ playSong = (cdn, data) => {
                 if (songVar.Lyrics[offset.lyrics].isLineEnding == 1) isLineEnding = true
                 const isMore = songVar.Lyrics[offset.lyrics].isLineEnding == 1 && songVar.Lyrics[offset.lyrics + 1] && songVar.Lyrics[offset.lyrics].time >= songVar.Lyrics[offset.lyrics + 1].time;
                 document.querySelector(".currentLyricsV").innerHTML = songVar.Lyrics[offset.lyrics].text;
-                if (!isMore) LyricsFill(songVar.Lyrics[offset.lyrics].text, songVar.Lyrics[offset.lyrics].duration, 0, isLineEnding)
+                if (!isMore) LyricsFill(songVar.Lyrics[offset.lyrics].text, songVar.Lyrics[offset.lyrics].duration, offset.lyrics, isLineEnding)
                 offset.lyrics++;
 
             }
@@ -231,13 +231,7 @@ LyricsScroll = (Next, isHide = false, timea) => {
             catch (err) { }
             const div = document.createElement("div");
             const txt = document.createTextNode(Next);
-            const top = document.createElement("span");
-            const bottom = document.createElement("span");
-            bottom.appendChild(txt);
-            top.classList.add("layer-top");
-            bottom.classList.add("layer-bottom");
-            div.appendChild(top);
-            div.appendChild(bottom);
+            div.innerHTML = Next;
             div.classList.add("line");
             div.classList.add("next");
             div.classList.add("hidden")
@@ -248,29 +242,28 @@ LyricsScroll = (Next, isHide = false, timea) => {
             } else div.classList.remove("hidden")
             const lyrics = document.getElementById("lyrics");
             lyrics.appendChild(div);
-            document.querySelector("#beat").style.width = `${$(".line.current").width() / 1.2}px`
+            document.querySelector("#beat").style.width = `${Math.round($(".line.current").width() / 1.2)}px`
         }, 10)
     } catch (err) { }
 }
 LyricsFill = (dat, duration, offset, Hide = false) => {
     try {
         var current = document.querySelector("#lyrics .line.current")
-        var filler = current.querySelector("#lyrics .line.current .layer-top")
-        filler.style.width = filler.scrollWidth + "px"
-        isWalking = true
+        var filler = current.querySelector(`#lyrics .line.current .fill[offset="${offset}"] .filler`)
         const textNode = document.createTextNode(dat);
-        filler.appendChild(textNode);
-        filler.style.width = filler.scrollWidth + "px"
-        filler.style.transitionDuration = duration + "ms"
-        filler.addEventListener('transitionend', function () {
-            filler.style.width = '';
-            filler.classList.add("filled")
-            isWalking = false;
-            if (Hide) {
-                current.classList.add('previous')
-                current.classList.remove('current')
+        filler.parentNode.classList.add("filled")
+        function ended(event) {
+            if (event.propertyName == 'width') {
+                filler.parentNode.classList.add("done")
+                isWalking = false;
+                if (Hide) {
+                    current.classList.add('previous')
+                    current.classList.remove('current')
+                }
             }
-        });
+        }
+        filler.addEventListener('transitionend', ended);
+        isWalking = true;
     } catch (err) {
         console.log(dat + err)
     }
