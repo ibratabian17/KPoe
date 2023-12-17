@@ -103,8 +103,7 @@
 #lyrics .line .fill.filled  .filler{
     overflow: hidden;
     width: 100%;
-    transition: width;
-    will-change: width;
+    transition-timing-function: linear;
 }
 
 #lyrics .line.current,
