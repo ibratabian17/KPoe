@@ -58,7 +58,7 @@ playSong = (cdn, data) => {
         isDone: false,
         gameOffset: data.gameOffset || 0,
         startVideo: data.startVideo || 0,
-        lyricsStyle: data.lyricsStyle || "",
+        lyricsStyle: data.lyricsStyle || "normal",
         style: data.css || "",
     }
     /* const videoContainer = document.getElementById('camera-container');
@@ -93,12 +93,14 @@ playSong = (cdn, data) => {
 
 
 
-
-    document.querySelector('#lyrics').classList.add(songVar.lyricsStyle)
-    var nade = document.createElement("style")
-    nade.type = "text/css"
-    nade.innerText = songVar.style
-    document.querySelector('#lyrics').appendChild(nade);
+    try {
+        var nade = document.createElement("style")
+        nade.type = "text/css"
+        nade.innerText = songVar.style
+        document.querySelector('#lyrics').appendChild(nade);
+        document.querySelector('#lyrics').classList.add(songVar.lyricsStyle)
+    }
+    catch (err) { }
     songVar.Lyrics.push({ time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0 })
     var video = document.querySelector(".video")
     console.log(gamevar.selectedBase.video.isHls)
