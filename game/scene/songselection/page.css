@@ -202,6 +202,8 @@ html:focus-within {
     height: 100%;
     border-radius: 0.13em;
     object-fit: cover;
+    overflow: hidden;
+    background-color: #00000073;
 }
 .itemsong .song--decoration::after {
     content: '';

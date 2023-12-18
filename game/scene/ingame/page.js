@@ -1,5 +1,6 @@
 
 var isWalking = false
+document.querySelector(".overlay-hi .shortcut").innerHTML = ``;
 fetch(gamevar.selectedBase.json)
     .then(response => response.text()).then(jsona => {
         var data;
@@ -19,6 +20,7 @@ generateLineLyrics = (data) => {
     const mergedTexts = [];
     let currentText = "";
     let currentTime = 0;
+    var even = false
 
     for (let i = 0; i < data.length; i++) {
         const textObj = data[i];
@@ -26,9 +28,10 @@ generateLineLyrics = (data) => {
         if (textObj.isLineEnding === 1) {
             if (currentTime == 0) currentTime = textObj.time
             currentText += `<span class="fill" offset="${i}">${textObj.text}<span class="filler" style="transition-duration:${textObj.duration}ms">${textObj.text}</span></span>`;
-            mergedTexts.push({ text: currentText, time: currentTime, offset: i });
+            mergedTexts.push({ text: currentText, time: currentTime, offset: i, even });
             currentText = "";
             currentTime = 0;
+            even = !even
         } else {
             if (currentTime === 0) {
                 currentTime = textObj.time;
@@ -55,6 +58,8 @@ playSong = (cdn, data) => {
         isDone: false,
         gameOffset: data.gameOffset || 0,
         startVideo: data.startVideo || 0,
+        lyricsStyle: data.lyricsStyle || "",
+        style: data.css || "",
     }
     /* const videoContainer = document.getElementById('camera-container');
      navigator.mediaDevices.getUserMedia({ video: true })
@@ -89,17 +94,27 @@ playSong = (cdn, data) => {
 
 
 
-
+    document.querySelector('#lyrics').classList.add(songVar.lyricsStyle)
+    var nade = document.createElement("style")
+    nade.type = "text/css"
+    nade.innerText = songVar.style
+    document.querySelector('#lyrics').appendChild(nade);
     songVar.Lyrics.push({ time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0 })
     var video = document.querySelector(".video")
-    if (gamevar.selectedBase.isHls) {
-        const hls = new Hls();
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-            hls.loadSource(
-                `/LilypadData/assets/maps/${cdn}/${cdn}.m3u8`
-            );
-        });
+    console.log(gamevar.selectedBase.video.isHls)
+    if (gamevar.selectedBase.video.isHls) {
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+                hls.loadSource(
+                    gamevar.selectedBase.video.path
+                );
+            });
+        }
+        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = videoSrc;
+        }
     }
     else {
         video.src = gamevar.selectedBase.video.path
@@ -113,17 +128,17 @@ playSong = (cdn, data) => {
     });
 
     video.play()
-    video.addEventListener('error', evt => {
+    video.onerror = function (evt) {
         console.log(video.src)
         if (video.src !== "" || video.src == undefined || video.src == null) {
             alert('Can\'t Play this maps, reason: ' + evt.toString());
             globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
             clearInterval(loopUI)
         }
-    });
+    };
 
     try {
-        setTimeout(function () { LyricsScroll(songVar.LyricsLine[offset.lyricsLine].text) }, (songVar.LyricsLine[offset.lyricsLine].time - 9000))
+        setTimeout(function () { LyricsScroll(songVar.LyricsLine[offset.lyricsLine]) }, (songVar.LyricsLine[offset.lyricsLine].time - 9000))
     } catch (err) {
         console.log(err)
     }
@@ -170,7 +185,7 @@ playSong = (cdn, data) => {
                 try {
                     if (songVar.LyricsLine[offset.lyricsLine] && songVar.LyricsLine[offset.lyricsLine].time < songVar.currentTime) {
                         document.querySelector(".currentLyricsLineV").innerHTML = songVar.LyricsLine[offset.lyricsLine].text;
-                        LyricsScroll(songVar.LyricsLine[offset.lyricsLine + 1] ? songVar.LyricsLine[offset.lyricsLine + 1].text : "", 0, songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset + 1].time - (songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].time + songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].duration))
+                        LyricsScroll(songVar.LyricsLine[offset.lyricsLine + 1] ? songVar.LyricsLine[offset.lyricsLine + 1] : {}, 0, songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset + 1].time - (songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].time + songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].duration))
                         offset.lyricsLine++;
                     }
                 } catch (err) { }
@@ -211,7 +226,6 @@ LyricsScroll = (Next, isHide = false, timea) => {
             next.classList.remove("next")
             next.classList.add("current")
             next.classList.add("show")
-            console.log(next.innerHTML + "Long")
             setTimeout(function () {
                 next.classList.remove("show")
             }, timeout.hidetime)
@@ -230,11 +244,11 @@ LyricsScroll = (Next, isHide = false, timea) => {
             }
             catch (err) { }
             const div = document.createElement("div");
-            const txt = document.createTextNode(Next);
-            div.innerHTML = Next;
+            div.innerHTML = Next.text;
             div.classList.add("line");
             div.classList.add("next");
             div.classList.add("hidden")
+            div.setAttribute("even", Next.even);
             if (timeout.state) {
                 setTimeout(() => {
                     div.classList.remove("hidden")

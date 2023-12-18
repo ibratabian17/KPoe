@@ -12,3 +12,4 @@ function startGame() {
     saveToLocalStorage()
     globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
 }
+document.querySelector(".overlay-hi .shortcut").innerHTML = `⏎:Confirm`;

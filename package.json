@@ -1,6 +1,6 @@
 {
   "name": "karaoke-poe",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "game.js",
   "scripts": {
     "start": "electron .",

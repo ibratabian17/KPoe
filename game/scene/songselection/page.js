@@ -4,6 +4,7 @@ var fetchUrl = "/songdb.json"
 if (songdb) {
     fetchUrl = songdb;
 }
+document.querySelector(".overlay-hi .shortcut").innerHTML = `⏎:Sing ←:Left →:Right`;
 
 fetch(fetchUrl).then(response => response.json()).then(data => {
     let list = document.querySelector(".songlist-container");
@@ -12,7 +13,7 @@ fetch(fetchUrl).then(response => response.json()).then(data => {
         let li = document.createElement("div");
         li.classList.add('itemsong')
         li.classList.add(item.id)
-        li.innerHTML = `<div class="song--decoration"><img src="${item.assets.cover}"></img></div>
+        li.innerHTML = `<div class="song--decoration"><img loading="lazy" src="${item.assets.cover}"></img></div>
       <span class="song-title">${item.title}</span>`;
         li.addEventListener('click', function () {
             if (selectedSong < index) {
