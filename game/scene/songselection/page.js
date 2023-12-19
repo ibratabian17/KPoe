@@ -4,9 +4,9 @@ var fetchUrl = "/songdb.json"
 if (songdb) {
     fetchUrl = songdb;
 }
-document.querySelector(".overlay-hi .shortcut").innerHTML = `⏎:Sing ←:Left →:Right`;
+document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="assets/textures/ui/key_enter.webp"></img>:Sing <img class="key_textures" src="assets/textures/ui/key_f1.webp"></img>:Refresh Songlist <img class="key_textures" src="assets/textures/ui/key_esc.webp"></img>: Back`;
 
-fetch(fetchUrl).then(response => response.json()).then(data => {
+function initList(data) {
     let list = document.querySelector(".songlist-container");
 
     data.forEach((item, index) => {
@@ -22,16 +22,26 @@ fetch(fetchUrl).then(response => response.json()).then(data => {
                 globalfunc.playSfx(23892, 24137);
             }
 
-            if (selectedSong != index){
-            document.querySelector('.itemsong.selected') && document.querySelector('.itemsong.selected').classList.remove('selected')
-            setSelectedItem(item.id, item, index)
-            document.querySelector('#gamevar').style.setProperty('--song-codename', item.id)
+            if (selectedSong != index) {
+                document.querySelector('.itemsong.selected') && document.querySelector('.itemsong.selected').classList.remove('selected')
+                setSelectedItem(item.id, item, index)
+                document.querySelector('#gamevar').style.setProperty('--song-codename', item.id)
             }
         })
         list.appendChild(li);
     })
     document.querySelectorAll('.itemsong')[gamevar.selectedSong || 0].click()
-})
+}
+if (gamevar.songdb == undefined || gamevar.refreshSongdb == true) {
+    fetch(fetchUrl, {cache: "no-cache"}).then(response => response.json()).then(data => {
+        gamevar.songdb = data
+        initList(data)
+        gamevar.refreshSongdb = false
+    })
+} else {
+    initList(gamevar.songdb)
+}
+
 
 function setSelectedItem(cdn, list, offset) {
     document.querySelector('.video--preview-container .video-loading').style.display = "block"
@@ -56,11 +66,24 @@ function setSelectedItem(cdn, list, offset) {
     catch (e) {
         console.log(e)
     }
-    videoplayer.src = list.video.preview
+    if (list.previewOffset == 0 && list.video.preview != list.video.path) {
+        //Make it sure it was a short video, 30s
+        const videoRequest = fetch(list.video.preview)
+            .then(response => response.blob());
+
+        videoRequest.then(blob => {
+            videoplayer.src = window.URL.createObjectURL(blob);
+        });
+    } else {
+        //long video ...
+        videoplayer.src = list.video.preview
+    }
     videoplayer.currentTime = list.previewOffset / 1000
     videoplayer.volume = 0
-    videoplayer.oncanplay = function() {
+    videoplayer.oncanplay = function () {
         videoplayer.play()
+    }
+    videoplayer.onplay = function () {
         $('.video--preview').animate({ volume: 0.6 }, 500)
     };
     videoplayer.addEventListener('waiting', () => {

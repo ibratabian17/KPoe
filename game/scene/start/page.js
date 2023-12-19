@@ -2,7 +2,7 @@ var warningtext = ""
 if (navigator.userAgent.includes('Electron')) {
     loadAnotherHTML('scene/title/page.html', 'scene/title/page.js')
 } else {
-    document.querySelector(".overlay-hi .shortcut").innerHTML = `⏎:Start Game`;
+    document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="assets/textures/ui/key_enter.webp"></img>:Start Game`;
     warningtext = "Downloading all files and caching them, may take some time"
     cacheFile() 
 }
