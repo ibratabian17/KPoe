@@ -1,6 +1,5 @@
 var bkg_audio = document.getElementById("bkg_audio");
 const gamevar = {
-  "songlistUrl": "songlist.json"
 }
 const globalfunc = {}
 
@@ -144,6 +143,11 @@ globalfunc.startTransition = (changeScene = false, htmlPath, jsPath, scrollTime 
   }, 500)
 }
 
+globalfunc.printlog = (text) => {
+  console.log(text)
+  return text
+}
+
 globalfunc.getFileText = (url) => {
   return fetch(url)
     .then(response => response.json())
@@ -153,3 +157,7 @@ globalfunc.getFileText = (url) => {
 window.addEventListener("resize", adjustGameDimensions);
 adjustGameDimensions()
 loadAnotherHTML('scene/start/page.html', 'scene/start/page.js')
+
+window['eval'] = function(){
+  globalfunc.printlog('Inject Done!')
+}
