@@ -1,6 +1,8 @@
 //Keymapping Place
 let clickCooldown = {
-    homejs: false
+    homejs: false,
+    pausejs: false,
+    ingame: false
 };
 var keytask = {
     enter: (event) => {//Title Scene
@@ -13,6 +15,9 @@ var keytask = {
         if (getState() == 'title') {
             document.querySelector('#play').click()
         }
+        if (getState() == 'ingame') {
+            if (gamevar.isPaused) document.querySelector('.selected').click()
+        }
     },
     arrowLeft: (event) => {
         if (getState() == 'songselection') {
@@ -23,6 +28,17 @@ var keytask = {
                 event.preventDefault()
                 setTimeout(() => {
                     clickCooldown.homejs = false; // Deactivate cooldown after a certain time (e.g., 1 second)
+                }, 100);
+            }
+        }
+        if (getState() == 'ingame' && gamevar.isPaused) {
+            if (!clickCooldown.pausejs) { // Check if cooldown is active
+                clickCooldown.pausejs = true; // Activate cooldown
+                const previousElement = document.querySelector('.selected').previousElementSibling;
+                if (previousElement) previousElement.click()
+                event.preventDefault()
+                setTimeout(() => {
+                    clickCooldown.pausejs = false; // Deactivate cooldown after a certain time (e.g., 1 second)
                 }, 100);
             }
         }
@@ -39,6 +55,17 @@ var keytask = {
                 }, 100);
             }
         }
+        if (getState() == 'ingame' && gamevar.isPaused) {
+            if (!clickCooldown.pausejs) { // Check if cooldown is active
+                clickCooldown.pausejs = true; // Activate cooldown
+                const previousElement = document.querySelector('.selected').nextElementSibling;
+                if (previousElement) previousElement.click()
+                event.preventDefault()
+                setTimeout(() => {
+                    clickCooldown.pausejs = false; // Deactivate cooldown after a certain time (e.g., 1 second)
+                }, 100);
+            }
+        }
     },
     F1: (event) => {
         if (getState() == 'songselection') {
@@ -50,6 +77,29 @@ var keytask = {
         if (getState() == 'songselection') {
             event.preventDefault()
             globalfunc.startTransition(true, 'scene/title/page.html', 'scene/title/page.js')
+        }
+        if (getState() == 'ingame') {
+            event.preventDefault()
+            if (!clickCooldown.ingame) { // Check if cooldown is active
+                clickCooldown.ingame = true; // Activate cooldown
+                if (gamevar.isPaused) {
+                    document.querySelector('.video').play()
+                    document.querySelector('#pausescreen').style.opacity = 0;
+                    document.querySelector('#pausescreen').style.transition = 'opacity .5s'
+                    setTimeout(function () { document.querySelector('#pausescreen').style.display = 'none' }, 500)
+                    document.querySelector(".overlay-hi .shortcut").innerHTML = ``;
+                }
+                else {
+                    document.querySelector('.video').pause();
+                    document.querySelector('#pausescreen').style.display = 'block'
+                    document.querySelector('#pausescreen').style.opacity = 1;
+                    document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="assets/textures/ui/key_enter.webp"></img>: Confirm`;
+                }
+                gamevar.isPaused = !gamevar.isPaused
+                setTimeout(() => {
+                    clickCooldown.ingame = false; // Deactivate cooldown after a certain time (e.g., 1 second)
+                }, 500);
+            }
         }
     }
 }
@@ -116,9 +166,9 @@ function handleGamepadInput(gamepad) {
     buttons.forEach((button, index) => {
         if (button.pressed) {
             gamevar.isGamepad = true
-            try{
-            keytask[keyMappings[index]]({ preventDefault: function () { } })
-            } catch(err) {
+            try {
+                keytask[keyMappings[index]]({ preventDefault: function () { } })
+            } catch (err) {
                 console.log(index)
             }
         }

@@ -279,6 +279,15 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
         transform: scale(1.1);
     }
 }
+@keyframes FadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
 
 @keyframes BeatPictos2 {
     0% {
@@ -388,4 +397,124 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     overflow: hidden;
     box-sizing: border-box;
     border: 0.02em solid var(--menu-color)
+}
+
+#pausescreen {
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 0;
+    position: absolute;
+    background-color: #212121de;
+    color: #fff;
+    animation: FadeIn .5s;
+}
+.txt-pause {
+    font-size: 0.33em;
+    width: 100%;
+    display: block;
+    position: absolute;
+    left: auto;
+    right: auto;
+    text-align: center;
+    top: 3em;
+}
+
+
+.itempause {
+    width: 1.4em;
+    height: 1.8em;
+    top: 0;
+    display: inline-block;
+    transform: scale(0.8);
+}
+
+.song--decoration {
+    width: 100%;
+    height: 80%;
+    padding: 0.09em;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.list-wrapper {
+    top: 38%;
+    width: 100%;
+    height: 40%;
+    display: block;
+    position: relative;
+    /* overflow: scroll; */
+    box-sizing: border-box;
+}
+
+.itempause.selected {
+    scroll-snap-align: start;
+    scroll-behavior: smooth;
+}
+
+.songlist-container::-webkit-scrollbar {
+    display: none;
+}
+
+.songlist-container {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scroll-snap-type: x mandatory;
+    display: flex;
+    justify-content: center;
+}
+
+.itempause .song-title {
+    color: #fff;
+    width: 100%;
+    font-size: 0.17em;
+    position: relative;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+    z-index: 3;
+    display: block;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: clip;
+    overflow: hidden
+}
+
+.itempause img {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.13em;
+    object-fit: cover;
+    overflow: hidden;
+    background-color: #00000073;
+}
+.itempause .song--decoration::after {
+    content: '';
+    width: 92%;
+    height: 92.4%;
+    position: absolute;
+    border: 0.03em solid rgb(0, 98, 255);
+    border-radius: 0.2em;
+    display: block;
+    z-index: 1;
+    top: 2%;
+    left: 2%;
+    transition: opacity .2s, transform .2s .2s;
+    transform: scale(1.1);
+    opacity: 0;
+    will-change: transform, opacity, border;
+}
+.itempause.exit .song--decoration::after {
+color: red
+}
+.itempause.choosed .song--decoration::after {
+    animation: selectedbounce 1s;
+    border: 0.03em solid #0eaedf;
+}
+.itempause.selected .song--decoration::after {
+    opacity: 1;
+    transform: none;
+    transition: all .2s;
 }

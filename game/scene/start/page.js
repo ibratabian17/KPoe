@@ -1,10 +1,11 @@
 var warningtext = ""
+var clicked = false
 if (navigator.userAgent.includes('Electron')) {
     loadAnotherHTML('scene/title/page.html', 'scene/title/page.js')
 } else {
     document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="assets/textures/ui/key_enter.webp"></img>:Start Game`;
     warningtext = "Downloading all files and caching them, may take some time"
-    cacheFile() 
+    cacheFile()
 }
 document.querySelector('.txt-warning').innerHTML = warningtext
 
@@ -28,10 +29,13 @@ async function cacheFile() {
     }
 }
 function initgame() {
-    globalfunc.startTransition(true, 'scene/title/page.html', 'scene/title/page.js')
-    openFullscreen()
+    if (!clicked) {
+        clicked = true
+        globalfunc.startTransition(true, 'scene/title/page.html', 'scene/title/page.js')
+        openFullscreen()
+    }
 }
-async function a(url){
+async function a(url) {
     const ab = await fetch(url)
     document.querySelector('.txt-wait').innerHTML = `Please Wait\nFetched: ${url}`
 }

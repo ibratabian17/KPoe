@@ -166,7 +166,7 @@ body {
 }
 
 .overlay-hi {
-  z-index: 0;
+  z-index: 1;
   position: absolute;
   font-size: 0.16em;
   color: #fff;

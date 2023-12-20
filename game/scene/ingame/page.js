@@ -1,5 +1,6 @@
 
 var isWalking = false
+var selectedPause = 1
 document.querySelector(".overlay-hi .shortcut").innerHTML = ``;
 fetch(gamevar.selectedBase.json)
     .then(response => response.text()).then(jsona => {
@@ -138,6 +139,7 @@ playSong = (cdn, data) => {
             clearInterval(loopUI)
         }
     };
+    gamevar.isPaused = false
 
     try {
         setTimeout(function () { LyricsScroll(songVar.LyricsLine[offset.lyricsLine]) }, (songVar.LyricsLine[offset.lyricsLine].time - 9000))
@@ -285,3 +287,35 @@ LyricsFill = (dat, duration, offset, Hide = false) => {
     }
 }
 
+document.querySelectorAll('.itempause').forEach((item, index) => {
+    item.addEventListener('click', function () {
+        if (selectedPause < index) {
+            globalfunc.playSfx(23605, 23864);
+        } else if (selectedPause == index) { globalfunc.playSfx(63559, 63757) }
+        else {
+            globalfunc.playSfx(23892, 24137);
+        }
+
+        if (selectedPause != index) {
+            document.querySelector('.itempause.selected') && document.querySelector('.itempause.selected').classList.remove('selected')
+            document.querySelectorAll(`.itempause`)[index].classList.add('selected')
+            selectedPause = index
+            return
+        }
+        if (selectedPause == index) {
+            setTimeout(() => {
+                if (index == 0) {
+                    document.querySelector('.video').currentTime = document.querySelector('.video').duration || document.querySelector('.video').currentTime + 200000000000
+                }
+                if (index == 1) {
+                    document.querySelector('.video').play()
+                    document.querySelector('#pausescreen').style.opacity = 0;
+                    document.querySelector('#pausescreen').style.transition = 'opacity .5s'
+                    setTimeout(function () { document.querySelector('#pausescreen').style.display = 'none' }, 500)
+                    document.querySelector(".overlay-hi .shortcut").innerHTML = ``;
+                    gamevar.isPaused = false
+                }
+            }, 200)
+        }
+    })
+})
