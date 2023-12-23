@@ -69,6 +69,7 @@ var keytask = {
     },
     F1: (event) => {
         if (getState() == 'songselection') {
+            event.preventDefault()
             gamevar.refreshSongdb = true
             globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
         }
