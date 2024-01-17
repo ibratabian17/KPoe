@@ -108,7 +108,8 @@
     overflow: hidden;
     width: 100%;
     transition-timing-function: linear;
-    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
 }
 
 #lyrics .line.current,
@@ -216,7 +217,8 @@
 
 #lyrics.no-animation * {
     transition: none !important;
-    animation: none !important;
+    -webkit-animation: none !important;
+            animation: none !important;
 }
 
 html:not(.ipad) .hud.beat>#lyrics>#beat {
@@ -230,7 +232,8 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     width: 1.46em;
     left: -1.17em;
     bottom: 0;
-    filter: drop-shadow(.16rem .16rem .15rem #2020209e);
+    -webkit-filter: drop-shadow(.16rem .16rem .15rem #2020209e);
+            filter: drop-shadow(.16rem .16rem .15rem #2020209e);
     position: absolute;
     transform-origin: bottom;
 }
@@ -256,15 +259,32 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
 }
 
 .hud.even #camera-container video {
-    animation: BeatPictos .35s !important;
+    -webkit-animation: BeatPictos .35s !important;
+            animation: BeatPictos .35s !important;
 }
 
 .hud.odd #camera-container video {
-    animation: BeatPictos2 .35s !important;
+    -webkit-animation: BeatPictos2 .35s !important;
+            animation: BeatPictos2 .35s !important;
 }
 
 .hud.odd #camera-container {
-    animation: ShadowDu .35s !important;
+    -webkit-animation: ShadowDu .35s !important;
+            animation: ShadowDu .35s !important;
+}
+
+@-webkit-keyframes BeatPictos {
+    0% {
+        transform: scale(1.1);
+    }
+
+    15% {
+        transform: scale(1.045678);
+    }
+
+    100% {
+        transform: scale(1.1);
+    }
 }
 
 @keyframes BeatPictos {
@@ -280,6 +300,15 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
         transform: scale(1.1);
     }
 }
+@-webkit-keyframes FadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
 @keyframes FadeIn {
     0% {
         opacity: 0;
@@ -287,6 +316,20 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
 
     100% {
         opacity: 1;
+    }
+}
+
+@-webkit-keyframes BeatPictos2 {
+    0% {
+        transform: scale(1.1);
+    }
+
+    15% {
+        transform: scale(1.095678);
+    }
+
+    100% {
+        transform: scale(1.1);
     }
 }
 
@@ -304,6 +347,20 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     }
 }
 
+@-webkit-keyframes BeatCoach {
+    0% {
+        transform: scale(1.0);
+    }
+
+    15% {
+        transform: scale(1.05, 1.1);
+    }
+
+    100% {
+        transform: scale(1.0);
+    }
+}
+
 @keyframes BeatCoach {
     0% {
         transform: scale(1.0);
@@ -318,9 +375,29 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     }
 }
 
+@-webkit-keyframes PictosScroll {
+    0% {
+        transform: translateX(6em);
+    }
+
+    100% {
+        transform: translateX(0em);
+    }
+}
+
 @keyframes PictosScroll {
     0% {
         transform: translateX(6em);
+    }
+
+    100% {
+        transform: translateX(0em);
+    }
+}
+
+@-webkit-keyframes PictosScrollSolo {
+    0% {
+        transform: translateX(3.8em);
     }
 
     100% {
@@ -338,6 +415,18 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     }
 }
 
+@-webkit-keyframes PictosHide {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.12);
+        opacity: 0;
+    }
+}
+
 @keyframes PictosHide {
     0% {
         transform: scale(1);
@@ -350,12 +439,11 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     }
 }
 
-@keyframes nextLineInf {
+@-webkit-keyframes nextLineInf {
 
     0%,
     20% {
         opacity: 0;
-        -webkit-transform: perspective(0px) translateY(1.5em) rotateX(0deg);
         transform: perspective(0px) translateY(1.5em) rotateX(0deg)scale(0.8);
     }
 
@@ -365,7 +453,24 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
 
     100% {
         opacity: 1;
-        -webkit-transform: translateY(0.3em) perspective(0px) rotateX(0deg);
+        transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9);
+    }
+}
+
+@keyframes nextLineInf {
+
+    0%,
+    20% {
+        opacity: 0;
+        transform: perspective(0px) translateY(1.5em) rotateX(0deg)scale(0.8);
+    }
+
+    40% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
         transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9);
     }
 }
@@ -374,7 +479,8 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     width: 100%;
     height: 100%;
     transform: scale(1.1);
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
 }
 
 #camera-container span {
@@ -408,7 +514,8 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     position: absolute;
     background-color: #212121de;
     color: #fff;
-    animation: FadeIn .5s;
+    -webkit-animation: FadeIn .5s;
+            animation: FadeIn .5s;
 }
 .txt-pause {
     font-size: 0.33em;
@@ -463,7 +570,8 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
-    scroll-snap-type: x mandatory;
+    -ms-scroll-snap-type: x mandatory;
+        scroll-snap-type: x mandatory;
     display: flex;
     justify-content: center;
 }
@@ -487,7 +595,8 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     width: 100%;
     height: 100%;
     border-radius: 0.13em;
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
     overflow: hidden;
     background-color: #00000073;
 }
@@ -511,7 +620,8 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
 color: red
 }
 .itempause.choosed .song--decoration::after {
-    animation: selectedbounce 1s;
+    -webkit-animation: selectedbounce 1s;
+            animation: selectedbounce 1s;
     border: 0.03em solid #0eaedf;
 }
 .itempause.selected .song--decoration::after {

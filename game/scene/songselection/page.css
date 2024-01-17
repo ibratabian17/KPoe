@@ -63,7 +63,8 @@ html:focus-within {
 }
 
 .button--sing.clicked {
-    animation: clicksing 1s, showgrad 2s;
+    -webkit-animation: clicksing 1s, showgrad 2s;
+            animation: clicksing 1s, showgrad 2s;
 }
 
 .button--sing .txt-sing {
@@ -82,16 +83,32 @@ html:focus-within {
 .song--details .song-artist {
     color: #ffffff9d;
     font-size: 67%;
+    width: -webkit-max-content;
+    width: -moz-max-content;
     width: max-content;
 }
 
 .song--details.show .song-artist {
-    animation: slideRight 1s;
+    -webkit-animation: slideRight 1s;
+            animation: slideRight 1s;
 }
 
 .song--details.show .song-title {
-    animation: slideRight 1s;
+    -webkit-animation: slideRight 1s;
+            animation: slideRight 1s;
     width: 100%;
+}
+
+@-webkit-keyframes clicksing {
+
+    0%,
+    50% {
+        transform: scale(1);
+    }
+
+    5% {
+        transform: scale(0.8);
+    }
 }
 
 @keyframes clicksing {
@@ -106,6 +123,18 @@ html:focus-within {
     }
 }
 
+@-webkit-keyframes showgrad {
+    0% {
+        background-image: linear-gradient(to right, #601acf, #0eaedf, #601acf);
+        background-size: 1000% 100%;
+    }
+
+    100% {
+        background-size: 200% 100%;
+        background-position: -15em 0;
+    }
+}
+
 @keyframes showgrad {
     0% {
         background-image: linear-gradient(to right, #601acf, #0eaedf, #601acf);
@@ -115,6 +144,16 @@ html:focus-within {
     100% {
         background-size: 200% 100%;
         background-position: -15em 0;
+    }
+}
+
+@-webkit-keyframes slideRight {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(0%);
     }
 }
 
@@ -179,7 +218,8 @@ html:focus-within {
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
-    scroll-snap-type: x mandatory;
+    -ms-scroll-snap-type: x mandatory;
+        scroll-snap-type: x mandatory;
 }
 
 .itemsong .song-title {
@@ -201,7 +241,8 @@ html:focus-within {
     width: 100%;
     height: 100%;
     border-radius: 0.13em;
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
     overflow: hidden;
     background-color: #00000073;
 }
@@ -222,13 +263,29 @@ html:focus-within {
     will-change: transform, opacity, border;
 }
 .itemsong.choosed .song--decoration::after {
-    animation: selectedbounce 1s;
+    -webkit-animation: selectedbounce 1s;
+            animation: selectedbounce 1s;
     border: 0.03em solid #0eaedf;
 }
 .itemsong.selected .song--decoration::after {
     opacity: 1;
     transform: none;
     transition: all .2s;
+}
+@-webkit-keyframes selectedbounce {
+    0%, 20%, 50%, 100% {
+        transform: scale(1.0);
+    }
+    10%, 30%, 40% {
+        transform: scale(1.05);
+    }
+    0% {
+        border: 0.03em solid #fff;
+    }
+    20%, 100% {
+        border: 0.03em solid #0eaedf;
+    }
+    
 }
 @keyframes selectedbounce {
     0%, 20%, 50%, 100% {
