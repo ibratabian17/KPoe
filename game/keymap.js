@@ -23,8 +23,12 @@ var keytask = {
         if (getState() == 'songselection') {
             if (!clickCooldown.homejs) { // Check if cooldown is active
                 clickCooldown.homejs = true; // Activate cooldown
+                try {
                 const previousElement = document.querySelector('.selected').previousElementSibling;
                 if (previousElement) previousElement.click()
+            } catch(err){
+                document.querySelectorAll('.itemsong')[0].click()
+            }
                 event.preventDefault()
                 setTimeout(() => {
                     clickCooldown.homejs = false; // Deactivate cooldown after a certain time (e.g., 1 second)
@@ -47,8 +51,11 @@ var keytask = {
         if (getState() == 'songselection') {
             if (!clickCooldown.homejs) { // Check if cooldown is active
                 clickCooldown.homejs = true; // Activate cooldown
+                try {
                 const previousElement = document.querySelector('.selected').nextElementSibling;
-                if (previousElement) previousElement.click()
+                 if (previousElement) previousElement.click() } catch(err){
+                    document.querySelectorAll('.itemsong')[document.querySelectorAll('.itemsong').length-1].click()
+                }
                 event.preventDefault()
                 setTimeout(() => {
                     clickCooldown.homejs = false; // Deactivate cooldown after a certain time (e.g., 1 second)

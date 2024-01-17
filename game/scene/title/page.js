@@ -1,4 +1,5 @@
 var savedInput = localStorage.getItem('songdb');
+document.title = "KaraokePoe - Edit Songdb";
 var clicked = false
 if (savedInput) {
     document.querySelector('.songdb').value = savedInput;

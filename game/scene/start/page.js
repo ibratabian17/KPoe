@@ -1,4 +1,5 @@
 var warningtext = ""
+document.title = "KaraokePoe - Initializing";
 var clicked = false
 if (navigator.userAgent.includes('Electron')) {
     loadAnotherHTML('scene/title/page.html', 'scene/title/page.js')

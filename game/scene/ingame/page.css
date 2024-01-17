@@ -58,6 +58,7 @@
     letter-spacing: 0.02em;
     text-align: center;
     justify-content: center;
+    z-index: 1;
 }
 
 #lyrics:has(.line.current) #beat {
@@ -403,7 +404,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     width: 100%;
     height: 100%;
     display: none;
-    z-index: 0;
+    z-index: 2;
     position: absolute;
     background-color: #212121de;
     color: #fff;

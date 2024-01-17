@@ -1,4 +1,5 @@
 var selectedSong = -1;
+document.title = "KaraokePoe - Selecting Song";
 var songdb = localStorage.getItem('songdb');
 var fetchUrl = "/songdb.json"
 if (songdb) {

@@ -7,6 +7,7 @@ fetch(gamevar.selectedBase.json)
         var data;
         try {
             data = JSON.parse(jsona)
+            document.title = `KaraokePoe - Playing: ${gamevar.selectedBase.title} by ${gamevar.selectedBase.artist}`;
         } catch (err) {
             var a = jsona.substring(0 + 1, jsona.length - 1)
             a = a.substring(0, a.length - 2)
@@ -154,7 +155,7 @@ playSong = (cdn, data) => {
         if ((songVar.Beat[offset.beat] - songVar.gameOffset) < songVar.currentTime) {
             hud.classList.add("show")
             document.querySelector(".currentBeatV").innerHTML = songVar.Beat[offset.beat];
-            document.querySelector("#beat").style.animationDuration = `${songVar.Beat[offset.beat + 1] - songVar.Beat[offset.beat]}.${0}ms`;
+            document.querySelector("#beat").style.animationDuration = `${Math.round(songVar.Beat[offset.beat + 1] - songVar.Beat[offset.beat])}.${0}ms`;
             hud.style.setProperty("--menu-color", data.lyricsColor);
             hud.classList.remove("beat")
             setTimeout(function () {
@@ -185,14 +186,15 @@ playSong = (cdn, data) => {
         }
         // Debug Lyrics
         try {
+            if (songVar.LyricsLine[offset.lyricsLine] && songVar.LyricsLine[offset.lyricsLine].time - 150 < songVar.currentTime) {
+                document.querySelector(".currentLyricsLineV").innerHTML = songVar.LyricsLine[offset.lyricsLine].text;
+                LyricsScroll(songVar.LyricsLine[offset.lyricsLine + 1] ? songVar.LyricsLine[offset.lyricsLine + 1] : {text : ""}, 0, songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset + 1].time - (songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].time + songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].duration))
+                offset.lyricsLine++;
+            }
+        } catch (err) { }
+        try {
             if ((songVar.Lyrics[offset.lyrics].time - songVar.gameOffset) < songVar.currentTime) {
-                try {
-                    if (songVar.LyricsLine[offset.lyricsLine] && songVar.LyricsLine[offset.lyricsLine].time < songVar.currentTime) {
-                        document.querySelector(".currentLyricsLineV").innerHTML = songVar.LyricsLine[offset.lyricsLine].text;
-                        LyricsScroll(songVar.LyricsLine[offset.lyricsLine + 1] ? songVar.LyricsLine[offset.lyricsLine + 1] : {}, 0, songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset + 1].time - (songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].time + songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].duration))
-                        offset.lyricsLine++;
-                    }
-                } catch (err) { }
+
                 var isLineEnding = false
                 if (songVar.Lyrics[offset.lyrics].isLineEnding == 1) isLineEnding = true
                 const isMore = songVar.Lyrics[offset.lyrics].isLineEnding == 1 && songVar.Lyrics[offset.lyrics + 1] && songVar.Lyrics[offset.lyrics].time >= songVar.Lyrics[offset.lyrics + 1].time;
@@ -275,8 +277,11 @@ LyricsFill = (dat, duration, offset, Hide = false) => {
                 filler.parentNode.classList.add("done")
                 isWalking = false;
                 if (Hide) {
-                    current.classList.add('previous')
-                    current.classList.remove('current')
+                    setTimeout(() => {
+                        current.classList.add('previous')
+                        current.classList.remove('current')
+                    }, 2000)
+
                 }
             }
         }
