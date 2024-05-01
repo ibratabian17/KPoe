@@ -17,8 +17,8 @@ function createWindow() {
     },
     icon: path.join(__dirname, 'game/assets/textures/ui/JD_Series.webp')
   });
-   /*const emptyMenu = Menu.buildFromTemplate([]);
-   mainWindow.setMenu(emptyMenu);*/
+  /*const emptyMenu = Menu.buildFromTemplate([]);
+  mainWindow.setMenu(emptyMenu);*/
 
   const mainSession = mainWindow.webContents.session;
   mainSession.webRequest.onBeforeSendHeaders({ urls: ['*://*/*'] }, (details, callback) => {

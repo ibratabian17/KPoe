@@ -23,6 +23,7 @@ async function cacheFile() {
         const ingamehtml = await a('scene/ingame/page.html');
         const ingamejs = await a('scene/ingame/page.js');
         const ingamecss = await a('scene/ingame/page.css');
+        const cached = { jquery, titlehtml, titlecss, songselectionhtml, songselectionjs }
         document.querySelector('.txt-wait').innerHTML = `Fetching Done!`
         document.querySelector('.button--initgame').classList.add('readya')
     } catch (error) {

@@ -96,7 +96,8 @@
     left: 0;
     right: 0;
     color: var(--menu-color, #fff);
-    transition-timing-function: linear;
+    white-space: pre;
+    transition-timing-function: ease;
 
 }
 
@@ -106,10 +107,11 @@
 
 #lyrics .line .fill.filled .filler {
     overflow: hidden;
-    width: 100%;
+    width: 110%;
     transition-timing-function: linear;
     -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
+    backface-visibility: hidden;
+    text-align: initial;
 }
 
 #lyrics .line.current,
@@ -218,7 +220,7 @@
 #lyrics.no-animation * {
     transition: none !important;
     -webkit-animation: none !important;
-            animation: none !important;
+    animation: none !important;
 }
 
 html:not(.ipad) .hud.beat>#lyrics>#beat {
@@ -233,7 +235,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     left: -1.17em;
     bottom: 0;
     -webkit-filter: drop-shadow(.16rem .16rem .15rem #2020209e);
-            filter: drop-shadow(.16rem .16rem .15rem #2020209e);
+    filter: drop-shadow(.16rem .16rem .15rem #2020209e);
     position: absolute;
     transform-origin: bottom;
 }
@@ -260,17 +262,17 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
 
 .hud.even #camera-container video {
     -webkit-animation: BeatPictos .35s !important;
-            animation: BeatPictos .35s !important;
+    animation: BeatPictos .35s !important;
 }
 
 .hud.odd #camera-container video {
     -webkit-animation: BeatPictos2 .35s !important;
-            animation: BeatPictos2 .35s !important;
+    animation: BeatPictos2 .35s !important;
 }
 
 .hud.odd #camera-container {
     -webkit-animation: ShadowDu .35s !important;
-            animation: ShadowDu .35s !important;
+    animation: ShadowDu .35s !important;
 }
 
 @-webkit-keyframes BeatPictos {
@@ -300,6 +302,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
         transform: scale(1.1);
     }
 }
+
 @-webkit-keyframes FadeIn {
     0% {
         opacity: 0;
@@ -309,6 +312,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
         opacity: 1;
     }
 }
+
 @keyframes FadeIn {
     0% {
         opacity: 0;
@@ -480,7 +484,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     height: 100%;
     transform: scale(1.1);
     -o-object-fit: cover;
-       object-fit: cover;
+    object-fit: cover;
 }
 
 #camera-container span {
@@ -515,8 +519,9 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     background-color: #212121de;
     color: #fff;
     -webkit-animation: FadeIn .5s;
-            animation: FadeIn .5s;
+    animation: FadeIn .5s;
 }
+
 .txt-pause {
     font-size: 0.33em;
     width: 100%;
@@ -527,7 +532,6 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     text-align: center;
     top: 3em;
 }
-
 
 .itempause {
     width: 1.4em;
@@ -571,7 +575,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     overflow-y: hidden;
     white-space: nowrap;
     -ms-scroll-snap-type: x mandatory;
-        scroll-snap-type: x mandatory;
+    scroll-snap-type: x mandatory;
     display: flex;
     justify-content: center;
 }
@@ -596,10 +600,11 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     height: 100%;
     border-radius: 0.13em;
     -o-object-fit: cover;
-       object-fit: cover;
+    object-fit: cover;
     overflow: hidden;
     background-color: #00000073;
 }
+
 .itempause .song--decoration::after {
     content: '';
     width: 92%;
@@ -615,17 +620,187 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     transform: scale(1.1);
     opacity: 0;
     will-change: transform, opacity, border;
+    -webkit-transition: opacity .2s, transform .2s .2s;
+    -moz-transition: opacity .2s, transform .2s .2s;
+    -ms-transition: opacity .2s, transform .2s .2s;
+    -o-transition: opacity .2s, transform .2s .2s;
 }
+
 .itempause.exit .song--decoration::after {
-color: red
+    color: red
 }
+
 .itempause.choosed .song--decoration::after {
     -webkit-animation: selectedbounce 1s;
-            animation: selectedbounce 1s;
+    animation: selectedbounce 1s;
     border: 0.03em solid #0eaedf;
 }
+
 .itempause.selected .song--decoration::after {
     opacity: 1;
     transform: none;
     transition: all .2s;
+    -webkit-transition: all .2s;
+    -moz-transition: all .2s;
+    -ms-transition: all .2s;
+    -o-transition: all .2s;
+}
+
+.song-metadata {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(0deg, black, transparent);
+    color: white;
+    font-size: 0.3em;
+    text-align: left;
+    opacity: 0;
+    transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
+    -moz-transition: opacity 0.5s;
+    -ms-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+}
+
+.song-metadata.show {
+    opacity: 1;
+}
+
+.song-metadata .title {
+    position: absolute;
+    top: 30%;
+    width: 50%;
+    left: 40%;
+    height: 1.2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.song-metadata .artist {
+    position: absolute;
+    top: 30%;
+    width: 50%;
+    font-size: 0.5em;
+    text-align: left;
+    left: 40%;
+    top: 36%;
+    height: 1.2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.song-metadata .time {
+    position: absolute;
+    top: 30%;
+    width: 50%;
+    font-size: 0.5em;
+    text-align: left;
+    left: 40%;
+    top: 39%;
+    height: 1.2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.metadata-layout {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    transition: top .5s .5s;
+    -webkit-transition: top .5s .5s;
+    -moz-transition: top .5s .5s;
+    -ms-transition: top .5s .5s;
+    -o-transition: top .5s .5s;
+}
+
+.metadata-layout.playing {
+    top: -5%;
+}
+
+.song-metadata .cover {
+    position: absolute;
+    height: 8em;
+    width: 8em;
+    top: 30%;
+    left: 15%;
+    background-color: black;
+    background-size: 100%;
+    background-position: center;
+    border-radius: 0.7em;
+    overflow: hidden;
+}
+
+.song-metadata .cover .image {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.01);
+    will-change: transform;
+}
+
+#Game:has(.hud.even) .song-metadata.show .cover .image {
+    animation: BeatCover .5s;
+    -webkit-animation: BeatCover .5s;
+}
+
+#Game:has(.hud.odd) .song-metadata.show .cover .image {
+    animation: BeatCover2 .5s;
+    -webkit-animation: BeatCover2 .5s;
+}
+
+
+@keyframes BeatCover {
+    0% {
+        transform: scale(1.01);
+        -webkit-transform: scale(1.01);
+        -moz-transform: scale(1.01);
+        -ms-transform: scale(1.01);
+        -o-transform: scale(1.01);
+    }
+
+    15% {
+        transform: scale(1.03);
+        -webkit-transform: scale(1.03);
+        -moz-transform: scale(1.03);
+        -ms-transform: scale(1.03);
+        -o-transform: scale(1.03);
+    }
+
+    100% {
+        transform: scale(1.01);
+        -webkit-transform: scale(1.01);
+        -moz-transform: scale(1.01);
+        -ms-transform: scale(1.01);
+        -o-transform: scale(1.01);
+    }
+}
+
+@keyframes BeatCover2 {
+    0% {
+        transform: scale(1.01);
+        -webkit-transform: scale(1.01);
+        -moz-transform: scale(1.01);
+        -ms-transform: scale(1.01);
+        -o-transform: scale(1.01);
+    }
+
+    15% {
+        transform: scale(1.02);
+        -webkit-transform: scale(1.02);
+        -moz-transform: scale(1.02);
+        -ms-transform: scale(1.02);
+        -o-transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1.01);
+        -webkit-transform: scale(1.01);
+        -moz-transform: scale(1.01);
+        -ms-transform: scale(1.01);
+        -o-transform: scale(1.01);
+    }
 }

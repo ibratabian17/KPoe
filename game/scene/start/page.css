@@ -37,9 +37,9 @@
     width: 60%;
     height: 60%;
     -webkit-animation: JDBounce 923ms infinite linear;
-            animation: JDBounce 923ms infinite linear;
+    animation: JDBounce 923ms infinite linear;
     -o-object-fit: scale-down;
-       object-fit: scale-down;
+    object-fit: scale-down;
     opacity: 0;
 }
 
@@ -70,7 +70,7 @@
 
 .button--initgame.clicked {
     -webkit-animation: clicksing 1s, showgrad 2s;
-            animation: clicksing 1s, showgrad 2s;
+    animation: clicksing 1s, showgrad 2s;
 }
 
 .button--initgame .txt-initgame {

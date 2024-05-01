@@ -1,21 +1,31 @@
 
 var isWalking = false
 var selectedPause = 1
+var songDebugger;
 document.querySelector(".overlay-hi .shortcut").innerHTML = ``;
+document.querySelector(".song-metadata .title").innerText = 'Loading Song Data.'
+document.querySelector(".song-metadata .artist").innerText = 'Please Wait...'
+document.querySelector(".song-metadata .time").innerText = ''
+document.querySelector(".song-metadata .cover .image").style.backgroundImage = `url(${gamevar.selectedBase.assets.cover})`
 fetch(gamevar.selectedBase.json)
     .then(response => response.text()).then(jsona => {
         var data;
         try {
             data = JSON.parse(jsona)
-            document.title = `KaraokePoe - Playing: ${gamevar.selectedBase.title} by ${gamevar.selectedBase.artist}`;
         } catch (err) {
             var a = jsona.substring(0 + 1, jsona.length - 1)
             a = a.substring(0, a.length - 2)
             console.log(a)
             data = JSON.parse(a)
         }
+        document.title = `KaraokePoe - Playing: ${gamevar.selectedBase.title} by ${gamevar.selectedBase.artist}`;
+        document.querySelector(".song-metadata .title").innerText = gamevar.selectedBase.title
+        document.querySelector(".song-metadata .artist").innerText = gamevar.selectedBase.artist
         playSong("a", data)
 
+    }).catch((error) => {
+        alert('Failed to load map data, reason: ' + error)
+        globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
     })
 
 generateLineLyrics = (data) => {
@@ -63,6 +73,7 @@ playSong = (cdn, data) => {
         lyricsStyle: data.lyricsStyle || "normal",
         style: data.css || "",
     }
+    songDebugger = this
     /* const videoContainer = document.getElementById('camera-container');
      navigator.mediaDevices.getUserMedia({ video: true })
          .then((stream) => {
@@ -129,9 +140,22 @@ playSong = (cdn, data) => {
     });
     video.addEventListener('playing', () => {
         document.querySelector('.video-loading').style.display = "none"
+        if (video.videoWidth == 0) {
+            document.querySelector('.song-metadata').classList.add('show')
+            document.querySelector('.metadata-layout').classList.add('playing')
+        } else {
+            document.querySelector('.song-metadata').classList.remove('show')
+            document.querySelector('.metadata-layout').classList.add('playing')
+        }
     });
-
-    video.play()
+    video.addEventListener("timeupdate", (event) => {
+        document.querySelector(".song-metadata .time").innerHTML = getVideoTime(video.currentTime, video.duration);
+    });
+    video.addEventListener("loadedmetadata", (event) => {
+        document.querySelector(".song-metadata .time").innerHTML = getVideoTime(video.currentTime, video.duration);
+    });
+    video.load()
+    setTimeout(function () { video.play() }, 500)
     video.onerror = function (evt) {
         console.log(video.src)
         if (video.src !== "" || video.src == undefined || video.src == null) {
@@ -178,9 +202,10 @@ playSong = (cdn, data) => {
             if (!songVar.isDone) {
                 songVar.isDone = true
                 video.removeAttribute('src')
-                video.pause()
+                video.load()
                 globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
                 clearInterval(loopUI)
+                document.querySelector('.metadata-layout').classList.remove('playing')
                 return
             }
         }
@@ -188,7 +213,7 @@ playSong = (cdn, data) => {
         try {
             if (songVar.LyricsLine[offset.lyricsLine] && songVar.LyricsLine[offset.lyricsLine].time - 150 < songVar.currentTime) {
                 document.querySelector(".currentLyricsLineV").innerHTML = songVar.LyricsLine[offset.lyricsLine].text;
-                LyricsScroll(songVar.LyricsLine[offset.lyricsLine + 1] ? songVar.LyricsLine[offset.lyricsLine + 1] : {text : ""}, 0, songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset + 1].time - (songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].time + songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].duration))
+                LyricsScroll(songVar.LyricsLine[offset.lyricsLine + 1] ? songVar.LyricsLine[offset.lyricsLine + 1] : { text: "" }, 0, songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset + 1].time - (songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].time + songVar.Lyrics[songVar.LyricsLine[offset.lyricsLine].offset].duration))
                 offset.lyricsLine++;
             }
         } catch (err) { }
@@ -201,7 +226,6 @@ playSong = (cdn, data) => {
                 document.querySelector(".currentLyricsV").innerHTML = songVar.Lyrics[offset.lyrics].text;
                 if (!isMore) LyricsFill(songVar.Lyrics[offset.lyrics].text, songVar.Lyrics[offset.lyrics].duration, offset.lyrics, isLineEnding)
                 offset.lyrics++;
-
             }
         } catch (err) { }
     }, 5)
@@ -290,6 +314,19 @@ LyricsFill = (dat, duration, offset, Hide = false) => {
     } catch (err) {
         console.log(dat + err)
     }
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
+function getVideoTime(currentTime, duration) {
+    const currentTimea = formatTime(currentTime);
+    const durationa = formatTime(duration);
+    const formattedTime = `${currentTimea} - ${durationa}`;
+    return formattedTime
 }
 
 document.querySelectorAll('.itempause').forEach((item, index) => {

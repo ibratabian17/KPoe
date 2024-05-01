@@ -6,6 +6,7 @@ if (songdb) {
     fetchUrl = songdb;
 }
 document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="assets/textures/ui/key_enter.webp"></img>:Sing <img class="key_textures" src="assets/textures/ui/key_f1.webp"></img>:Refresh Songlist <img class="key_textures" src="assets/textures/ui/key_esc.webp"></img>: Back`;
+document.querySelector('.song-metadata').classList.add('show')
 
 function initList(data) {
     let list = document.querySelector(".songlist-container");
@@ -63,6 +64,7 @@ function setSelectedItem(cdn, list, offset) {
     videoplayer.src = ""
     try {
         document.querySelector("#banner").style.background = `center / 100% 100% url(${list.assets.banner})`
+        document.querySelector(".video").setAttribute('poster',list.assets.banner);
     }
     catch (e) {
         console.log(e)
@@ -104,7 +106,7 @@ function sing() {
         $('.button--sing').addClass('clicked')
         $('.itemsong.selected').addClass('choosed')
         setTimeout(function () {
-            globalfunc.startTransition(true, 'scene/ingame/page.html', 'scene/ingame/page.js')
+            globalfunc.startTransition(true, 'scene/ingame/page.html', 'scene/ingame/page.js', 0)
             $('.video--preview').animate({ volume: 0 }, 500);
         }, 1000)
     }

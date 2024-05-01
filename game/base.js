@@ -159,10 +159,9 @@ window.addEventListener("resize", adjustGameDimensions);
 adjustGameDimensions()
 loadAnotherHTML('scene/start/page.html', 'scene/start/page.js')
 
-window['eval'] = function(){
+window['eval'] = function () {
   globalfunc.printlog('Inject Done!')
 }
-function javascript_abort()
-{
-   throw new Error('This is not an error. This is just to abort javascript');
+function javascript_abort() {
+  throw new Error('This is not an error. This is just to abort javascript');
 }

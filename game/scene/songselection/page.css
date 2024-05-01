@@ -57,6 +57,7 @@ html:focus-within {
     will-change: transform, background-position;
     transition: .5s all;
 }
+
 .button--sing:not(.readya):hover {
     background: rgb(26, 83, 207);
     transform: scale(1.1);
@@ -64,7 +65,7 @@ html:focus-within {
 
 .button--sing.clicked {
     -webkit-animation: clicksing 1s, showgrad 2s;
-            animation: clicksing 1s, showgrad 2s;
+    animation: clicksing 1s, showgrad 2s;
 }
 
 .button--sing .txt-sing {
@@ -90,12 +91,12 @@ html:focus-within {
 
 .song--details.show .song-artist {
     -webkit-animation: slideRight 1s;
-            animation: slideRight 1s;
+    animation: slideRight 1s;
 }
 
 .song--details.show .song-title {
     -webkit-animation: slideRight 1s;
-            animation: slideRight 1s;
+    animation: slideRight 1s;
     width: 100%;
 }
 
@@ -219,7 +220,7 @@ html:focus-within {
     overflow-y: hidden;
     white-space: nowrap;
     -ms-scroll-snap-type: x mandatory;
-        scroll-snap-type: x mandatory;
+    scroll-snap-type: x mandatory;
 }
 
 .itemsong .song-title {
@@ -242,10 +243,11 @@ html:focus-within {
     height: 100%;
     border-radius: 0.13em;
     -o-object-fit: cover;
-       object-fit: cover;
+    object-fit: cover;
     overflow: hidden;
     background-color: #00000073;
 }
+
 .itemsong .song--decoration::after {
     content: '';
     width: 92%;
@@ -262,43 +264,67 @@ html:focus-within {
     opacity: 0;
     will-change: transform, opacity, border;
 }
+
 .itemsong.choosed .song--decoration::after {
     -webkit-animation: selectedbounce 1s;
-            animation: selectedbounce 1s;
+    animation: selectedbounce 1s;
     border: 0.03em solid #0eaedf;
 }
+
 .itemsong.selected .song--decoration::after {
     opacity: 1;
     transform: none;
     transition: all .2s;
 }
+
 @-webkit-keyframes selectedbounce {
-    0%, 20%, 50%, 100% {
+
+    0%,
+    20%,
+    50%,
+    100% {
         transform: scale(1.0);
     }
-    10%, 30%, 40% {
+
+    10%,
+    30%,
+    40% {
         transform: scale(1.05);
     }
+
     0% {
         border: 0.03em solid #fff;
     }
-    20%, 100% {
+
+    20%,
+    100% {
         border: 0.03em solid #0eaedf;
     }
-    
+
 }
+
 @keyframes selectedbounce {
-    0%, 20%, 50%, 100% {
+
+    0%,
+    20%,
+    50%,
+    100% {
         transform: scale(1.0);
     }
-    10%, 30%, 40% {
+
+    10%,
+    30%,
+    40% {
         transform: scale(1.05);
     }
+
     0% {
         border: 0.03em solid #fff;
     }
-    20%, 100% {
+
+    20%,
+    100% {
         border: 0.03em solid #0eaedf;
     }
-    
+
 }

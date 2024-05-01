@@ -5,9 +5,9 @@ gamevar.cdn = gamevar.gamevar.style.getPropertyValue("--song-codename");
 fetch(`${gamevar.selectedBase}/${gamevar.cdn}.json`)
     .then(response => response.text()).then(jsona => {
         var data;
-        try{
+        try {
             data = JSON.parse(jsona)
-        }catch(err){
+        } catch (err) {
             var a = jsona.substring(gamevar.cdn.length + 1, jsona.length - 1)
             a = a.substring(0, a.length - 2)
             console.log(a)
@@ -54,7 +54,7 @@ globalfunc.playSong = (cdn, data, pictoatlas) => {
     if (data.NumCoach > 1) {
         ui.pictos.classList.add('multi-coach')
     }
-    if(!gamevar.nohudList){
+    if (!gamevar.nohudList) {
         ui.pictos.style.display = "none"
     }
     let offset = {
@@ -74,7 +74,7 @@ globalfunc.playSong = (cdn, data, pictoatlas) => {
         PictosSlideDur: 2100 + Math.round(globalfunc.calculateAverageTime(data.pictos, 'duration')),
         PictosHideDur: 200 + (Math.round(globalfunc.calculateAverageTime(data.pictos, 'duration')) / 5)
     }
-    songVar.Lyrics.push({time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0})
+    songVar.Lyrics.push({ time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0 })
     var video = document.querySelector(".videoplayer")
     if (false) {
         const hls = new Hls();
@@ -90,7 +90,7 @@ globalfunc.playSong = (cdn, data, pictoatlas) => {
     }
     video.play()
 
-    try { globalfunc.LyricsScroll(songVar.LyricsLine[offset.lyricsLine].text) } catch(err){}
+    try { globalfunc.LyricsScroll(songVar.LyricsLine[offset.lyricsLine].text) } catch (err) { }
     var loopUI = setInterval(function () {
         songVar.currentTime = Math.round(video.currentTime * 1000);
         document.querySelector(".currentTimeV").innerHTML = songVar.currentTime;
@@ -136,7 +136,7 @@ globalfunc.playSong = (cdn, data, pictoatlas) => {
                     }
                 } catch (err) { }
                 var isLineEnding = false
-                if(songVar.Lyrics[offset.lyrics].isLineEnding == 1)isLineEnding = true
+                if (songVar.Lyrics[offset.lyrics].isLineEnding == 1) isLineEnding = true
                 const isMore = songVar.Lyrics[offset.lyrics].isLineEnding == 1 && songVar.Lyrics[offset.lyrics + 1] && songVar.Lyrics[offset.lyrics].time >= songVar.Lyrics[offset.lyrics + 1].time;
                 document.querySelector(".currentLyricsV").innerHTML = songVar.Lyrics[offset.lyrics].text;
                 if (!isMore) globalfunc.LyricsFill(songVar.Lyrics[offset.lyrics].text, songVar.Lyrics[offset.lyrics].duration, 0, isLineEnding)
@@ -169,9 +169,9 @@ globalfunc.ShowPictos = (cdn, atlas, SlideDuration, DisappearDuration, size) => 
     image.onload = function () {
         context.drawImage(image, atlas[0] * -1, atlas[1] * -1, this.width, this.height);
     }
-    if(width[0] == width[1])pictos.style.animation = `PictosScrollSolo ${SlideDuration}ms linear`
+    if (width[0] == width[1]) pictos.style.animation = `PictosScrollSolo ${SlideDuration}ms linear`
     else pictos.style.animation = `PictosScroll ${SlideDuration}ms linear`
-    
+
 
     document.querySelector('#pictos').appendChild(pictos);
     setTimeout(function () {
@@ -200,19 +200,19 @@ globalfunc.LyricsScroll = (Next, isHide = false, timea) => {
     } catch (err) { }
     try {
         var current = document.querySelector("#lyrics .line.current")
-            current.classList.remove("current")
-            current.classList.add("previous")
+        current.classList.remove("current")
+        current.classList.add("previous")
     } catch (err) { }
     try {
         var next = document.querySelector("#lyrics .line.next")
         next.classList.remove("next")
         next.classList.add("current")
-        if(timeout.state){
+        if (timeout.state) {
             next.classList.remove("next")
             next.classList.add("current")
             next.classList.add("show")
             console.log(next.innerHTML + "Long")
-            setTimeout(function(){
+            setTimeout(function () {
                 next.classList.remove("show")
             }, timeout.hidetime)
         } else {
@@ -241,7 +241,7 @@ globalfunc.LyricsScroll = (Next, isHide = false, timea) => {
             div.classList.add("line");
             div.classList.add("next");
             div.classList.add("hidden")
-            if(timeout.state){
+            if (timeout.state) {
                 setTimeout(() => {
                     div.classList.remove("hidden")
                 }, timeout.timeshow)
@@ -270,7 +270,7 @@ globalfunc.LyricsFill = (dat, duration, offset, Hide = false) => {
             filler.style.width = '';
             filler.classList.add("filled")
             isWalking = false;
-            if(Hide){
+            if (Hide) {
                 current.classList.add('previous')
                 current.classList.remove('current')
             }
