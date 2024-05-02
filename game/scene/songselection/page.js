@@ -14,6 +14,7 @@ function initList(data) {
     data.forEach((item, index) => {
         let li = document.createElement("div");
         li.classList.add('itemsong')
+        li.classList.add('notranslate')
         li.classList.add(item.id)
         li.innerHTML = `<div class="song--decoration"><img loading="lazy" src="${item.assets.cover}"></img></div>
       <span class="song-title">${item.title}</span>`;
@@ -35,7 +36,7 @@ function initList(data) {
     document.querySelectorAll('.itemsong')[gamevar.selectedSong || 0].click()
 }
 if (gamevar.songdb == undefined || gamevar.refreshSongdb == true) {
-    fetch(fetchUrl, {cache: "no-cache"}).then(response => response.json()).then(data => {
+    fetch(fetchUrl, { cache: "no-cache" }).then(response => response.json()).then(data => {
         gamevar.songdb = data
         initList(data)
         gamevar.refreshSongdb = false
@@ -64,7 +65,7 @@ function setSelectedItem(cdn, list, offset) {
     videoplayer.src = ""
     try {
         document.querySelector("#banner").style.background = `center / 100% 100% url(${list.assets.banner})`
-        document.querySelector(".video").setAttribute('poster',list.assets.banner);
+        document.querySelector(".video").setAttribute('poster', list.assets.banner);
     }
     catch (e) {
         console.log(e)
@@ -87,7 +88,10 @@ function setSelectedItem(cdn, list, offset) {
         videoplayer.play()
     }
     videoplayer.onplay = function () {
-        $('.video--preview').animate({ volume: 0.6 }, 500)
+        $('.video--preview').stop(true, true).animate({ volume: 0.6 }, {
+            duration: 500,
+            queue: false
+        })
     };
     videoplayer.addEventListener('waiting', () => {
         document.querySelector('.video--preview-container .video-loading').style.display = "block"
@@ -107,7 +111,7 @@ function sing() {
         $('.itemsong.selected').addClass('choosed')
         setTimeout(function () {
             globalfunc.startTransition(true, 'scene/ingame/page.html', 'scene/ingame/page.js', 0)
-            $('.video--preview').animate({ volume: 0 }, 500);
+            $('.video--preview').stop(true, true).animate({ volume: 0 }, 500);
         }, 1000)
     }
 

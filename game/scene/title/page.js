@@ -7,7 +7,7 @@ if (savedInput) {
 
 function saveToLocalStorage() {
     const inputValue = document.querySelector('.songdb').value;
-    localStorage.setItem('songdb', inputValue);
+    localStorage.setItem('songdb', inputValue);;
 }
 
 function startGame() {

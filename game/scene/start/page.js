@@ -2,10 +2,11 @@ var warningtext = ""
 document.title = "KaraokePoe - Initializing";
 var clicked = false
 if (navigator.userAgent.includes('Electron')) {
-    loadAnotherHTML('scene/title/page.html', 'scene/title/page.js')
+    warningtext = "This game requires a song list from the user"
+    setTimeout(function(){loadAnotherHTML('scene/title/page.html', 'scene/title/page.js')}, 1000)
 } else {
     document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="assets/textures/ui/key_enter.webp"></img>:Start Game`;
-    warningtext = "Downloading all files and caching them, may take some time"
+    warningtext = "This game requires a song list from the user\nDownloading all files and caching them, may take some time"
     cacheFile()
 }
 document.querySelector('.txt-warning').innerHTML = warningtext
@@ -26,6 +27,19 @@ async function cacheFile() {
         const cached = { jquery, titlehtml, titlecss, songselectionhtml, songselectionjs }
         document.querySelector('.txt-wait').innerHTML = `Fetching Done!`
         document.querySelector('.button--initgame').classList.add('readya')
+        document.head.innerHTML = document.head.innerHTML + `
+        <link rel="preload" href="scene/start/page.js" as="script" />
+        <link rel="preload" href="scene/start/page.css" as="style" />
+        <link rel="preload" href="scene/start/page.html" as="html" />
+        <link rel="preload" href="scene/title/page.js" as="script" />
+        <link rel="preload" href="scene/title/page.css" as="style" />
+        <link rel="preload" href="scene/title/page.html" as="html" />
+        <link rel="preload" href="scene/songselection/page.js" as="script" />
+        <link rel="preload" href="scene/songselection/page.css" as="style" />
+        <link rel="preload" href="scene/songselection/page.html" as="html" />
+        <link rel="preload" href="scene/ingame/page.js" as="script" />
+        <link rel="preload" href="scene/ingame/page.css" as="style" />
+        <link rel="preload" href="scene/ingame/page.html" as="html" />`
     } catch (error) {
         console.error('Error fetching data:', error);
     }

@@ -97,12 +97,14 @@ body {
 }
 
 .sceneTransition.fadeIn {
-  animation: fadeIn .4s;
+  animation: fadeIn .4s ease-out;
+  -webkit-animation: fadeIn .4s ease-out;
 }
 
 .sceneTransition.fadeOut {
   opacity: 0;
-  animation: fadeOut .4s;
+  animation: fadeOut .2s ease-in;
+  -webkit-animation: fadeOut .2s ease-in;
 }
 
 @keyframes startTransition {
@@ -118,7 +120,7 @@ body {
 }
 
 @keyframes fadeIn {
-  0% {
+  0%, 30% {
     opacity: 0;
   }
 
