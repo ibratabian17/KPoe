@@ -66,6 +66,7 @@ function setSelectedItem(cdn, list, offset) {
     try {
         document.querySelector("#banner").style.background = `center / 100% 100% url(${list.assets.banner})`
         document.querySelector(".video").setAttribute('poster', list.assets.banner);
+        document.querySelector(".video--preview").setAttribute('poster', null);
     }
     catch (e) {
         console.log(e)
@@ -92,6 +93,7 @@ function setSelectedItem(cdn, list, offset) {
             duration: 500,
             queue: false
         })
+        document.querySelector(".video--preview").setAttribute('poster', list.assets.banner);
     };
     videoplayer.addEventListener('waiting', () => {
         document.querySelector('.video--preview-container .video-loading').style.display = "block"

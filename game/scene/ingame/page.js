@@ -228,7 +228,7 @@ playSong = (cdn, data) => {
                 offset.lyrics++;
             }
         } catch (err) { }
-    }, 5)
+    }, 1)
 }
 //Lyrics Area
 LyricsScroll = (Next, isHide = false, timea) => {
