@@ -39,7 +39,7 @@ generateLineLyrics = (data) => {
 
         if (textObj.isLineEnding === 1) {
             if (currentTime == 0) currentTime = textObj.time
-            currentText += `<span class="fill" offset="${i}">${textObj.text}<span class="filler" style="transition-duration:${textObj.duration}ms">${textObj.text}</span></span>`;
+            currentText += `<span class="fill" offset="${i}" style="transition-duration:${textObj.duration}ms">${textObj.text}</span>`;
             mergedTexts.push({ text: currentText, time: currentTime, offset: i, even });
             currentText = "";
             currentTime = 0;
@@ -48,7 +48,7 @@ generateLineLyrics = (data) => {
             if (currentTime === 0) {
                 currentTime = textObj.time;
             }
-            currentText += `<span class="fill" offset="${i}">${textObj.text}<span class="filler" style="transition-duration:${textObj.duration}ms">${textObj.text}</span></span>`;
+            currentText += `<span class="fill" offset="${i}" style="transition-duration:${textObj.duration}ms">${textObj.text}</span>`;
         }
     }
     console.log(mergedTexts)
@@ -149,10 +149,10 @@ playSong = (cdn, data) => {
         }
     });
     video.addEventListener("timeupdate", (event) => {
-        document.querySelector(".song-metadata .time").innerHTML = getVideoTime(video.currentTime, video.duration);
+        document.querySelector(".song-metadata .time").innerHTML = getVideoTime(video.currentTime - (songVar.startVideo / 1000), video.duration - (songVar.startVideo / 1000));
     });
     video.addEventListener("loadedmetadata", (event) => {
-        document.querySelector(".song-metadata .time").innerHTML = getVideoTime(video.currentTime, video.duration);
+        document.querySelector(".song-metadata .time").innerHTML = getVideoTime(video.currentTime - (songVar.startVideo / 1000), video.duration - (songVar.startVideo / 1000));
     });
     video.load()
     setTimeout(function () { video.play() }, 500)
@@ -167,7 +167,7 @@ playSong = (cdn, data) => {
     gamevar.isPaused = false
 
     try {
-        setTimeout(function () { LyricsScroll(songVar.LyricsLine[offset.lyricsLine]) }, (songVar.LyricsLine[offset.lyricsLine].time - 9000))
+        setTimeout(function () { LyricsScroll(songVar.LyricsLine[offset.lyricsLine]) }, (songVar.LyricsLine[offset.lyricsLine].time - 1000 - songVar.startVideo))
     } catch (err) {
         console.log(err)
     }
@@ -293,12 +293,12 @@ LyricsScroll = (Next, isHide = false, timea) => {
 LyricsFill = (dat, duration, offset, Hide = false) => {
     try {
         var current = document.querySelector("#lyrics .line.current")
-        var filler = current.querySelector(`#lyrics .line.current .fill[offset="${offset}"] .filler`)
+        var filler = current.querySelector(`#lyrics .line.current .fill[offset="${offset}"]`)
         const textNode = document.createTextNode(dat);
-        filler.parentNode.classList.add("filled")
+        filler.classList.add("filled")
         function ended(event) {
-            if (event.propertyName == 'width') {
-                filler.parentNode.classList.add("done")
+            if (event.propertyName == 'background-size') {
+                filler.classList.add("done")
                 isWalking = false;
                 if (Hide) {
                     setTimeout(() => {

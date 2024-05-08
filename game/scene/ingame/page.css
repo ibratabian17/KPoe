@@ -71,10 +71,11 @@
     z-index: 1;
     top: 0;
     left: 0;
-    text-shadow: 0.045em 0.045em 0.04em #00000070 !important;
+    filter: drop-shadow(.045em 0.045em 0.04em #00000070)!important;
     position: relative;
     will-change: width;
     float: left;
+    -webkit-filter: drop-shadow(.045em 0.045em 0.04em #00000070)!important;
 }
 
 #lyrics .line .fill {
@@ -98,11 +99,7 @@
     color: var(--menu-color, #fff);
     white-space: pre;
     transition-timing-function: ease;
-
-}
-
-#lyrics .line .fill.done {
-    color: var(--menu-color, #fff);
+    
 }
 
 #lyrics .line .fill.filled .filler {
@@ -112,11 +109,40 @@
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     text-align: initial;
+    display: none;
+}
+#lyrics .line .fill.filled {
+    background-image: linear-gradient(90deg, var(--menu-color) 100%, #ffffff00 100%);
+    background-size: 100% 100%;
+    transition: background-size linear 200ms;
+    -webkit-transition: background-size linear 200ms;
+    -moz-transition: background-size linear 200ms;
+    -ms-transition: background-size linear 200ms;
+    -o-transition: background-size linear 200ms;
+}
+#lyrics .line .fill:not(.filled) {
+    transition: background-color 200ms!important;
+    -webkit-transition: background-color 200ms!important;
+    -moz-transition: background-color 200ms!important;
+    -ms-transition: background-color 200ms!important;
+    -o-transition: background-color 200ms!important;
 }
 
+#lyrics .line .fill {
+    background-color: #888;
+    background-image: linear-gradient(90deg, var(--menu-color) 0%, #fff 0%);
+    background-size: 0% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-repeat: no-repeat;
+}
+#lyrics .line.current .fill,
+#lyrics .line.previous .fill {
+    background-color: #d9d9d9fa;
+}
 #lyrics .line.current,
 #lyrics .line.previous {
-    color: #d9d9d9fa;
     opacity: 1;
     z-index: 2;
     transform: translateY(-101%);
@@ -742,12 +768,12 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     will-change: transform;
 }
 
-#Game:has(.hud.even) .song-metadata.show .cover .image {
+#Game:has(.hud.even) .song-metadata .cover .image {
     animation: BeatCover .5s;
     -webkit-animation: BeatCover .5s;
 }
 
-#Game:has(.hud.odd) .song-metadata.show .cover .image {
+#Game:has(.hud.odd) .song-metadata .cover .image {
     animation: BeatCover2 .5s;
     -webkit-animation: BeatCover2 .5s;
 }
