@@ -71,11 +71,11 @@
     z-index: 1;
     top: 0;
     left: 0;
-    filter: drop-shadow(.045em 0.045em 0.04em #00000070)!important;
+    filter: drop-shadow(.045em 0.045em 0.02em #00000070)!important;
     position: relative;
     will-change: width;
     float: left;
-    -webkit-filter: drop-shadow(.045em 0.045em 0.04em #00000070)!important;
+    -webkit-filter: drop-shadow(.045em 0.045em 0.02em #00000070)!important;
 }
 
 #lyrics .line .fill {
