@@ -71,11 +71,11 @@
     z-index: 1;
     top: 0;
     left: 0;
-    filter: drop-shadow(.045em 0.045em 0.02em #00000070)!important;
+    filter: drop-shadow(.057em 0.057em 0.001em #00000070)!important;
     position: relative;
     will-change: width;
     float: left;
-    -webkit-filter: drop-shadow(.045em 0.045em 0.02em #00000070)!important;
+    -webkit-filter: drop-shadow(.057em 0.057em 0.001em #00000070)!important;
 }
 
 #lyrics .line .fill {
@@ -84,12 +84,14 @@
     white-space: pre;
     font-weight: normal;
 }
-
+#lyrics .line.rtl .fill{
+ background-position: right;
+}
 #lyrics .line .filler {
     width: 0;
     overflow: hidden;
-    transition: width;
-    will-change: width;
+    transition: width, left;
+    will-change: width, left;
     position: absolute;
     z-index: 1;
     top: 0;
@@ -99,7 +101,17 @@
     color: var(--menu-color, #fff);
     white-space: pre;
     transition-timing-function: ease;
-    
+    -webkit-transition: width, left;
+    -moz-transition: width, left;
+    -ms-transition: width, left;
+    -o-transition: width, left;
+}
+#lyrics .line.rtl .filler{
+    left: 100%;
+    float: right;
+    text-align: right;
+    position: absolute;
+    display: none; /*IDK HOW TO FIX THIS, SO SORRY*/
 }
 
 #lyrics .line .fill.filled .filler {
@@ -109,7 +121,8 @@
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     text-align: initial;
-    display: none;
+    z-index: -1;
+    left: 0;
 }
 #lyrics .line .fill.filled {
     background-image: linear-gradient(90deg, var(--menu-color) 100%, #ffffff00 100%);
@@ -136,6 +149,7 @@
     -webkit-background-clip: text;
     color: transparent;
     background-repeat: no-repeat;
+    will-change: background, background-size;
 }
 #lyrics .line.current .fill,
 #lyrics .line.previous .fill {
@@ -260,8 +274,8 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     width: 1.46em;
     left: -1.17em;
     bottom: 0;
-    -webkit-filter: drop-shadow(.16rem .16rem .15rem #2020209e);
-    filter: drop-shadow(.16rem .16rem .15rem #2020209e);
+    -webkit-filter: drop-shadow(.18em .18em .15rem #2020209e);
+    filter: drop-shadow(.18em .18em .15rem #2020209e);
     position: absolute;
     transform-origin: bottom;
 }

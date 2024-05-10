@@ -28,6 +28,14 @@ fetch(gamevar.selectedBase.json)
         globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
     })
 
+isRTL = (str) => {
+    // Define a regular expression to match RTL characters
+    const rtlChars = /[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\uFB50-\uFDFF\uFE70-\uFEFF\u2000-\u206F]/;
+
+    // Check if the string contains RTL characters
+    return rtlChars.test(str);
+}
+
 generateLineLyrics = (data) => {
     const mergedTexts = [];
     let currentText = "";
@@ -39,7 +47,11 @@ generateLineLyrics = (data) => {
 
         if (textObj.isLineEnding === 1) {
             if (currentTime == 0) currentTime = textObj.time
-            currentText += `<span class="fill" offset="${i}" style="transition-duration:${textObj.duration}ms">${textObj.text}</span>`;
+            if (!isRTL(textObj.text)) {
+                currentText += `<span class="fill" offset="${i}" style="transition-duration:${textObj.duration}ms">${textObj.text}<span class="filler" style="transition-duration:${textObj.duration}ms">${textObj.text}</span></span>`;
+            } else {
+                currentText = `<span class="fill" offset="${i}" style="transition-duration:${textObj.duration}ms">${textObj.text}<span class="filler" style="transition-duration:${textObj.duration}ms">${textObj.text}</span></span>` + currentText;
+            }
             mergedTexts.push({ text: currentText, time: currentTime, offset: i, even });
             currentText = "";
             currentTime = 0;
@@ -48,7 +60,11 @@ generateLineLyrics = (data) => {
             if (currentTime === 0) {
                 currentTime = textObj.time;
             }
-            currentText += `<span class="fill" offset="${i}" style="transition-duration:${textObj.duration}ms">${textObj.text}</span>`;
+            if (!isRTL(textObj.text)) {
+                currentText += `<span class="fill" offset="${i}" style="transition-duration:${textObj.duration}ms">${textObj.text}<span class="filler" style="transition-duration:${textObj.duration}ms">${textObj.text}</span></span>`;
+            } else {
+                currentText = `<span class="fill" offset="${i}" style="transition-duration:${textObj.duration}ms">${textObj.text}<span class="filler" style="transition-duration:${textObj.duration}ms">${textObj.text}</span></span>` + currentText;
+            }
         }
     }
     console.log(mergedTexts)
@@ -275,6 +291,9 @@ LyricsScroll = (Next, isHide = false, timea) => {
             catch (err) { }
             const div = document.createElement("div");
             div.innerHTML = Next.text;
+            if (isRTL(Next.text)) {
+                div.classList.add("rtl");
+            }
             div.classList.add("line");
             div.classList.add("next");
             div.classList.add("hidden")
