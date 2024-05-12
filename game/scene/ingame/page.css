@@ -110,13 +110,16 @@
     left: 100%;
     float: right;
     text-align: right;
-    position: absolute;
-    display: none; /*IDK HOW TO FIX THIS, SO SORRY*/
+    clear: right; /*IDK HOW TO FIX THIS, SO SORRY*/
+    direction: rtl;
+}
+#lyrics .line.rtl .fill{
+    direction: rtl;
 }
 
 #lyrics .line .fill.filled .filler {
     overflow: hidden;
-    width: 110%;
+    width: 100%;
     transition-timing-function: linear;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
