@@ -64,7 +64,7 @@ function setSelectedItem(cdn, list, offset) {
     songartist.innerHTML = list.artist
     videoplayer.src = ""
     try {
-        document.querySelector("#banner").style.background = `center / 100% 100% url(${list.assets.banner})`
+        document.querySelector("#banner").style.background = `center / cover url(${list.assets.banner})`
         document.querySelector(".video").setAttribute('poster', list.assets.banner);
         document.querySelector(".video--preview").setAttribute('poster', null);
     }

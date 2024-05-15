@@ -804,6 +804,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     animation: BeatCover2 .5s;
     -webkit-animation: BeatCover2 .5s;
 }
+
 .shortcut-ui {
     opacity: 0;
     transition: opacity 1.5s, background .3s;
@@ -811,8 +812,8 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     -moz-transition: opacity 1.5s, background .3s;
     -ms-transition: opacity 1.5s, background .3s;
     -o-transition: opacity 1.5s, background .3s;
-  }
-  
+}
+
 .shortcut-ui:hover {
     opacity: 1;
     transition: opacity .3s, background .3s;
@@ -820,7 +821,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     -moz-transition: opacity .3s, background .3s;
     -ms-transition: opacity .3s, background .3s;
     -o-transition: opacity .3s, background .3s;
-  }
+}
 
 
 #Game:has(.video.hove) .shortcut-ui,
@@ -833,10 +834,23 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     -o-transition: opacity .3s, background .3s;
 }
 
-.video{
+@media (pointer:coarse) {
+    #Game .shortcut-ui {
+        transform: scale(1.2) translateX(-1.08em) translateY(-1.08em);
+        -webkit-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em);
+        -moz-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em);
+        -ms-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em);
+        -o-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em);
+    }
+}
+
+
+
+.video {
     cursor: none;
 }
-.video.hove{
+
+.video.hove {
     cursor: default;
 }
 

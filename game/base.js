@@ -97,7 +97,7 @@ function onPlayerClick() {
 }
 
 document.querySelector(".video").addEventListener('mousemove', showControls);
-document.querySelector(".video").addEventListener('click', onPlayerClick);
+document.querySelector(".video").addEventListener('click', showControls);
 
 function loadJS(path) {
   const oldScene = document.querySelector(".CurrentScene");
@@ -243,6 +243,7 @@ function toggleFullScreen() {
     document.exitFullscreen();
   }
 }
+
 
 globalfunc.printlog = (text) => {
   console.log(text)

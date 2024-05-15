@@ -212,7 +212,15 @@ body {
   -ms-transition: opacity .3s, background .3s;
   -o-transition: opacity .3s, background .3s;
 }
-
+@media (pointer:coarse) {
+  #Game .shortcut-ui {
+      transform: scale(1.1);
+      -webkit-transform: scale(1.1);
+      -moz-transform: scale(1.1);
+      -ms-transform: scale(1.1);
+      -o-transform: scale(1.1);
+}
+}
 
 .shortcut-ui .button {
   width: 2.2em;

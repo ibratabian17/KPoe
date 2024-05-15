@@ -20,6 +20,7 @@ html:focus-within {
     transition: background 0.5s;
     will-change: background;
     opacity: 0.2;
+    background-size: cover;
 }
 
 .video--preview-container {
