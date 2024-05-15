@@ -4,14 +4,14 @@ const gamevar = {
   disableAspectRatio: false
 }
 const globalfunc = {}
-
+let jsonplayer;
 var elem = document.documentElement;
 
 function isDeviceMobile() {
   const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
   return regex.test(navigator.userAgent);
 }
-if(isDeviceMobile()){
+if (isDeviceMobile()) {
   gamevar.disableAspectRatio = true
 }
 
@@ -42,6 +42,7 @@ function loadAnotherHTML(path, jspath) {
   fetch(path)
     .then(response => response.text())
     .then(html => {
+      document.querySelector('body').setAttribute('currentScene', path.split('/')[1])
       document.getElementById('sceneDraw').innerHTML = html;
     })
     .then(() => {
@@ -52,6 +53,22 @@ function loadAnotherHTML(path, jspath) {
       console.log('Error loading HTML:', error);
     });
 }
+
+let hideTimeout;
+function showControls() {
+  document.querySelector(".video").classList.add('hove');
+  clearTimeout(hideTimeout);
+  hideTimeout = setTimeout(hideControls, 3000);
+  console.log('a')
+}
+
+function hideControls() {
+  document.querySelector(".video").classList.remove('hove');
+}
+
+document.querySelector(".video").addEventListener('mousemove', showControls);
+document.querySelector(".video").addEventListener('click', showControls);
+
 function loadJS(path) {
   const oldScene = document.querySelector(".CurrentScene");
   if (oldScene) oldScene.remove()
@@ -139,6 +156,10 @@ globalfunc.playSfx = async (start, end, volume = 1) => {
   }
 };
 
+function pressBack() {
+  console.log('done')
+  keytask.ESC(event)
+}
 
 globalfunc.startTransition = (changeScene = false, htmlPath, jsPath, scrollTime = 1) => {
   const transitionScene = document.querySelector('.sceneTransition');
@@ -158,6 +179,30 @@ globalfunc.startTransition = (changeScene = false, htmlPath, jsPath, scrollTime 
   }, 500)
 }
 
+
+function detectFullscreen() {
+  console.log('screen rezi')
+  if (document.fullscreenElement || document.mozFullScreenElement ||
+    document.webkitFullscreenElement || document.msFullscreenElement) {
+    console.log('activ')
+    document.querySelector('.shortcut-ui .button.fullscreen').classList.remove('active')
+  } else {
+    console.log('not')
+    document.querySelector('.shortcut-ui .button.fullscreen').classList.add('active')
+
+  }
+
+}
+
+function toggleFullScreen() {
+  if (!(document.fullscreenElement || document.mozFullScreenElement ||
+    document.webkitFullscreenElement || document.msFullscreenElement)) {
+    document.documentElement.requestFullscreen();
+  } else if (document.exitFullscreen) {
+    document.exitFullscreen();
+  }
+}
+
 globalfunc.printlog = (text) => {
   console.log(text)
   return text
@@ -170,6 +215,7 @@ globalfunc.getFileText = (url) => {
 }
 
 window.addEventListener("resize", adjustGameDimensions);
+window.addEventListener("resize", detectFullscreen);
 adjustGameDimensions()
 loadAnotherHTML('scene/start/page.html', 'scene/start/page.js')
 

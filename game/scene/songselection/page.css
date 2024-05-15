@@ -281,6 +281,10 @@ html:focus-within {
     -o-transition: all .2s;
 }
 
+.shortcut-ui {
+    background-color: #00000000;
+  }
+
 @-webkit-keyframes selectedbounce {
 
     0%,

@@ -177,7 +177,7 @@ playSong = (cdn, data) => {
         if (video.src !== "" || video.src == undefined || video.src == null) {
             alert('Can\'t Play this maps, reason: ' + evt.toString());
             globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
-            clearInterval(loopUI)
+            jsonplayer = clearInterval(jsonplayer)
         }
     };
     gamevar.isPaused = false
@@ -187,7 +187,7 @@ playSong = (cdn, data) => {
     } catch (err) {
         console.log(err)
     }
-    var loopUI = setInterval(function () {
+    jsonplayer = setInterval(function () {
         songVar.currentTime = Math.round(video.currentTime * 1000);
         songVar.duration = Math.round(video.duration * 1000);
         document.querySelector(".currentTimeV").innerHTML = songVar.currentTime;
@@ -220,7 +220,7 @@ playSong = (cdn, data) => {
                 video.removeAttribute('src')
                 video.load()
                 globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
-                clearInterval(loopUI)
+                jsonplayer = clearInterval(jsonplayer)
                 document.querySelector('.metadata-layout').classList.remove('playing')
                 return
             }
@@ -251,7 +251,7 @@ LyricsScroll = (Next, isHide = false, timea) => {
     var timeout = {
         state: timea > 6000,
         timeshow: timea - 1000,
-        hidetime: 2500
+        hidetime: 1000
     }
     var lyrics = document.querySelector("#lyrics")
 
