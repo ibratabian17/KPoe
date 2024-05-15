@@ -205,6 +205,7 @@ html:focus-within {
 }
 
 .itemsong.selected {
+    scroll-margin-left: 1.4em;
     scroll-snap-align: start;
     scroll-behavior: smooth;
 }

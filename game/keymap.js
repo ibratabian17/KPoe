@@ -131,7 +131,11 @@ function keymap(event) {
         keytask.ESC(event)
     }
 }
-document.addEventListener('keydown', keymap);
+setTimeout(function () {
+    document.addEventListener('keydown', keymap);
+    console.log('Keyboard Keymapping Initialized')
+}, 200)
+
 
 // Check for gamepad support
 if (navigator.getGamepads) {
@@ -186,9 +190,6 @@ function handleGamepadInput(gamepad) {
 
 
 function getState() {
-    const image = document.querySelector(".CurrentScene");
-    const src = image.getAttribute('src');
-    const pathParts = src.split('/');
-    const lastPath = pathParts[pathParts.length - 2];
+    const lastPath = document.querySelector('body').getAttribute('currentscene');
     return lastPath
 }

@@ -1,3 +1,5 @@
+var cachedScene = {};
+var blobJS = {};
 var bkg_audio = document.getElementById("bkg_audio");
 const gamevar = {
   isPaused: false,
@@ -24,6 +26,9 @@ function openFullscreen() {
   } else if (elem.msRequestFullscreen) { /* IE11 */
     elem.msRequestFullscreen();
   }
+  screen.orientation.lock("landscape-primary").catch(e => {
+    console.log("This Device Doesn't Supported Yet");
+  })
 }
 
 /* Close fullscreen */
@@ -39,19 +44,36 @@ function closeFullscreen() {
 
 // Function to load the 'load.html' file and apply it dynamically
 function loadAnotherHTML(path, jspath) {
-  fetch(path)
-    .then(response => response.text())
-    .then(html => {
+  if (Object.keys(cachedScene).includes(path)) {
+    var html = cachedScene[path]
+    const loadHTML = myPromise = new Promise((resolve, reject) => {
       document.querySelector('body').setAttribute('currentScene', path.split('/')[1])
       document.getElementById('sceneDraw').innerHTML = html;
-    })
-    .then(() => {
+      setTimeout(function () { resolve('a') }, 100)
+    });
+
+    loadHTML.then(() => {
 
       if (jspath) loadJS(jspath)
     })
-    .catch(error => {
-      console.log('Error loading HTML:', error);
-    });
+      .catch(error => {
+        console.log('Error loading HTML:', error);
+      })
+  } else {
+    fetch(path)
+      .then(response => response.text())
+      .then(html => {
+        document.querySelector('body').setAttribute('currentScene', path.split('/')[1])
+        document.getElementById('sceneDraw').innerHTML = html;
+      })
+      .then(() => {
+
+        if (jspath) loadJS(jspath)
+      })
+      .catch(error => {
+        console.log('Error loading HTML:', error);
+      });
+  }
 }
 
 let hideTimeout;
@@ -59,23 +81,43 @@ function showControls() {
   document.querySelector(".video").classList.add('hove');
   clearTimeout(hideTimeout);
   hideTimeout = setTimeout(hideControls, 3000);
-  console.log('a')
 }
 
 function hideControls() {
   document.querySelector(".video").classList.remove('hove');
 }
 
+function onPlayerClick() {
+  if (document.querySelector(".video").classList.contains('hove')) {
+    clearTimeout(hideTimeout);
+    hideControls()
+  } else {
+    showControls()
+  }
+}
+
 document.querySelector(".video").addEventListener('mousemove', showControls);
-document.querySelector(".video").addEventListener('click', showControls);
+document.querySelector(".video").addEventListener('click', onPlayerClick);
 
 function loadJS(path) {
   const oldScene = document.querySelector(".CurrentScene");
   if (oldScene) oldScene.remove()
   const scripts = document.createElement("script");
   scripts.classList.add("CurrentScene")
-  scripts.src = path;
-  document.body.appendChild(scripts);
+  const isCached = Object.keys(cachedScene).includes(path)
+  if (isCached) {
+    const anu = new Blob([cachedScene[path]], {
+      type: "text/javascript",
+  })
+    const u = URL.createObjectURL(anu);
+    scripts.src = u;
+    document.body.appendChild(scripts);
+    URL.revokeObjectURL(u);
+  } else {
+    document.body.appendChild(scripts);
+    scripts.src = path;
+  }
+
 }
 function setAudiobkgVol(po) {
   var vid = document.getElementById("bkg_audio");
@@ -157,7 +199,6 @@ globalfunc.playSfx = async (start, end, volume = 1) => {
 };
 
 function pressBack() {
-  console.log('done')
   keytask.ESC(event)
 }
 
@@ -181,13 +222,10 @@ globalfunc.startTransition = (changeScene = false, htmlPath, jsPath, scrollTime 
 
 
 function detectFullscreen() {
-  console.log('screen rezi')
   if (document.fullscreenElement || document.mozFullScreenElement ||
     document.webkitFullscreenElement || document.msFullscreenElement) {
-    console.log('activ')
     document.querySelector('.shortcut-ui .button.fullscreen').classList.remove('active')
   } else {
-    console.log('not')
     document.querySelector('.shortcut-ui .button.fullscreen').classList.add('active')
 
   }
@@ -198,6 +236,9 @@ function toggleFullScreen() {
   if (!(document.fullscreenElement || document.mozFullScreenElement ||
     document.webkitFullscreenElement || document.msFullscreenElement)) {
     document.documentElement.requestFullscreen();
+    screen.orientation.lock("landscape-primary").catch(e => {
+      console.log("This Device Doesn't Supported Yet");
+    })
   } else if (document.exitFullscreen) {
     document.exitFullscreen();
   }
