@@ -65,8 +65,8 @@ function setSelectedItem(cdn, list, offset) {
     videoplayer.src = ""
     try {
         document.querySelector("#banner").style.background = `center / cover url(${list.assets.banner})`
-        document.querySelector(".video").setAttribute('poster', list.assets.banner);
-        document.querySelector(".video--preview").setAttribute('poster', null);
+        document.querySelector("#video-banner").style.background = `center / cover url(${list.assets.banner})`
+        document.querySelector(".video--preview").removeAttribute('poster');
     }
     catch (e) {
         console.log(e)

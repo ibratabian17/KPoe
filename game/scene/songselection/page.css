@@ -17,10 +17,14 @@ html:focus-within {
     position: absolute;
     overflow: hidden;
     background: #000000;
-    transition: background 0.5s;
+    transition: background 0.5s, background-size 0s;
     will-change: background;
     opacity: 0.2;
     background-size: cover;
+    -webkit-transition: background 0.5s, background-size 0s;
+    -moz-transition: background 0.5s, background-size 0s;
+    -ms-transition: background 0.5s, background-size 0s;
+    -o-transition: background 0.5s, background-size 0s;
 }
 
 .video--preview-container {
@@ -44,7 +48,7 @@ html:focus-within {
     height: 0.4em;
     position: absolute;
     z-index: 22;
-    top: 2.77em;
+    bottom: 0.27em;
     left: 3.3em;
     background: #601acf;
     border: none !important;
@@ -76,8 +80,8 @@ html:focus-within {
 .song--details {
     font-size: 0.25em;
     color: #fff;
-    top: 60%;
-    left: 47%;
+    bottom: 3.1em;
+    left: 19.5em;
     position: absolute;
     overflow: hidden;
 }

@@ -7,6 +7,7 @@ document.querySelector(".song-metadata .title").innerText = 'Loading Song Data.'
 document.querySelector(".song-metadata .artist").innerText = 'Please Wait...'
 document.querySelector(".song-metadata .time").innerText = ''
 document.querySelector(".song-metadata .cover .image").style.backgroundImage = `url(${gamevar.selectedBase.assets.cover})`
+document.querySelector('.video').classList.add('showbanner')
 fetch(gamevar.selectedBase.json)
     .then(response => response.text()).then(jsona => {
         var data;
@@ -169,6 +170,11 @@ playSong = (cdn, data) => {
     });
     video.addEventListener("loadedmetadata", (event) => {
         document.querySelector(".song-metadata .time").innerHTML = getVideoTime(video.currentTime - (songVar.startVideo / 1000), video.duration - (songVar.startVideo / 1000));
+        if (video.videoWidth == 0) {
+            document.querySelector('.video').classList.add('showbanner')
+        } else {
+            document.querySelector('.video').classList.remove('showbanner')
+        }
     });
     video.load()
     setTimeout(function () { video.play() }, 500)
@@ -315,20 +321,19 @@ LyricsFill = (dat, duration, offset, Hide = false) => {
         var filler = current.querySelector(`#lyrics .line.current .fill[offset="${offset}"]`)
         const textNode = document.createTextNode(dat);
         filler.classList.add("filled")
-        function ended(event) {
-            if (event.propertyName == 'background-size') {
-                filler.classList.add("done")
-                isWalking = false;
-                if (Hide) {
-                    setTimeout(() => {
-                        current.classList.add('previous')
-                        current.classList.remove('current')
-                    }, 2000)
+        function ended() {
+            filler.classList.add("done")
+            isWalking = false;
+            if (Hide) {
+                setTimeout(() => {
+                    current.classList.add('previous')
+                    current.classList.remove('current')
+                }, 2000)
 
-                }
+
             }
         }
-        filler.addEventListener('transitionend', ended);
+        setTimeout(ended, filler.style.transitionDuration.replace('ms', ''))
         isWalking = true;
     } catch (err) {
         console.log(dat + err)
