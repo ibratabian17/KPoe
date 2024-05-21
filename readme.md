@@ -1,31 +1,50 @@
 # KaraokePoe
 
-KaraokePoe is a work-in-progress karaoke player, built using the Electron framework. This project aims to make an free karaoke (not including songlist) (you could get that in repository) and also, this files uses same format with Just Dance Now files.
+KaraokePoe is a work-in-progress karaoke player (counted as game), built using the Electron framework. This project aims to create a free karaoke application (excluding song list).
 
-## Screenshots
-<img src="https://github.com/ibratabian17/KPoe/assets/71920907/b551132d-fb31-4e35-877d-7a0d0166f040" width=50% height=50%>
-<img src="https://github.com/ibratabian17/KPoe/assets/71920907/ee1eeda9-0249-4a81-908d-9b210f985526" width=50% height=50%>
+## How to Use
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ibratabian17/KPoe.git
+   ```
+
+2. Install dependencies:
+   ```bash
+   cd KPoe
+   npm install
+   ```
+
+3. Start the application:
+   ```bash
+   npm start
+   ```
 
 ## Features (Work in Progress)
 
-### Working Karaoke System
-The Karaoke system are working fine and use scroll system
+- Working Lyrics System
+- Easy to Use for Song Makers
+- Gamepad Support (Button Only)
+- Video & Audio Support
+- Custom Lyrics Styles:
+  - `"normal"`: 2-line scrolling system
+  - `"apple"`: Apple Music-like style
+  - `"two-line"`: 2 lines located on the left and right
+  - `"one-line"`: Displays only 1 line with fade
+- Mobile Friendly
 
-## Getting Started
-To get started with Lilypad, follow the steps below:
+## Notes
 
-1. Clone the repository: `git clone https://github.com/ibratabian17/KPoe.git`
-2. Install dependencies: `cd lilypad && npm install`
-3. Start the application: `npm start`
-
-Please note that since Lilypad is still a work in progress, there might be some incomplete or missing features. Development is ongoing, and updates will be made to improve the overall functionality of the application.
-
-### Repository
-Currently we have not created a forum to provide a repository, but you can create a new one using the example files that we provide
-Example Songdb: [songdb.json](https://droid2.prjktla.workers.dev/KPoe/songdb.json)
-
-## Contributing
-Contributions to Lilypad are welcome! If you have any ideas, suggestions, or would like to contribute to the project, please feel free to open an issue or submit a pull request on the GitHub repository.
+- The song list is not included in this application. You can add your own songs as needed.
+- The lyrics format used is similar to Just Dance Now but has been modified to fit this application.
+- You can use [KpoeTools](https://github.com/ibratabian17/KPoeTools) to convert eLRC or Apple's TTML into KPoe Format
+- Or you can use [Kmake](https://github.com/ecnivtwelve/kmake/) by [ecnivtwelve](https://github.com/ecnivtwelve)
 
 ## License
-Lilypad is released under the [MIT License](https://opensource.org/licenses/MIT). Feel free to modify and distribute the code according to the terms of the license.
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Example Files:
+
+- Songdb: [songdb-example.json](https://ibratabian17.prjktla.workers.dev/songdb-example.json)
+- LyricsData: [Magnetic.json](https://ibratabian17.prjktla.workers.dev/Maps/Magnetic/Magnetic.json)

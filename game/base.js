@@ -46,7 +46,7 @@ function closeFullscreen() {
 function loadAnotherHTML(path, jspath) {
   if (Object.keys(cachedScene).includes(path)) {
     var html = cachedScene[path]
-    const loadHTML = myPromise = new Promise((resolve, reject) => {
+    const loadHTML = new Promise((resolve, reject) => {
       document.querySelector('body').setAttribute('currentScene', path.split('/')[1])
       document.getElementById('sceneDraw').innerHTML = html;
       setTimeout(function () { resolve('a') }, 100)

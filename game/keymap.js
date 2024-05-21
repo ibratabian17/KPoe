@@ -102,7 +102,7 @@ var keytask = {
                     document.querySelector('.video').pause();
                     document.querySelector('#pausescreen').style.display = 'block'
                     document.querySelector('#pausescreen').style.opacity = 1;
-                    document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="assets/textures/ui/key_enter.webp"></img>: Confirm`;
+                    document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> Confirm  <img class="key_textures" src="${getPlatformKey("BACK")}"></img> Back`;
                 }
                 gamevar.isPaused = !gamevar.isPaused
                 setTimeout(() => {
@@ -192,4 +192,22 @@ function handleGamepadInput(gamepad) {
 function getState() {
     const lastPath = document.querySelector('body').getAttribute('currentscene');
     return lastPath
+}
+
+function getPlatformKey(key = "VALIDATE") {
+    var keyTexture;
+    if (!gamevar.isGamepad) {
+        keyTexture = {
+            "VALIDATE": "assets/textures/ui/key_enter.webp",
+            "BACK": "assets/textures/ui/key_esc.webp",
+            "REFRESH": "assets/textures/ui/key_f1.webp"
+        }
+    } else {
+        keyTexture = {
+            "VALIDATE": "assets/textures/ui/key_a.webp",
+            "BACK": "assets/textures/ui/key_b.webp",
+            "REFRESH": "assets/textures/ui/key_y.webp"
+        }
+    }
+    return keyTexture[key]
 }

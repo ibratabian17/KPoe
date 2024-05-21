@@ -240,15 +240,19 @@ playSong = (cdn, data) => {
             }
         } catch (err) { }
         try {
-            if ((songVar.Lyrics[offset.lyrics].time - songVar.gameOffset) < songVar.currentTime) {
-
-                var isLineEnding = false
-                if (songVar.Lyrics[offset.lyrics].isLineEnding == 1) isLineEnding = true
-                const isMore = songVar.Lyrics[offset.lyrics].isLineEnding == 1 && songVar.Lyrics[offset.lyrics + 1] && songVar.Lyrics[offset.lyrics].time >= songVar.Lyrics[offset.lyrics + 1].time;
-                document.querySelector(".currentLyricsV").innerHTML = songVar.Lyrics[offset.lyrics].text;
-                if (!isMore) LyricsFill(songVar.Lyrics[offset.lyrics].text, songVar.Lyrics[offset.lyrics].duration, offset.lyrics, isLineEnding)
-                offset.lyrics++;
-            }
+            songVar.Lyrics.forEach((lyric, index) => {
+                if (((offset.lyrics < index) || (offset.lyrics == index) ) && (lyric.time - songVar.gameOffset) < songVar.currentTime) {
+                    let isLineEnding = lyric.isLineEnding === 1;
+                    const isMore = lyric.isLineEnding === 1 && songVar.Lyrics[index + 1] && lyric.time >= songVar.Lyrics[index + 1].time;
+        
+                    document.querySelector(".currentLyricsV").innerHTML = lyric.text;
+                    if (!isMore) {
+                        LyricsFill(lyric.text, lyric.duration, index, isLineEnding);
+                    }
+                    
+                    if(offset.lyrics > index || offset.lyrics == index)offset.lyrics++;
+                }
+            });
         } catch (err) { }
     }, 1)
 }
@@ -256,7 +260,7 @@ playSong = (cdn, data) => {
 LyricsScroll = (Next, isHide = false, timea) => {
     var timeout = {
         state: timea > 6000,
-        timeshow: timea - 1000,
+        timeshow: timea - 500,
         hidetime: 1000
     }
     var lyrics = document.querySelector("#lyrics")

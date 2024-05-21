@@ -5,7 +5,7 @@ if (navigator.userAgent.includes('Electron')) {
     warningtext = "This game requires a song list from the user"
     setTimeout(function () { loadAnotherHTML('scene/title/page.html', 'scene/title/page.js') }, 1000)
 } else {
-    document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="assets/textures/ui/key_enter.webp"></img>:Start Game`;
+    document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> Start Game`;
     warningtext = "This game requires a song list from the user\nDownloading all files and caching them, may take some time"
     cacheFile()
 }

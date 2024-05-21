@@ -5,7 +5,7 @@ var fetchUrl = "/songdb.json"
 if (songdb) {
     fetchUrl = songdb;
 }
-document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="assets/textures/ui/key_enter.webp"></img>:Sing <img class="key_textures" src="assets/textures/ui/key_f1.webp"></img>:Refresh Songlist <img class="key_textures" src="assets/textures/ui/key_esc.webp"></img>: Back`;
+document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> Sing  <img class="key_textures" src="${getPlatformKey("REFRESH")}"></img> Refresh Songlist  <img class="key_textures" src="${getPlatformKey("BACK")}"></img> Back`;
 document.querySelector('.song-metadata').classList.add('show')
 
 function initList(data) {
