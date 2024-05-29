@@ -252,6 +252,7 @@ html:focus-within {
     object-fit: cover;
     overflow: hidden;
     background-color: #00000073;
+    transform: scale(0.95);
 }
 
 .itemsong .song--decoration::after {
@@ -275,6 +276,10 @@ html:focus-within {
     -webkit-animation: selectedbounce 1s;
     animation: selectedbounce 1s;
     border: 0.03em solid #0eaedf;
+}
+.itemsong.choosed img{
+    transition: transform .2s;
+    transform: scale(1);
 }
 
 .itemsong.selected .song--decoration::after {

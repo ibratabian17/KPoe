@@ -9,6 +9,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <script src="library/jquery.min.js"></script>
   <script src="library/hls.js"></script>
+  <link rel="manifest" href="kpoe.webmanifest">
+  <meta property="og:title" content="KaraokePoe" />
+  <meta property="og:description"
+    content="Portable Karaoke game that can be run in a browser." />
+  <meta property="og:site_name" content="KPoe" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ibratabian17.github.io/KPoe" />
+  <meta property="og:image" content="assets/metadata/banner.jpg" />
 </head>
 
 <body>
@@ -37,6 +45,7 @@
       <span class="shortcut"></span>
       <div class="shortcut-ui">
         <div class="button back" onclick="pressBack()"></div>
+        <div class="button settings" onclick="toggleSettings()"></div>
         <div class="button fullscreen" onclick="toggleFullScreen()"></div>
       </div>
     </div>

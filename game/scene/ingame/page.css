@@ -84,7 +84,6 @@
     position: relative;
     will-change: width;
     float: left;
-    -webkit-filter: drop-shadow(.057em 0.057em 0.001em #00000070) !important;
 }
 
 #lyrics .line .fill {
@@ -281,92 +280,6 @@
     transition: none !important;
     -webkit-animation: none !important;
     animation: none !important;
-}
-
-
-#lyrics.apple {
-    font-family: "SF Pro Display", "Font1", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-weight: bold !important;
-}
-
-#lyrics.apple #beat {
-    display: none !important;
-}
-
-#lyrics.apple .line .fill {
-    background-color: #ffffff72;
-    background-image: linear-gradient(90deg, var(--menu-color) 60%, #0000 100%);
-    background-size: 200% 100%;
-    background-position: 200% 0%;
-    font-weight: bold !important;
-}
-
-#lyrics.apple .line.rtl .fill {
-    background-color: #ffffff72;
-    background-image: linear-gradient(-90deg, var(--menu-color) 60%, #0000 100%);
-    background-size: 200% 100%;
-    background-position: -100% 0%;
-    font-weight: bold !important;
-}
-
-#lyrics.apple .line.rtl .fill.filled {
-    background-image: linear-gradient(-90deg, var(--menu-color) 60%, #0000 100%);
-    background-size: 200% 100%;
-    background-position: 100% 0%;
-}
-
-#lyrics.apple .line .fill.filled {
-    background-image: linear-gradient(90deg, var(--menu-color) 60%, #0000 100%);
-    background-size: 200% 100%;
-    background-position: 0% 0%;
-    transition: background-position linear 200ms, filter 3s .6s;
-    animation: appleFocused 5s;
-    -webkit-animation: appleFocused 5s;
-    filter: drop-shadow(0 0 0.15em rgb(255, 255, 255)) drop-shadow(0 0 0.18em rgba(244, 245, 174, 0.63));
-    transform: translateY(-5%)
-}
-
-#lyrics.apple .line .fill.filled.done {
-    filter: none;
-    -webkit-filter: none;
-    transition: filter .3s .3s;
-}
-
-#lyrics.apple .line .fill.filled .filler {
-    display: none;
-}
-
-#lyrics.apple .line.previous {
-    transition: .6s 1s opacity, .2s .01s transform !important;
-    opacity: 0;
-    transform: translateY(-231%) scale(0.95);
-}
-
-#lyrics.apple .line.previous .fill {
-    background-size: 0% 0%;
-    animation: AppleFakeHide 1s;
-}
-
-@keyframes appleFocused {
-    0% {
-        transform: translateY(0%);
-
-    }
-
-    20%,
-    100% {
-        transform: translateY(-5%);
-    }
-}
-
-@keyframes AppleFakeHide {
-    0% {
-        background-color: var(--menu-color);
-    }
-
-    100% {
-        background-color: #ffffff72;
-    }
 }
 
 html:not(.ipad) .hud.beat>#lyrics>#beat {
@@ -589,7 +502,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     }
 }
 
-@-webkit-keyframes nextLineInf {
+@keyframes nextLineInf {
 
     0%,
     20% {
@@ -607,7 +520,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     }
 }
 
-@keyframes nextLineInf {
+@keyframes nextLineInfApple {
 
     0%,
     20% {
@@ -615,13 +528,15 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
         transform: perspective(0px) translateY(1.5em) rotateX(0deg)scale(0.8);
     }
 
-    40% {
+    60% {
         opacity: 1;
+        filter: blur(0.12em);
     }
 
     100% {
         opacity: 1;
         transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9);
+        filter: blur(0.06em);
     }
 }
 
@@ -662,7 +577,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     display: none;
     z-index: 2;
     position: absolute;
-    background-color: #212121de;
+    background-color: #111111de;
     color: #fff;
     -webkit-animation: FadeIn .5s;
     animation: FadeIn .5s;

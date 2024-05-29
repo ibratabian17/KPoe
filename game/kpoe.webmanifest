@@ -1,0 +1,18 @@
+{
+    "short_name": "KPoe",
+    "name": "KaraokePoe",
+    "icons": [
+      {
+        "src": "assets/textures/ui/JD_Series.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "id": "/?source=pwa",
+    "start_url": "/?source=pwa",
+    "background_color": "#111111",
+    "display": "standalone",
+    "display_override": ["window-controls-overlay"],
+    "scope": "/",
+    "theme_color": "#111111"
+  }

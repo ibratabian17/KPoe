@@ -244,6 +244,10 @@ body {
 .shortcut-ui .button.back {
   background-image: url(assets/textures/ui/ic_back.webp);
 }
+.shortcut-ui .button.settings {
+  background-image: url(assets/textures/ui/ic_settings.webp);
+  display: none;
+}
 
 
 #video-banner {
