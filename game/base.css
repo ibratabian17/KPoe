@@ -24,6 +24,7 @@ body {
 
 #sceneDraw {
   z-index: 16;
+  visibility: hidden;
 }
 
 body {

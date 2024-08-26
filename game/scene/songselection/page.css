@@ -1,3 +1,9 @@
+/*DO NOT REMOVE*/
+#sceneDraw {
+    visibility: visible;
+  }
+/*======*/
+
 /*Preview*/
 html:focus-within {
     scroll-behavior: smooth;

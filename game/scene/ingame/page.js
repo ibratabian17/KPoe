@@ -3,41 +3,55 @@ var selectedPause = 1
 var songDebugger;
 var instrument;
 var isVocalEnabled = false
-document.querySelector(".overlay-hi .shortcut").innerHTML = ``;
-document.querySelector(".song-metadata .title").innerText = 'Loading Song Data.'
-document.querySelector(".song-metadata .artist").innerText = 'Please Wait...'
-document.querySelector(".song-metadata .time").innerText = ''
-document.querySelector(".song-metadata .cover .image").style.backgroundImage = `url(${gamevar.selectedBase.assets.cover})`
-document.querySelector('.video').classList.add('showbanner')
-fetch(gamevar.selectedBase.json)
-    .then(response => response.text()).then(jsona => {
-        var data;
-        try {
-            data = JSON.parse(jsona)
-        } catch (err) {
-            var a = jsona.substring(0 + 1, jsona.length - 1)
-            a = a.substring(0, a.length - 2)
-            console.log(a)
-            data = JSON.parse(a)
-        }
-        document.title = `KaraokePoe - Playing: ${gamevar.selectedBase.title} by ${gamevar.selectedBase.artist}`;
-        document.querySelector(".song-metadata .title").innerText = gamevar.selectedBase.title
-        document.querySelector(".song-metadata .artist").innerText = gamevar.selectedBase.artist
-        playSong("a", data)
+updateLoadingState = () => {
+    document.querySelector(".overlay-hi .shortcut").innerHTML = '';
+    document.querySelector(".song-metadata .title").innerText = 'Loading Song Data.';
+    document.querySelector(".song-metadata .artist").innerText = 'Please Wait...';
+    document.querySelector(".song-metadata .time").innerText = '';
+    document.querySelector(".song-metadata .cover .image").style.backgroundImage = `url(${gamevar.selectedBase.assets.cover})`;
+    document.querySelector('.video').classList.add('showbanner');
+};
 
-    }).catch((error) => {
-        alert('Failed to load map data, reason: ' + error)
-        globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
-    })
+// Update the UI with the loaded song data
+updateSongMetadata = (title, artist) => {
+    document.title = `KaraokePoe - Playing: ${title} by ${artist}`;
+    document.querySelector(".song-metadata .title").innerText = title;
+    document.querySelector(".song-metadata .artist").innerText = artist;
+};
 
+// Parse the JSON data, with a fallback to manually clean up the string if parsing fails
+parseJsonData = (jsonString) => {
+    try {
+        return JSON.parse(jsonString);
+    } catch (err) {
+        const cleanedData = jsonString.slice(1, -2); // Remove the first and last character
+        console.log(cleanedData);
+        return JSON.parse(cleanedData);
+    }
+};
+
+// Fetch the song data and handle it
+fetchSongData = () => {
+    fetch(gamevar.selectedBase.json)
+        .then(response => response.text())
+        .then(jsonString => {
+            const data = parseJsonData(jsonString);
+            updateSongMetadata(gamevar.selectedBase.title, gamevar.selectedBase.artist);
+            playSong("a", data);
+        })
+        .catch(error => {
+            alert('Failed to load map data, reason: ' + error);
+            globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
+        });
+};
+
+// Check if a string contains any RTL (Right-to-Left) characters
 isRTL = (str) => {
-    // Define a regular expression to match RTL characters
     const rtlChars = /[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\uFB50-\uFDFF\uFE70-\uFEFF\u2000-\u206F]/;
-
-    // Check if the string contains RTL characters
     return rtlChars.test(str);
-}
+};
 
+// Generate line lyrics for display
 generateLineLyrics = (data) => {
     const mergedTexts = [];
     let currentText = "";
@@ -45,6 +59,7 @@ generateLineLyrics = (data) => {
     let currentDuration = 0;
     let even = false;
 
+    // Helper function to create a span element with specific attributes
     const createSpan = (text, duration, prevDuration, offset, element) => {
         let elementAttributes = "";
         if (element) {
@@ -52,26 +67,22 @@ generateLineLyrics = (data) => {
                 elementAttributes += ` data-${key}="${value}"`;
             }
         }
-
         return `<span class="fill" offset="${offset}" style="--slideDuration:${duration}ms;--prevSlideDuration:${prevDuration}ms"${elementAttributes}>${text}<span class="filler" style="--slideDuration:${duration}ms;--prevSlideDuration:${prevDuration}ms">${text}</span></span>`;
     };
 
+    // Helper function to add a text object to the current text line
     const addTextObject = (textObj, prevTextObj, i) => {
         if (currentTime === 0) currentTime = textObj.time;
         currentDuration += textObj.duration;
 
         const span = createSpan(textObj.text, textObj.duration, prevTextObj.duration, i, textObj.element);
-        if (isRTL(textObj.text)) {
-            currentText = span + currentText;
-        } else {
-            currentText += span;
-        }
+        currentText = isRTL(textObj.text) ? span + currentText : currentText + span;
 
         if (textObj.isLineEnding === 1) {
             mergedTexts.push({ text: currentText, time: currentTime, duration: currentDuration, offset: i, even });
             currentText = "";
             currentTime = 0;
-            currentDuration = 0
+            currentDuration = 0;
             even = !even;
         }
     };
@@ -84,6 +95,7 @@ generateLineLyrics = (data) => {
     console.log(mergedTexts);
     return mergedTexts;
 };
+
 playSong = (cdn, data) => {
     var hud = document.querySelector(".hud");
     let offset = {
@@ -107,6 +119,7 @@ playSong = (cdn, data) => {
     };
     songDebugger = this;
 
+    //Add CSS
     try {
         var nade = document.createElement("style");
         nade.type = "text/css";
@@ -115,11 +128,10 @@ playSong = (cdn, data) => {
         document.querySelector('#lyrics').classList.add(songVar.lyricsStyle);
     } catch (err) { }
 
-    songVar.Lyrics.push({ time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0 });
+    //Initial Videoplayer --
     var video = document.querySelector(".video");
     video.volume = 1
     var instrument = new Audio();
-
     if (gamevar.selectedBase.video.isHls) {
         if (Hls.isSupported()) {
             const hls = new Hls();
@@ -133,7 +145,6 @@ playSong = (cdn, data) => {
     } else {
         video.src = gamevar.selectedBase.video.path;
     }
-
     if (gamevar.selectedBase.video.instrument) {
         songVar.isVocal = true;
         instrument.src = gamevar.selectedBase.video.instrument;
@@ -142,7 +153,6 @@ playSong = (cdn, data) => {
         document.querySelector('.vocalbutton').classList.add('on')
         instrument.volume = 0
     }
-
     video.currentTime = songVar.startVideo / 1000;
     video.addEventListener('waiting', () => {
         document.querySelector('.video-loading').style.display = "block";
@@ -168,29 +178,18 @@ playSong = (cdn, data) => {
             document.querySelector('.video').classList.remove('showbanner');
         }
     });
-
-    video.load();
-    if (songVar.isVocal) instrument.load();
-
-    setTimeout(function () {
-        video.play();
-        if (songVar.isVocal) instrument.play();
-    }, 500);
-
     video.onplaying = (event) => {
         if (songVar.isVocal) {
             instrument.currentTime = video.currentTime;
             instrument.play();
         }
     };
-
     video.onpause = (event) => {
         if (songVar.isVocal) {
             instrument.pause();
             instrument.currentTime = video.currentTime;
         }
     };
-
     video.onerror = function (evt) {
         if (video.src !== "" || video.src == undefined || video.src == null) {
             alert('Can\'t Play this maps, reason: ' + evt.toString());
@@ -198,16 +197,18 @@ playSong = (cdn, data) => {
             jsonplayer = clearInterval(jsonplayer);
         }
     };
+    video.load();
+    if (songVar.isVocal) instrument.load();
 
+    //Start Play Video
     gamevar.isPaused = false;
+    setTimeout(function () {
+        video.play();
+        if (songVar.isVocal) instrument.play();
+    }, 500);
 
-    try {
-        setTimeout(function () { LyricsScroll(songVar.LyricsLine[offset.lyricsLine]) }, (songVar.LyricsLine[offset.lyricsLine].time - 1000 - songVar.startVideo));
-    } catch (err) {
-        console.log(err);
-    }
-    hud.style.setProperty("--menu-color", data.lyricsColor);
-    hud.style.setProperty("--menu-color-2", data.lyricsColor2 || data.lyricsColor);
+
+    //Add SwapVocalSupport
     window.pressSwapVocal = () => {
         if (isVocalEnabled) {
             instrument.currentTime = video.currentTime
@@ -224,6 +225,17 @@ playSong = (cdn, data) => {
             document.querySelector('.vocalbutton').classList.remove('on')
             document.querySelector('.vocalbutton').classList.add('off')
         }
+    }
+
+
+    //Initial Hud
+    songVar.Lyrics.push({ time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0 });
+    hud.style.setProperty("--menu-color", data.lyricsColor);
+    hud.style.setProperty("--menu-color-2", data.lyricsColor2 || data.lyricsColor);
+    try {
+        setTimeout(function () { LyricsScroll(songVar.LyricsLine[offset.lyricsLine]) }, (songVar.LyricsLine[offset.lyricsLine].time - 1000 - songVar.startVideo));
+    } catch (err) {
+        console.log(err);
     }
 
     jsonplayer = setInterval(function () {
@@ -332,105 +344,114 @@ playSong = (cdn, data) => {
 };
 
 //Lyrics Area
-LyricsScroll = (Next, isHide = false, timea, isOverlap = false) => {
+LyricsScroll = (Next, isHide = false, timea = 0, isOverlap = false) => {
     var timeout = {
         state: timea > 6000,
         timeshow: timea - 500,
         hidetime: 1000
-    }
-    var lyrics = document.querySelector("#lyrics")
-    if (isOverlap) {
-        try {
-            document.querySelector('#lyrics .line.current').classList.add('overlap')
-        } catch (err) { }
-    }
+    };
 
     try {
-        var previous2 = document.querySelector("#lyrics .line.previous2")
-        previous2.remove()
-    } catch (err) { }
-    try {
-        var previous = document.querySelector("#lyrics .line.previous")
-        previous.classList.remove("previous")
-        previous.classList.add("previous2")
-    } catch (err) { }
-    try {
-        var current = document.querySelector("#lyrics .line.current")
-        current.classList.remove("current")
-        current.classList.add("previous")
-    } catch (err) { }
-    try {
-        var next = document.querySelector("#lyrics .line.next")
-        next.classList.remove("next")
-        next.classList.add("current")
-        if (timeout.state) {
-            next.classList.remove("next")
-            next.classList.add("current")
-            next.classList.add("show")
-            setTimeout(function () {
-                next.classList.remove("show")
-            }, timeout.hidetime)
-        } else {
-            next.classList.remove("next")
-            next.classList.add("current")
+        var lyrics = document.querySelector("#lyrics");
+
+        if (isOverlap) {
+            const currentLine = document.querySelector('#lyrics .line.current');
+            if (currentLine) {
+                currentLine.classList.add('overlap');
+            }
         }
-    } catch (err) { }
 
-    try {
+        const previous2 = document.querySelector("#lyrics .line.previous2");
+        if (previous2) {
+            previous2.remove();
+        }
+
+        const previous = document.querySelector("#lyrics .line.previous");
+        if (previous) {
+            previous.classList.remove("previous");
+            previous.classList.add("previous2");
+        }
+
+        const current = document.querySelector("#lyrics .line.current");
+        if (current) {
+            current.classList.remove("current");
+            current.classList.add("previous");
+        }
+
+        const next = document.querySelector("#lyrics .line.next");
+        if (next) {
+            next.classList.remove("next");
+            next.classList.add("current");
+            if (timeout.state) {
+                next.classList.add("show");
+                setTimeout(() => {
+                    next.classList.remove("show");
+                }, timeout.hidetime);
+            }
+        }
+
         const div = document.createElement("div");
         div.innerHTML = Next.text;
         if (isRTL(Next.text)) {
             div.classList.add("rtl");
         }
-        div.classList.add("line");
-        div.classList.add("next");
-        div.classList.add("hidden")
+        div.classList.add("line", "next", "hidden");
         div.setAttribute("even", Next.even);
+
         if (timeout.state) {
             setTimeout(() => {
-                div.classList.remove("hidden")
-            }, timeout.timeshow)
-        } else div.classList.remove("hidden")
-        const lyrics = document.getElementById("lyrics");
+                div.classList.remove("hidden");
+            }, timeout.timeshow);
+        } else {
+            div.classList.remove("hidden");
+        }
+
         lyrics.appendChild(div);
-    } catch (err) { }
-}
-LyricsFill = (dat, duration, offset, Hide = false) => {
+    } catch (err) {
+        console.log('Unable To Generate A New Line' + err.stack);
+    }
+};
+
+LyricsFill = (dat, duration, offset, hide = false) => {
     try {
-        var current = document.querySelector("#lyrics .line.current");
-        var previous = document.querySelector("#lyrics .line.previous");
-        var filler = document.querySelector(`#lyrics .fill[offset="${offset}"]`);
-        var fillercurrent = document.querySelector(`#lyrics .line.current .fill[offset="${offset}"]`);
-        var next = filler.nextElementSibling;
-        var parent = filler.parentElement;
+        const current = document.querySelector("#lyrics .line.current");
+        const previous = document.querySelector("#lyrics .line.previous");
+        const filler = document.querySelector(`#lyrics .fill[offset="${offset}"]`);
+        const fillercurrent = document.querySelector(`#lyrics .line.current .fill[offset="${offset}"]`);
+        const next = filler?.nextElementSibling;
 
         filler.classList.remove('preanim');
         filler.classList.add("filled");
+
         if (next) next.classList.add('preanim');
 
-        function ended() {
+        const onAnimationEnd = () => {
             filler.classList.add("done");
             isWalking = false;
-            if (Hide) {
+
+            if (hide) {
                 setTimeout(() => {
                     if (previous && !previous.classList.contains('previous2')) {
                         previous.classList.add('previous2');
                         previous.classList.remove('previous');
                     }
+
                     if (current && fillercurrent) {
                         current.classList.add('previous');
                         current.classList.remove('current');
                     }
                 }, 2000);
             }
-        }
+        };
 
-        setTimeout(ended, filler.style.getPropertyValue('--slideDuration').replace('ms', ''));
+        const slideDuration = parseInt(filler.style.getPropertyValue('--slideDuration').replace('ms', ''), 10);
+        setTimeout(onAnimationEnd, slideDuration);
         isWalking = true;
     } catch (err) {
-        console.log('Skipping Missing Word: ' + err);
+        console.error('Skipping Missing Word:', err);
     }
-}
+};
+
 
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
@@ -477,3 +498,7 @@ document.querySelectorAll('.itempause').forEach((item, index) => {
         }
     })
 })
+
+// Initiate the process
+updateLoadingState();
+fetchSongData();

@@ -35,7 +35,8 @@ function initList(data) {
     })
     document.querySelectorAll('.itemsong')[gamevar.selectedSong || 0].click()
 }
-if (gamevar.songdb == undefined || gamevar.refreshSongdb == true) {
+if (gamevar.refreshSongdb !== songdb || gamevar.songdb == undefined || gamevar.refreshSongdb == true) {
+    selectedSong = -1;
     fetch(fetchUrl, { cache: "no-cache" }).then(response => response.json()).then(data => {
         gamevar.songdb = data
         initList(data)

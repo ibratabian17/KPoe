@@ -1,3 +1,9 @@
+/*DO NOT REMOVE*/
+#sceneDraw {
+    visibility: visible;
+  }
+/*======*/
+
 input {
     -webkit-user-select: all;
     -moz-user-select: all;
