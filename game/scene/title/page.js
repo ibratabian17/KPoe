@@ -18,3 +18,4 @@ function startGame() {
     }
 }
 document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> Confirm`;
+document.querySelector("#sceneDraw #play").innerHTML = `Press <img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> To Start`
