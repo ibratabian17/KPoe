@@ -3,7 +3,8 @@ var blobJS = {};
 var bkg_audio = document.getElementById("bkg_audio");
 const gamevar = {
   isPaused: false,
-  disableAspectRatio: false
+  disableAspectRatio: false,
+  UIBlur: false,
 }
 const globalfunc = {}
 let jsonplayer;
@@ -74,6 +75,11 @@ function loadAnotherHTML(path, jspath) {
         console.log('Error loading HTML:', error);
       });
   }
+  if (gamevar.UIBlur) {
+    document.querySelector('body').classList.add('blur-enabled')
+  } else {
+    document.querySelector('body').classList.remove('blur-enabled')
+  }
 }
 
 let hideTimeout;
@@ -108,7 +114,7 @@ function loadJS(path) {
   if (isCached) {
     const anu = new Blob([cachedScene[path]], {
       type: "text/javascript",
-  })
+    })
     const u = URL.createObjectURL(anu);
     scripts.src = u;
     document.body.appendChild(scripts);
@@ -206,16 +212,16 @@ globalfunc.startTransition = (changeScene = false, htmlPath, jsPath, scrollTime 
   const transitionScene = document.querySelector('.sceneTransition');
   transitionScene.classList.add('fadeIn');
   transitionScene.style.visibility = "visible"
-  if (scrollTime == 0) globalfunc.playSfx(3000, 4800, 1)
+  if (scrollTime == 0) globalfunc.playSfx(3000, 4700, 1)
   setTimeout(function () {
     transitionScene.classList.remove('fadeIn');
     transitionScene.classList.add('fadeOut');
     if (changeScene) loadAnotherHTML(htmlPath, jsPath);
-    if (scrollTime == 1) globalfunc.playSfx(2900, 4800, 1)
+    if (scrollTime == 1) globalfunc.playSfx(2900, 4700, 1)
     setTimeout(function () {
       transitionScene.classList.remove('fadeOut');
       transitionScene.style.visibility = "hidden"
-      if (scrollTime == 3) globalfunc.playSfx(2900, 4800, 1)
+      if (scrollTime == 3) globalfunc.playSfx(2900, 4700, 1)
     }, 500)
   }, 500)
 }
@@ -266,4 +272,11 @@ window['eval'] = function () {
 }
 function javascript_abort() {
   throw new Error('This is not an error. This is just to abort javascript');
+}
+
+if (!(document.fullscreenEnabled ||
+  document.webkitFullscreenEnabled ||
+  document.mozFullScreenEnabled ||
+  document.msFullscreenEnabled)) {
+  document.querySelector('.button.fullscreen').style.display = 'none'
 }

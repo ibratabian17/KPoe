@@ -293,19 +293,5 @@ globalfunc.calculateAverageTime = (array, key) => {
     return average;
 }
 
-//Keymapping Area
+
 gamevar.ispaused = false
-function pause(event) {
-    if (event.key === 'Escape') {
-        if (!gamevar.ispaused) {
-            setAudiobkgVol(1)
-            gamevar.ispaused = true
-            document.querySelector(".videoplayer").pause()
-        } else {
-            setAudiobkgVol(0)
-            gamevar.ispaused = false
-            document.querySelector(".videoplayer").play()
-        }
-    }
-}
-document.addEventListener('keydown', pause);

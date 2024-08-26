@@ -27,7 +27,9 @@
   <div id="Game" blackscreen="false">
     <div id="video-player">
       <div id="video-banner"></div>
-      <video class="video"></video>
+      <video class="video">
+        <audio class="vocals"></audio>
+      </video>
       <div class="song-metadata">
         <div class="metadata-layout">
           <div class="cover">
@@ -44,9 +46,10 @@
     <div class="overlay-hi">
       <span class="shortcut"></span>
       <div class="shortcut-ui">
-        <div class="button back" onclick="pressBack()"></div>
-        <div class="button settings" onclick="toggleSettings()"></div>
-        <div class="button fullscreen" onclick="toggleFullScreen()"></div>
+        <div class="button vocalbutton" title="Enable/Disable Vocal" onclick="pressSwapVocal()"></div>
+        <div class="button back" title="Back" onclick="pressBack()"></div>
+        <div class="button settings" title="Settings" onclick="toggleSettings()"></div>
+        <div class="button fullscreen" title="Fullscreen" onclick="toggleFullScreen()"></div>
       </div>
     </div>
     <div id="sceneDraw"></div>

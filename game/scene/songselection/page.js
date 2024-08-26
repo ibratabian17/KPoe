@@ -44,9 +44,11 @@ if (gamevar.songdb == undefined || gamevar.refreshSongdb == true) {
 } else {
     initList(gamevar.songdb)
 }
+var timer;
 
 
 function setSelectedItem(cdn, list, offset) {
+    clearInterval(timer)
     document.querySelector('.video--preview-container .video-loading').style.display = "block"
     $("#preview").css('opacity', '0')
     $("#preview").animate({ "opacity": "1" }, 500)
@@ -63,6 +65,7 @@ function setSelectedItem(cdn, list, offset) {
     songtitle.innerHTML = list.title
     songartist.innerHTML = list.artist
     videoplayer.src = ""
+    videoplayer.load()
     try {
         document.querySelector("#banner").style.background = `center / cover url(${list.assets.banner})`
         document.querySelector("#video-banner").style.background = `center / cover url(${list.assets.banner})`
@@ -88,6 +91,14 @@ function setSelectedItem(cdn, list, offset) {
     videoplayer.oncanplay = function () {
         videoplayer.play()
     }
+    const canvas = document.querySelector(".preview--glow");
+    const ctx = canvas.getContext("2d");
+    timer = setInterval(function () {
+        if (gamevar.UIBlur) {
+                canvas.classList.add('show')
+                ctx.drawImage(videoplayer, 0, 0, 20, 20);
+        }
+    }, 1)
     videoplayer.onplay = function () {
         $('.video--preview').stop(true, true).animate({ volume: 0.6 }, {
             duration: 500,

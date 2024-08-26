@@ -1,67 +1,124 @@
+/*one-line style*/
+#lyrics.one-line .line.next,
+#lyrics.one-line #beat {
+    opacity: 0 !important;
+
+}
+
+#lyrics.one-line .line.current {
+    transition: opacity 0.1s, color 0.1s !important;
+}
+
+#lyrics.one-line {
+    transform: scale(1.1) translateY(2em);
+}
+
+/*two-line Style*/
+#lyrics.two-line .line {
+    width: 100%;
+    display: flex;
+}
+
+#lyrics.two-line #beat {
+    display: none !important;
+    opacity: 0 !important;
+}
+
+#lyrics.two-line .line[even="true"] {
+    float: left;
+    justify-content: flex-end;
+    transform: none !important;
+    right: 4em;
+    top: 1em;
+}
+
+#lyrics.two-line .line[even="false"] {
+    float: right;
+    justify-content: flex-start;
+    transform: none !important;
+    left: 4em;
+    top: -1em;
+}
+
+#lyrics.two-line {
+    font-size: 0.277em;
+}
+
 /*Apple Music Style*/
 #lyrics.apple {
     font-family: "SF Pro Display", "Font1", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-weight: bold !important;
 }
+
 #lyrics.apple #beat {
     display: none !important;
 }
+
 #lyrics.apple .line .fill {
     background-color: #ffffff72;
-    background-image: linear-gradient(90deg, var(--menu-color) 60%, #0000 100%);
-    background-size: 200% 100%;
-    background-position: 200% 0%;
+    background-image: linear-gradient(90deg, #0000 0% ,var(--menu-color) 50%, #0000 100%), linear-gradient(90deg, var(--menu-color) 100%, #0000 100%);
+    background-size: 3em 100%, 0% 100%;
+    background-position: -3em 0%, -1.5em 0%;
     font-weight: bold !important;
 }
+
 #lyrics.apple .line.rtl .fill {
     background-color: #ffffff72;
-    background-image: linear-gradient(-90deg, var(--menu-color) 60%, #0000 100%);
-    background-size: 200% 100%;
-    background-position: -100% 0%;
+    background-image: linear-gradient(-90deg, var(--menu-color) 0%, #0000 100%), linear-gradient(-90deg, var(--menu-color) 100%, #0000 100%);
+    background-size: 3em 100%, 0% 100%;
+    background-position: calc(100% + 1.5em) 0%, 100% 0%;
     font-weight: bold !important;
+    background-repeat: no-repeat;
 }
+
 #lyrics.apple .line.rtl .fill.filled {
-    background-image: linear-gradient(-90deg, var(--menu-color) 60%, #0000 100%);
-    background-size: 200% 100%;
-    background-position: 100% 0%;
+    background-size: 3em 100%, 100% 100%;
+    background-position: -1.5em 0%, 0 0%;
 }
+
 #lyrics.apple .line .fill.filled {
-    background-image: linear-gradient(90deg, var(--menu-color) 60%, #0000 100%);
-    background-size: 200% 100%;
-    background-position: 0% 0%;
-    transition: background-position linear 200ms, filter 3s .6s;
+    background-size: 3em 100%, 103% 100%;
+    background-position: calc(100% + 1.5em) 0%, 0% 0%;
+    transition: background-position linear 200ms, background-size linear 200ms, filter 3s .6s;
     animation: appleFocused 5s;
     -webkit-animation: appleFocused 5s;
     filter: drop-shadow(0 0 0.15em rgb(255, 255, 255)) drop-shadow(0 0 0.18em rgba(244, 245, 174, 0.63));
     transform: translateY(-5%);
 }
-#lyrics.apple .line .fill.filled:not(.done){
+#lyrics.apple .line .fill.filled:not(.done) {
     font-size: 110%;
-    transition: background-position linear 200ms, filter 3s .9s, font-size 3s .8s;
+    transition: background-position linear(0 0%, 0.2 0%, 1 100%) var(--slideDuration), background-size linear(0 0%, 0.2 0%, 1 100%) var(--slideDuration), filter 3s .9s, font-size 3s .8s;
 }
+
 #lyrics.apple .line .fill.filled.done {
     filter: none;
     -webkit-filter: none;
     transition: filter 3s, font-size 3s;
 }
+
 #lyrics.apple .line .fill.filled .filler {
     display: none;
 }
+
 #lyrics.apple .line.current {
-    filter: blur(0.0em) drop-shadow(0 0 0.5em #0000002a)!important;
+    filter: blur(0.0em) drop-shadow(0 0 0.5em #0000002a) !important;
 }
+
 #lyrics.apple .line:not(.current) {
-    filter: blur(0.06em) drop-shadow(0 0 0.5em #0000002a)!important;
+    filter: blur(0.06em) drop-shadow(0 0 0.5em #0000002a) !important;
 }
+
 #lyrics.apple .line.previous {
     transition: .6s 1s opacity, .2s .01s transform !important;
     opacity: 0;
     transform: translateY(-231%) scale(0.95);
 }
+
 #lyrics.apple .line.previous .fill.filled.done {
     background-size: 0% 0%;
     animation: AppleFakeHide 1s;
 }
+
 #lyrics.apple .line.next {
     opacity: 1.0;
     -webkit-animation: nextLineInfApple 0.38s;
@@ -69,10 +126,16 @@
     margin-top: 0.13% !important;
     transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9);
 }
+#lyrics.apple .line.hidden {
+    visibility: visible;
+}
+
 #lyrics.apple .line.current {
     transition: .2s all, .1s color, filter .3s !important;
     opacity: 1;
 }
+
+
 @keyframes appleFocused {
     0% {
         transform: translateY(0%);
@@ -93,4 +156,29 @@
     100% {
         background-color: #ffffff72;
     }
+}
+
+/* Lyrics Focused */
+#lyrics.lyfocs {
+    display: flex;
+    width: 100%;
+    position: absolute;
+    bottom: 0.2em;
+    left: 0;
+    font-size: 0.357em;
+    bottom: 5.2em;
+    font-weight: bolder !important;
+    letter-spacing: 0.02em;
+    text-align: left;
+    justify-content: left;
+    z-index: 1;
+    padding: 1em;
+}
+#lyrics.lyfocs .line {
+    transform-origin: left;
+}
+
+#lyrics.lyfocs .line:has(.fill[data-singer="v2"]) {
+    transform-origin: right;
+    right: 11%;
 }

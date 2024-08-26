@@ -26,6 +26,9 @@ html:focus-within {
     -ms-transition: background 0.5s, background-size 0s;
     -o-transition: background 0.5s, background-size 0s;
 }
+.blur-enabled #songselection{
+    backdrop-filter: blur(0.05em);
+}
 
 .video--preview-container {
     width: 4.19em;
@@ -41,6 +44,21 @@ html:focus-within {
 .video--preview {
     width: 100%;
     height: 100%;
+}
+
+.preview--glow{
+    width: 4.19em;
+    height: 2.36em;
+    position: absolute;
+    bottom: 0.4em;
+    left: 0.5em;
+    overflow: hidden;
+    filter: blur(0.2em);
+    opacity: 0;
+    transform: scale(1.01);
+}
+#preview:has(.video-loading[style*="none"]) .preview--glow{
+    opacity: 1;
 }
 
 .button--sing {
@@ -293,8 +311,10 @@ html:focus-within {
 }
 
 .shortcut-ui {
-    background-color: #00000000;
+    background-color: #00000000!important;
+    backdrop-filter: none!important;
   }
+
 
 @-webkit-keyframes selectedbounce {
 
@@ -359,3 +379,6 @@ html:focus-within {
     }
 
 }
+
+  
+  

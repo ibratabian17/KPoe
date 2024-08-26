@@ -2,8 +2,12 @@ var warningtext = ""
 document.title = "KaraokePoe - Initializing";
 var clicked = false
 if (navigator.userAgent.includes('Electron')) {
+    warningtext = "KPoe Love You"
     warningtext = "This game requires a song list from the user"
-    setTimeout(function () { loadAnotherHTML('scene/title/page.html', 'scene/title/page.js') }, 1000)
+    document.querySelector('.txt-warning').innerHTML = warningtext
+    setTimeout(function () { loadAnotherHTML('scene/title/page.html', 'scene/title/page.js') }, 2000)
+
+
 } else {
     document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> Start Game`;
     warningtext = "This game requires a song list from the user\nDownloading all files and caching them, may take some time"

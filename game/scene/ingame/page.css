@@ -1,6 +1,25 @@
 #video-player {
     display: block !important;
 }
+#debugger .filler {
+    width: 100%;
+    overflow: hidden;
+    transition: width, left;
+    will-change: width, left;
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 1;
+}
+#debugger .filler.show {
+    color: orange;
+}
+#debugger .fill {
+    position: relative;
+}
 
 .hud {
     width: 100%;
@@ -138,29 +157,21 @@
     text-align: initial;
     z-index: -1;
     left: 0;
+    transition-duration: var(--slideDuration, 200ms);
 }
 
 #lyrics .line .fill.filled {
-    background-image: linear-gradient(90deg, var(--menu-color) 100%, #ffffff00 100%);
     background-size: 100% 100%;
-    transition: background-size linear 200ms;
-    -webkit-transition: background-size linear 200ms;
-    -moz-transition: background-size linear 200ms;
-    -ms-transition: background-size linear 200ms;
-    -o-transition: background-size linear 200ms;
+    transition: background-size linear var(--slideDuration, 200ms);
 }
 
 #lyrics .line .fill:not(.filled) {
     transition: background-color 200ms !important;
-    -webkit-transition: background-color 200ms !important;
-    -moz-transition: background-color 200ms !important;
-    -ms-transition: background-color 200ms !important;
-    -o-transition: background-color 200ms !important;
 }
 
 #lyrics .line .fill {
     background-color: #888;
-    background-image: linear-gradient(90deg, var(--menu-color) 0%, #fff 0%);
+    background-image: linear-gradient(90deg, var(--menu-color) 100%, #fff 100%);
     background-size: 0% 100%;
     background-clip: text;
     -webkit-background-clip: text;
@@ -203,78 +214,52 @@
 }
 
 #lyrics .line.previous {
-    transition: .07s opacity !important;
-    transition-delay: .01s !important;
     opacity: .0;
+}
+#lyrics .line.overlap.previous{
+    opacity: .0;
+    transform: translateY(-205%);
+}
+#lyrics .line.overlap.previous {
+    transition: opacity .2s;
 }
 
 #lyrics .line.hidden {
     visibility: hidden;
 }
 
-#lyrics .line.previous.show {
+#lyrics .line.overlap.previous:has(.fill:not(.done)) {
     opacity: 1;
+    transform: translateY(-205%);
+    transition: transform .2s;
 }
-
-#lyrics.two-line .line {
-    width: 100%;
-    display: flex;
-}
-
-#lyrics.two-line #beat {
-    display: none !important;
-    opacity: 0 !important;
-}
-
-#lyrics.two-line .line[even="true"] {
-    float: left;
-    justify-content: flex-end;
-    transform: none !important;
-    right: 4em;
-    top: 1em;
-}
-
-#lyrics.two-line .line[even="false"] {
-    float: right;
-    justify-content: flex-start;
-    transform: none !important;
-    left: 4em;
-    top: -1em;
-}
-
-#lyrics.two-line {
-    font-size: 0.277em;
+#lyrics .line.previous2{
+    opacity: 0;
+    transform: translateY(-205%);
 }
 
 #beat {
     width: 20%;
-    height: 0.1em !important;
-    bottom: -0.28em !important;
+    height: 0.1em;
+    bottom: -0.28em;
     /* left: 0em; */
     background: var(--menu-color, #fff);
     border-radius: 200rem;
     border-bottom: none;
     opacity: 0;
     transition: opacity .3s, .3s width;
-    visibility: visible !important;
-    display: block !important;
+    visibility: visible;
+    display: none;
     position: absolute;
     text-align: center;
 }
-
-#lyrics.one-line .line.next,
-#lyrics.one-line #beat {
-    opacity: 0 !important;
-
+#lyrics:has(.line.current .fill[data-singer="v2"]) #beat{
+    background: var(--menu-color-2, #ff0000);
+}
+#lyrics .fill[data-singer="v2"]{
+    --menu-color: var(--menu-color-2, #ff0000)
 }
 
-#lyrics.one-line .line.current {
-    transition: opacity 0.1s, color 0.1s !important;
-}
-
-#lyrics.one-line {
-    transform: scale(1.1) translateY(2em);
-}
 
 #lyrics.no-animation * {
     transition: none !important;
@@ -914,3 +899,21 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
         -o-transform: scale(1.01);
     }
 }
+
+
+
+/*Experimental*/
+.blur-enabled #pausescreen{
+    backdrop-filter: blur(0.1em);
+    background-color: #2121215b;
+}
+.blur-enabled .song-metadata.show{
+backdrop-filter: blur(0.16em);
+}
+
+.shortcut-ui .button.vocalbutton.on {
+    background-image: url(../../assets/textures/ui/ic_mic_enabled.webp);
+  }
+  .shortcut-ui .button.vocalbutton.off {
+    background-image: url(../../assets/textures/ui/ic_mic_disabled.webp);
+  }
