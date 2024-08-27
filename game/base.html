@@ -46,7 +46,7 @@
     <div class="overlay-hi">
       <span class="shortcut"></span>
       <div class="shortcut-ui">
-        <div class="button vocalbutton" title="Enable/Disable Vocal" onclick="pressSwapVocal()"></div>
+        <input type="range" min="0.001" max="100" value="100" class="vocalSlider" id="vocalsSlider">
         <div class="button back" title="Back" onclick="pressBack()"></div>
         <div class="button settings" title="Settings" onclick="toggleSettings()"></div>
         <div class="button fullscreen" title="Fullscreen" onclick="toggleFullScreen()"></div>

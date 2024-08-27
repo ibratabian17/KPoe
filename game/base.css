@@ -316,3 +316,9 @@ input[type="range"]::-moz-range-thumb {
   width: 0;
   box-shadow: -20rem 0 0 20rem rgba(255, 255, 255, 20);
 }
+
+#vocalsSlider:not(.enabled){
+  transform: scaleX(0);
+  transform-origin: right;
+  display: none;
+}

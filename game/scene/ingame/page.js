@@ -97,6 +97,7 @@ generateLineLyrics = (data) => {
 };
 
 playSong = (cdn, data) => {
+    var slider = document.querySelector("#vocalsSlider");
     var hud = document.querySelector(".hud");
     let offset = {
         beat: 0,
@@ -145,14 +146,14 @@ playSong = (cdn, data) => {
     } else {
         video.src = gamevar.selectedBase.video.path;
     }
-    if (gamevar.selectedBase.video.instrument) {
+    if (gamevar.selectedBase.video.vocals) {
         songVar.isVocal = true;
-        vocals.src = gamevar.selectedBase.video.instrument;
-        document.querySelector('.vocalbutton').classList.add('enabled')
-        document.querySelector('.vocalbutton').classList.remove('off')
-        document.querySelector('.vocalbutton').classList.add('on')
-        vocals.volume = 0
+        vocals.src = gamevar.selectedBase.video.vocals;
+        slider.classList.add('enabled')
     }
+    slider.oninput = function() {
+        vocals.volume = this.value /100;
+      }
     video.currentTime = songVar.startVideo / 1000;
     video.addEventListener('waiting', () => {
         document.querySelector('.video-loading').style.display = "block";
@@ -208,26 +209,6 @@ playSong = (cdn, data) => {
     }, 500);
 
 
-    //Add SwapVocalSupport
-    window.pressSwapVocal = () => {
-        if (isVocalEnabled) {
-            vocals.currentTime = video.currentTime
-            vocals.volume = 1
-            video.volume = 1
-            isVocalEnabled = false
-            document.querySelector('.vocalbutton').classList.remove('off')
-            document.querySelector('.vocalbutton').classList.add('on')
-        } else {
-            vocals.currentTime = video.currentTime
-            vocals.volume = 1
-            video.volume = 1
-            isVocalEnabled = true
-            document.querySelector('.vocalbutton').classList.remove('on')
-            document.querySelector('.vocalbutton').classList.add('off')
-        }
-    }
-
-
     //Initial Hud
     songVar.Lyrics.push({ time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0 });
     hud.style.setProperty("--menu-color", data.lyricsColor);
@@ -274,9 +255,7 @@ playSong = (cdn, data) => {
                 globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
                 jsonplayer = clearInterval(jsonplayer);
                 document.querySelector('.metadata-layout').classList.remove('playing');
-                document.querySelector('.vocalbutton').classList.remove('enabled')
-                document.querySelector('.vocalbutton').classList.remove('on')
-                document.querySelector('.vocalbutton').classList.remove('off')
+                slider.classList.remove('enabled')
                 return;
             }
         }
