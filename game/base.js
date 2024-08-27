@@ -268,7 +268,7 @@ adjustGameDimensions()
 loadAnotherHTML('scene/start/page.html', 'scene/start/page.js')
 
 window['eval'] = function () {
-  globalfunc.printlog('Inject Done!')
+  globalfunc.printlog('Sadly Javascript Injection is not Allowed in Here :(')
 }
 function javascript_abort() {
   throw new Error('This is not an error. This is just to abort javascript');

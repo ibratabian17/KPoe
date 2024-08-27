@@ -131,7 +131,7 @@ playSong = (cdn, data) => {
     //Initial Videoplayer --
     var video = document.querySelector(".video");
     video.volume = 1
-    var instrument = new Audio();
+    var vocals = document.querySelector(".vocals");
     if (gamevar.selectedBase.video.isHls) {
         if (Hls.isSupported()) {
             const hls = new Hls();
@@ -147,11 +147,11 @@ playSong = (cdn, data) => {
     }
     if (gamevar.selectedBase.video.instrument) {
         songVar.isVocal = true;
-        instrument.src = gamevar.selectedBase.video.instrument;
+        vocals.src = gamevar.selectedBase.video.instrument;
         document.querySelector('.vocalbutton').classList.add('enabled')
         document.querySelector('.vocalbutton').classList.remove('off')
         document.querySelector('.vocalbutton').classList.add('on')
-        instrument.volume = 0
+        vocals.volume = 0
     }
     video.currentTime = songVar.startVideo / 1000;
     video.addEventListener('waiting', () => {
@@ -180,14 +180,14 @@ playSong = (cdn, data) => {
     });
     video.onplaying = (event) => {
         if (songVar.isVocal) {
-            instrument.currentTime = video.currentTime;
-            instrument.play();
+            vocals.currentTime = video.currentTime;
+            vocals.play();
         }
     };
     video.onpause = (event) => {
         if (songVar.isVocal) {
-            instrument.pause();
-            instrument.currentTime = video.currentTime;
+            vocals.pause();
+            vocals.currentTime = video.currentTime;
         }
     };
     video.onerror = function (evt) {
@@ -198,29 +198,29 @@ playSong = (cdn, data) => {
         }
     };
     video.load();
-    if (songVar.isVocal) instrument.load();
+    if (songVar.isVocal) vocals.load();
 
     //Start Play Video
     gamevar.isPaused = false;
     setTimeout(function () {
         video.play();
-        if (songVar.isVocal) instrument.play();
+        if (songVar.isVocal) vocals.play();
     }, 500);
 
 
     //Add SwapVocalSupport
     window.pressSwapVocal = () => {
         if (isVocalEnabled) {
-            instrument.currentTime = video.currentTime
-            instrument.volume = 0
+            vocals.currentTime = video.currentTime
+            vocals.volume = 1
             video.volume = 1
             isVocalEnabled = false
             document.querySelector('.vocalbutton').classList.remove('off')
             document.querySelector('.vocalbutton').classList.add('on')
         } else {
-            instrument.currentTime = video.currentTime
-            instrument.volume = 1
-            video.volume = 0
+            vocals.currentTime = video.currentTime
+            vocals.volume = 1
+            video.volume = 1
             isVocalEnabled = true
             document.querySelector('.vocalbutton').classList.remove('on')
             document.querySelector('.vocalbutton').classList.add('off')
@@ -269,8 +269,8 @@ playSong = (cdn, data) => {
                 songVar.isDone = true;
                 video.removeAttribute('src');
                 video.load();
-                instrument.removeAttribute('src');
-                instrument.load();
+                vocals.removeAttribute('src');
+                vocals.load();
                 globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
                 jsonplayer = clearInterval(jsonplayer);
                 document.querySelector('.metadata-layout').classList.remove('playing');
@@ -283,24 +283,40 @@ playSong = (cdn, data) => {
 
         // Add Vocal Support
         if (songVar.isVocal) {
-            const syncThreshold = 0.088; // Threshold for detecting out-of-sync
-            const timeDifference = instrument.currentTime - video.currentTime;
-            const timeDifF = timeDifference.toFixed(4);
-            document.querySelector(".VocalOffsetV").innerHTML = timeDifF;
-            if (songVar.SyncerSleep > 1000) {
-                if (Math.abs(timeDifference) > syncThreshold) {
-                    instrument.currentTime = video.currentTime + 0.034;
-                    if (timeDifference > 0) {
-                        console.log(`instrument are ahead by ${timeDifference.toFixed(2)}s. Adjusting...`);
-                    } else {
-                        console.log(`instrument are behind by ${timeDifference.toFixed(2)}s. Adjusting...`);
-                    }
-                    // Adjust the instrument to match the video's current time
+            const SYNC_THRESHOLD = 0.068; // Threshold for detecting out-of-sync
+            const MAX_ALLOWED_DIFFERENCE = 0.5; // Max time difference before seeking
+            const BASE_ADJUSTMENT_FACTOR = 0.05; // Base factor to adjust playback rate sensitivity
+            const MIN_PLAYBACK_RATE = 0.5;
+            const MAX_PLAYBACK_RATE = 1.5;
+
+            const timeDifference = vocals.currentTime - video.currentTime;
+            const absTimeDifference = Math.abs(timeDifference);
+
+            if (absTimeDifference > SYNC_THRESHOLD) {
+                if (absTimeDifference > MAX_ALLOWED_DIFFERENCE) {
+                    // If difference is too large, directly seek to video position
+                    vocals.currentTime = video.currentTime;
+                    console.log(`Too far out of sync: ${timeDifference.toFixed(2)}s. Seeking to match video.`);
+                } else {
+                    // Scale adjustment factor based on how far out of sync it is
+                    const dynamicAdjustmentFactor = BASE_ADJUSTMENT_FACTOR * absTimeDifference;
+
+                    // Adjust playback rate dynamically based on time difference
+                    const adjustmentRate = 1 - (timeDifference * dynamicAdjustmentFactor);
+                    const smoothedRate = timeDifference > 0
+                        ? Math.max(MIN_PLAYBACK_RATE, adjustmentRate)  // Slow down if vocals are ahead
+                        : Math.min(MAX_PLAYBACK_RATE, adjustmentRate); // Speed up if vocals are behind
+
+                    vocals.playbackRate = (vocals.playbackRate * 0.9) + (smoothedRate * 0.1);
                 }
-                songVar.SyncerSleep = 0
+            } else if (Math.abs(vocals.playbackRate - 1) > 0.01) {
+                // Gradually reset playback rate when sync is achieved
+                vocals.playbackRate += (1 - vocals.playbackRate) * 0.1;
+            } else {
+                vocals.playbackRate = 1;
             }
-            songVar.SyncerSleep++
         }
+
 
         // Debug Lyrics
         try {
