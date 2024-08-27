@@ -97,12 +97,14 @@ var keytask = {
                     document.querySelector('#pausescreen').style.transition = 'opacity .5s'
                     setTimeout(function () { document.querySelector('#pausescreen').style.display = 'none' }, 500)
                     document.querySelector(".overlay-hi .shortcut").innerHTML = ``;
+                    document.querySelector('.hud').classList.remove('paused')
                 }
                 else {
                     document.querySelector('.video').pause();
                     document.querySelector('#pausescreen').style.display = 'block'
                     document.querySelector('#pausescreen').style.opacity = 1;
                     document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> Confirm  <img class="key_textures" src="${getPlatformKey("BACK")}"></img> Back`;
+                    document.querySelector('.hud').classList.add('paused')
                 }
                 gamevar.isPaused = !gamevar.isPaused
                 setTimeout(() => {

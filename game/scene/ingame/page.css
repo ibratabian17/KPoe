@@ -924,3 +924,7 @@ backdrop-filter: blur(0.16em);
   .shortcut-ui .button.vocalbutton.off {
     background-image: url(../../assets/textures/ui/ic_mic_disabled.webp);
   }
+
+  .hud.paused * {
+    animation-play-state: paused!important;
+  }

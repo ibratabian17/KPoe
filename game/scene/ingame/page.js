@@ -487,6 +487,7 @@ document.querySelectorAll('.itempause').forEach((item, index) => {
                     document.querySelector('#pausescreen').style.transition = 'opacity .5s'
                     setTimeout(function () { document.querySelector('#pausescreen').style.display = 'none' }, 500)
                     document.querySelector(".overlay-hi .shortcut").innerHTML = ``;
+                    document.querySelector('.hud').classList.remove('paused')
                     gamevar.isPaused = false
                 }
             }, 200)
