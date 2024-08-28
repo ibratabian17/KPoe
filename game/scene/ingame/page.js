@@ -227,7 +227,7 @@ playSong = (cdn, data) => {
         // Simple Beat Working
         if ((songVar.Beat[offset.beat] - songVar.gameOffset) < songVar.currentTime) {
             hud.classList.add("show");
-            document.querySelector(".currentBeatV").innerHTML = songVar.Beat[offset.beat];
+            if (gamevar.DebugMode) document.querySelector(".currentBeatV").innerHTML = songVar.Beat[offset.beat];
             document.querySelector("#beat").style.animationDuration = `${Math.round(songVar.Beat[offset.beat + 1] - songVar.Beat[offset.beat])}.${0}ms`;
             hud.classList.remove("beat");
             hud.classList.remove("beat");
@@ -302,7 +302,7 @@ playSong = (cdn, data) => {
         // Debug Lyrics
         try {
             if (songVar.LyricsLine[offset.lyricsLine] && songVar.LyricsLine[offset.lyricsLine].time - songVar.gameOffset - 150 < songVar.currentTime) {
-                document.querySelector(".currentLyricsLineV").innerHTML = songVar.LyricsLine[offset.lyricsLine].text;
+                if (gamevar.DebugMode) document.querySelector(".currentLyricsLineV").innerHTML = songVar.LyricsLine[offset.lyricsLine].text;
                 LyricsScroll(
                     songVar.LyricsLine[offset.lyricsLine + 1] ? songVar.LyricsLine[offset.lyricsLine + 1] : { text: "" },
                     0,
@@ -322,7 +322,7 @@ playSong = (cdn, data) => {
                     let isLineEnding = lyric.isLineEnding === 1;
                     const isMore = lyric.isLineEnding === 1 && songVar.Lyrics[index + 1] && lyric.time >= songVar.Lyrics[index + 1].time;
 
-                    document.querySelector(".currentLyricsV").innerHTML = lyric.text;
+                    if (gamevar.DebugMode) document.querySelector(".currentLyricsV").innerHTML = lyric.text;
                     if (true) {
                         LyricsFill(lyric.text, lyric.duration, index, isLineEnding);
                     }
@@ -336,8 +336,12 @@ playSong = (cdn, data) => {
                 }
             });
         } catch (err) { }
-        document.querySelector(".currentTimeV").innerHTML = songVar.currentTime; //stop delay
-        debugVocal.innerText = vocals.playbackRate * 100
+
+        //End Of Loop
+        if (gamevar.DebugMode) {
+            document.querySelector(".currentTimeV").innerHTML = songVar.currentTime; //stop delay
+            debugVocal.innerText = vocals.playbackRate * 100
+        }
     }, 1);
 };
 
