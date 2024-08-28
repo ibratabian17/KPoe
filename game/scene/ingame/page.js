@@ -99,6 +99,7 @@ generateLineLyrics = (data) => {
 playSong = (cdn, data) => {
     var slider = document.querySelector("#vocalsSlider");
     var hud = document.querySelector(".hud");
+    var debugVocal = document.querySelector('.VocalOffsetV')
     let offset = {
         beat: 0,
         lyrics: 0,
@@ -151,9 +152,9 @@ playSong = (cdn, data) => {
         vocals.src = gamevar.selectedBase.video.vocals;
         slider.classList.add('enabled')
     }
-    slider.oninput = function() {
-        vocals.volume = this.value /100;
-      }
+    slider.oninput = function () {
+        vocals.volume = this.value / 100;
+    }
     video.currentTime = songVar.startVideo / 1000;
     video.addEventListener('waiting', () => {
         document.querySelector('.video-loading').style.display = "block";
@@ -262,11 +263,11 @@ playSong = (cdn, data) => {
 
         // Add Vocal Support
         if (songVar.isVocal) {
-            const SYNC_THRESHOLD = 0.068; // Threshold for detecting out-of-sync
-            const MAX_ALLOWED_DIFFERENCE = 0.5; // Max time difference before seeking
-            const BASE_ADJUSTMENT_FACTOR = 0.05; // Base factor to adjust playback rate sensitivity
-            const MIN_PLAYBACK_RATE = 0.5;
-            const MAX_PLAYBACK_RATE = 1.5;
+            const SYNC_THRESHOLD = 0.03; // Lower threshold for detecting out-of-sync for more sensitivity
+            const MAX_ALLOWED_DIFFERENCE = 0.3; // Reduced max time difference before seeking
+            const BASE_ADJUSTMENT_FACTOR = 0.5; // Increased factor to adjust playback rate sensitivity
+            const MIN_PLAYBACK_RATE = 0.7;
+            const MAX_PLAYBACK_RATE = 1.3;
 
             const timeDifference = vocals.currentTime - video.currentTime;
             const absTimeDifference = Math.abs(timeDifference);
@@ -277,24 +278,25 @@ playSong = (cdn, data) => {
                     vocals.currentTime = video.currentTime;
                     console.log(`Too far out of sync: ${timeDifference.toFixed(2)}s. Seeking to match video.`);
                 } else {
-                    // Scale adjustment factor based on how far out of sync it is
-                    const dynamicAdjustmentFactor = BASE_ADJUSTMENT_FACTOR * absTimeDifference;
+                    // Adjust playback rate dynamically based on time difference with higher sensitivity
+                    const dynamicAdjustmentFactor = BASE_ADJUSTMENT_FACTOR * Math.pow(absTimeDifference, 2);
 
-                    // Adjust playback rate dynamically based on time difference
+                    // Adjust playback rate more aggressively
                     const adjustmentRate = 1 - (timeDifference * dynamicAdjustmentFactor);
                     const smoothedRate = timeDifference > 0
                         ? Math.max(MIN_PLAYBACK_RATE, adjustmentRate)  // Slow down if vocals are ahead
                         : Math.min(MAX_PLAYBACK_RATE, adjustmentRate); // Speed up if vocals are behind
 
-                    vocals.playbackRate = (vocals.playbackRate * 0.9) + (smoothedRate * 0.1);
+                    vocals.playbackRate = (vocals.playbackRate * 0.8) + (smoothedRate * 0.2);
                 }
             } else if (Math.abs(vocals.playbackRate - 1) > 0.01) {
                 // Gradually reset playback rate when sync is achieved
-                vocals.playbackRate += (1 - vocals.playbackRate) * 0.1;
+                vocals.playbackRate += (1 - vocals.playbackRate) * 0.05;
             } else {
                 vocals.playbackRate = 1;
             }
         }
+
 
 
         // Debug Lyrics
@@ -335,6 +337,7 @@ playSong = (cdn, data) => {
             });
         } catch (err) { }
         document.querySelector(".currentTimeV").innerHTML = songVar.currentTime; //stop delay
+        debugVocal.innerText = vocals.playbackRate * 100
     }, 1);
 };
 

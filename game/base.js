@@ -5,6 +5,7 @@ const gamevar = {
   isPaused: false,
   disableAspectRatio: false,
   UIBlur: false,
+  DebugMode: false
 }
 const globalfunc = {}
 let jsonplayer;
