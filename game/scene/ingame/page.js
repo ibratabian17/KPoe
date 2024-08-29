@@ -285,7 +285,7 @@ playSong = (cdn, data) => {
         }
 
         if (songVar.isVocal) {
-            const SYNC_THRESHOLD = 0.01;
+            const SYNC_THRESHOLD = 0.005;
             const MAX_ALLOWED_DIFFERENCE = 0.2;
             const BASE_ADJUSTMENT_FACTOR = 2;
             const MIN_PLAYBACK_RATE = -0.05;
