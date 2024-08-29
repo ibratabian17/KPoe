@@ -117,7 +117,7 @@ playSong = (cdn, data) => {
         lyricsStyle: gamevar.overrideLyricsStyle || data.lyricsStyle || "normal",
         style: data.css || "",
         isVocal: false,
-        SyncerSleep: 100
+        isRunning: false,
     };
     songDebugger = this;
 
@@ -156,6 +156,11 @@ playSong = (cdn, data) => {
         vocals.volume = this.value / 100;
     }
     video.currentTime = songVar.startVideo / 1000;
+
+    // Flag to track readiness of video and vocals
+    let videoReady = false;
+    let vocalsReady = false;
+
     video.addEventListener('waiting', () => {
         document.querySelector('.video-loading').style.display = "block";
     });
@@ -180,6 +185,30 @@ playSong = (cdn, data) => {
             document.querySelector('.video').classList.remove('showbanner');
         }
     });
+
+    // Check if both video and vocals are ready, then start playing
+    function checkReadyAndPlay() {
+        console.log(`videoReady: ${videoReady}\nisVocal: ${songVar.isVocal}\nvocalsReady: ${vocalsReady}`)
+        if (videoReady && (!songVar.isVocal || vocalsReady)) {
+            setTimeout(function () {
+                songVar.isRunning = true
+                video.play();
+                if (songVar.isVocal) vocals.play();
+            }, 550)
+
+        }
+    }
+
+    video.oncanplaythrough = (event) => {
+        videoReady = true;
+        if(!songVar.isRunning)checkReadyAndPlay();
+    };
+
+    vocals.oncanplaythrough = (event) => {
+        vocalsReady = true;
+        if(!songVar.isRunning)checkReadyAndPlay();
+    };
+
     video.onplaying = (event) => {
         if (songVar.isVocal) {
             vocals.currentTime = video.currentTime;
@@ -202,12 +231,6 @@ playSong = (cdn, data) => {
     video.load();
     if (songVar.isVocal) vocals.load();
 
-    //Start Play Video
-    gamevar.isPaused = false;
-    setTimeout(function () {
-        video.play();
-        if (songVar.isVocal) vocals.play();
-    }, 500);
 
 
     //Initial Hud
@@ -261,13 +284,13 @@ playSong = (cdn, data) => {
             }
         }
 
-        // Add Vocal Support
         if (songVar.isVocal) {
-            const SYNC_THRESHOLD = 0.03; // Lower threshold for detecting out-of-sync for more sensitivity
-            const MAX_ALLOWED_DIFFERENCE = 0.3; // Reduced max time difference before seeking
-            const BASE_ADJUSTMENT_FACTOR = 0.5; // Increased factor to adjust playback rate sensitivity
-            const MIN_PLAYBACK_RATE = 0.7;
-            const MAX_PLAYBACK_RATE = 1.3;
+            const SYNC_THRESHOLD = 0.01;
+            const MAX_ALLOWED_DIFFERENCE = 0.2;
+            const BASE_ADJUSTMENT_FACTOR = 2;
+            const MIN_PLAYBACK_RATE = -0.05;
+            const MAX_PLAYBACK_RATE = 1.15;
+            const DAMPING_FACTOR = 0.9;
 
             const timeDifference = vocals.currentTime - video.currentTime;
             const absTimeDifference = Math.abs(timeDifference);
@@ -278,24 +301,26 @@ playSong = (cdn, data) => {
                     vocals.currentTime = video.currentTime;
                     console.log(`Too far out of sync: ${timeDifference.toFixed(2)}s. Seeking to match video.`);
                 } else {
-                    // Adjust playback rate dynamically based on time difference with higher sensitivity
-                    const dynamicAdjustmentFactor = BASE_ADJUSTMENT_FACTOR * Math.pow(absTimeDifference, 2);
+                    // Adjust playback rate dynamically based on time difference with more aggressive adjustment
+                    const dynamicAdjustmentFactor = BASE_ADJUSTMENT_FACTOR * absTimeDifference;
 
-                    // Adjust playback rate more aggressively
-                    const adjustmentRate = 1 - (timeDifference * dynamicAdjustmentFactor);
-                    const smoothedRate = timeDifference > 0
-                        ? Math.max(MIN_PLAYBACK_RATE, adjustmentRate)  // Slow down if vocals are ahead
-                        : Math.min(MAX_PLAYBACK_RATE, adjustmentRate); // Speed up if vocals are behind
+                    // Calculate the adjustment rate based on the time difference
+                    let adjustmentRate = 1 - (timeDifference * dynamicAdjustmentFactor);
 
-                    vocals.playbackRate = (vocals.playbackRate * 0.8) + (smoothedRate * 0.2);
+                    // Clamp the adjustment rate within the allowable playback rate range
+                    adjustmentRate = Math.max(MIN_PLAYBACK_RATE, Math.min(MAX_PLAYBACK_RATE, adjustmentRate));
+
+                    // Smoothly transition to the new playback rate using a damping factor
+                    vocals.playbackRate = (vocals.playbackRate * DAMPING_FACTOR) + (adjustmentRate * (1 - DAMPING_FACTOR));
                 }
             } else if (Math.abs(vocals.playbackRate - 1) > 0.01) {
                 // Gradually reset playback rate when sync is achieved
-                vocals.playbackRate += (1 - vocals.playbackRate) * 0.05;
+                vocals.playbackRate += (1 - vocals.playbackRate) * 0.1; // Increased reset speed
             } else {
                 vocals.playbackRate = 1;
             }
         }
+
 
 
 
@@ -340,7 +365,7 @@ playSong = (cdn, data) => {
         //End Of Loop
         if (gamevar.DebugMode) {
             document.querySelector(".currentTimeV").innerHTML = songVar.currentTime; //stop delay
-            debugVocal.innerText = vocals.playbackRate * 100
+            debugVocal.innerText = `${(vocals.currentTime - video.currentTime).toFixed(4)}ms, ${vocals.playbackRate * 100}`
         }
     }, 1);
 };

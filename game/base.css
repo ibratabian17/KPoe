@@ -12,7 +12,9 @@
 #Game {
   height: 100%;
 }
-
+* {
+  box-sizing: border-box;
+}
 html,
 body {
   margin: 0;
@@ -161,8 +163,8 @@ body {
   border: 0.1em solid #f3f3f326;
   border-top: 0.1em solid #ffffff;
   border-radius: 50%;
-  width: 0.5em;
-  height: 0.5em;
+  width: 0.6em;
+  height: 0.6em;
   animation: spin 0.6s linear infinite;
   top: calc(50% - 0.25em);
   position: absolute;
@@ -191,13 +193,13 @@ body {
 .shortcut-ui {
   padding: 0.3em;
   display: flex;
-  height: 1.9em;
+  height: 2.6em;
   width: min-content;
   min-width: 2em;
   position: absolute;
   background-color: #00000080;
   right: 0em;
-  top: -0.7em;
+  top: -0.8em;
   border-radius: 0.6em;
   -webkit-border-radius: 0.6em;
   -moz-border-radius: 0.6em;
