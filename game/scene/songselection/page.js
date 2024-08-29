@@ -14,9 +14,9 @@ initializeSongList();
 
 function updateShortcutKeys() {
     document.querySelector(".overlay-hi .shortcut").innerHTML = `
-        <img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> Sing  
-        <img class="key_textures" src="${getPlatformKey("REFRESH")}"></img> Refresh Songlist  
-        <img class="key_textures" src="${getPlatformKey("BACK")}"></img> Back`;
+        <img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> ${getLocalizedLang('sing')}  
+        <img class="key_textures" src="${getPlatformKey("REFRESH")}"></img> ${getLocalizedLang('refresh_songlist')}    
+        <img class="key_textures" src="${getPlatformKey("BACK")}"></img> ${getLocalizedLang('back')}`;
 }
 
 function initializeSongList() {

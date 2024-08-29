@@ -10,7 +10,7 @@ if (navigator.userAgent.includes('Electron')) {
 
 } else {
     document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> Start Game`;
-    warningtext = "This game requires a song list from the user\nDownloading all files and caching them, may take some time"
+    warningtext = `${getLocalizedLang('songlist_warn')}`
     cacheFile()
 }
 document.querySelector('.txt-warning').innerHTML = warningtext

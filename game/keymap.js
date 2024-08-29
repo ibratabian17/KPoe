@@ -103,7 +103,7 @@ var keytask = {
                     document.querySelector('.video').pause();
                     document.querySelector('#pausescreen').style.display = 'block'
                     document.querySelector('#pausescreen').style.opacity = 1;
-                    document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> Confirm  <img class="key_textures" src="${getPlatformKey("BACK")}"></img> Back`;
+                    document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> ${getLocalizedLang('confirm')}  <img class="key_textures" src="${getPlatformKey("BACK")}"></img> ${getLocalizedLang('back')}`;
                     document.querySelector('.hud').classList.add('paused')
                 }
                 gamevar.isPaused = !gamevar.isPaused

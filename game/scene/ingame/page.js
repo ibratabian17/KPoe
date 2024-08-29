@@ -5,8 +5,8 @@ var instrument;
 var isVocalEnabled = false
 updateLoadingState = () => {
     document.querySelector(".overlay-hi .shortcut").innerHTML = '';
-    document.querySelector(".song-metadata .title").innerText = 'Loading Song Data.';
-    document.querySelector(".song-metadata .artist").innerText = 'Please Wait...';
+    document.querySelector(".song-metadata .title").innerText = getLocalizedLang('loading_songdata');
+    document.querySelector(".song-metadata .artist").innerText = getLocalizedLang('please_wait');
     document.querySelector(".song-metadata .time").innerText = '';
     document.querySelector(".song-metadata .cover .image").style.backgroundImage = `url(${gamevar.selectedBase.assets.cover})`;
     document.querySelector('.video').classList.add('showbanner');

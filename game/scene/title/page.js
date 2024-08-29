@@ -17,5 +17,5 @@ function startGame() {
         globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
     }
 }
-document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> Confirm`;
+document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> ${getLocalizedLang('confirm')}`;
 document.querySelector("#sceneDraw #play").innerHTML = `Press <img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> To Start`

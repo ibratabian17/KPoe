@@ -51,6 +51,7 @@ function loadAnotherHTML(path, jspath) {
     const loadHTML = new Promise((resolve, reject) => {
       document.querySelector('body').setAttribute('currentScene', path.split('/')[1])
       document.getElementById('sceneDraw').innerHTML = html;
+      updateLocalizedText()
       setTimeout(function () { resolve('a') }, 100)
     });
 
@@ -67,6 +68,7 @@ function loadAnotherHTML(path, jspath) {
       .then(html => {
         document.querySelector('body').setAttribute('currentScene', path.split('/')[1])
         document.getElementById('sceneDraw').innerHTML = html;
+        updateLocalizedText()
       })
       .then(() => {
 
