@@ -330,3 +330,12 @@ input[type="range"]::-moz-range-thumb {
   width: 8em;
   height: 80%;
 }
+
+iframe#youtubeVideo {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}

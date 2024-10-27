@@ -100,6 +100,9 @@ function deselectCurrentSong() {
 
 function selectNewSong(index) {
     document.querySelectorAll('.itemsong')[index].classList.add('selected');
+    document.querySelectorAll('.itemsong')[index].scrollIntoView({
+        behavior: 'smooth'
+    });
 }
 
 function setSelectedItem(cdn, item, index) {

@@ -235,7 +235,8 @@ html:focus-within {
 
 .itemsong.selected {
     scroll-margin-left: 1.4em;
-    scroll-snap-align: start;
+    scroll-margin-right: 1.4em;
+    /*scroll-snap-align: start;*/
     scroll-behavior: smooth;
 }
 
@@ -249,8 +250,8 @@ html:focus-within {
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
-    -ms-scroll-snap-type: x mandatory;
-    scroll-snap-type: x mandatory;
+    /*-ms-scroll-snap-type: x mandatory;
+    scroll-snap-type: x mandatory;*/
 }
 
 .itemsong .song-title {
@@ -297,8 +298,8 @@ html:focus-within {
 }
 
 .itemsong.choosed .song--decoration::after {
-    -webkit-animation: selectedbounce 1s;
-    animation: selectedbounce 1s;
+    -webkit-animation: selectedbounce 1s!important;
+    animation: selectedbounce 1s!important;
     border: 0.03em solid #0eaedf;
 }
 .itemsong.choosed img{
@@ -307,6 +308,7 @@ html:focus-within {
 }
 
 .itemsong.selected .song--decoration::after {
+    animation: decorationselected 4s 1s infinite;
     opacity: 1;
     transform: none;
     transition: all .2s;
@@ -385,6 +387,18 @@ html:focus-within {
     }
 
 }
+
+@keyframes decorationselected {
+
+    0%, 100% {
+        transform: scale(1.0);
+    }
+    50% {
+        transform: scale(1.01);
+    }
+
+}
+
 
   
   

@@ -92,7 +92,7 @@ var keytask = {
             if (!clickCooldown.ingame) { // Check if cooldown is active
                 clickCooldown.ingame = true; // Activate cooldown
                 if (gamevar.isPaused) {
-                    document.querySelector('.video').play()
+                    player.play();
                     document.querySelector('#pausescreen').style.opacity = 0;
                     document.querySelector('#pausescreen').style.transition = 'opacity .5s'
                     setTimeout(function () { document.querySelector('#pausescreen').style.display = 'none' }, 500)
@@ -100,7 +100,7 @@ var keytask = {
                     document.querySelector('.hud').classList.remove('paused')
                 }
                 else {
-                    document.querySelector('.video').pause();
+                    player.pause();
                     document.querySelector('#pausescreen').style.display = 'block'
                     document.querySelector('#pausescreen').style.opacity = 1;
                     document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> ${getLocalizedLang('confirm')}  <img class="key_textures" src="${getPlatformKey("BACK")}"></img> ${getLocalizedLang('back')}`;

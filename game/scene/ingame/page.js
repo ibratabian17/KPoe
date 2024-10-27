@@ -1,8 +1,16 @@
+
 var isWalking = false
 var selectedPause = 1
 var songDebugger;
 var instrument;
-var isVocalEnabled = false
+var isVocalEnabled = false;
+// Video element references
+var isYouTubeVideo = gamevar.selectedBase.video.isYouTube && gamevar.selectedBase.video.youtubeId; // Indicate if it's a YouTube video
+var player; // player
+
+
+
+
 updateLoadingState = () => {
     document.querySelector(".overlay-hi .shortcut").innerHTML = '';
     document.querySelector(".song-metadata .title").innerText = getLocalizedLang('loading_songdata');
@@ -99,6 +107,254 @@ generateLineLyrics = (data) => {
 playSong = (cdn, data) => {
     var slider = document.querySelector("#vocalsSlider");
     var hud = document.querySelector(".hud");
+
+    class VideoPlayer {
+        constructor(videoElement, isYouTubeVideo) {
+            this.videoElement = videoElement;
+            this.isYouTubeVideo = isYouTubeVideo;
+            this.ytPlayer = null;
+            this.isYtPlayerReady = false
+            this.songVar = { isRunning: false, isVocal: false };
+
+            if (this.isYouTubeVideo) {
+                this.loadYouTubeAPI();
+            } else {
+                this.setupNativeVideo();
+            }
+        }
+
+        loadYouTubeAPI() {
+            window.YTConfig = {host: 'https://www.youtube.com/iframe_api'}
+            this.ytPlayer = new YT.Player('youtubeVideo', {
+                host: "https://www.youtube-nocookie.com" || "https://www.youtube.com",
+                videoId: gamevar.selectedBase.video.youtubeId,
+                events: {
+                    'onReady': this.onPlayerReady.bind(this),
+                    'onStateChange': this.onPlayerStateChange.bind(this),
+                },
+                playerVars: { 'autoplay': 1, 'controls': 0, "rel": 0, "disablekb": 1, "fs": 0, "hd": 1 },
+            });
+            window.YTConfig = {host: 'https://www.youtube.com/iframe_api'}
+              
+        }
+
+
+        onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                this.isYtPlayerReady = true
+                document.querySelector('.video-loading').style.display = "none";
+                    document.querySelector('.song-metadata').classList.remove('show');
+                    document.querySelector('.metadata-layout').classList.add('playing');
+            }
+            if (event.data == YT.PlayerState.BUFFERING) {
+                document.querySelector('.video-loading').style.display = "block";
+            }
+            if (event.data == YT.PlayerState.ENDED) {
+                clearInterval(jsonplayer);
+                this.unload()
+                globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
+                document.querySelector('.metadata-layout').classList.remove('playing');
+                slider.classList.remove('enabled')
+            }
+        }
+
+        setupNativeVideo() {
+            //Initial Videoplayer --
+            this.videoElement.volume = 1
+            var vocals = document.querySelector(".vocals");
+            if (gamevar.selectedBase.video.isHls) {
+                if (Hls.isSupported()) {
+                    const hls = new Hls();
+                    hls.attachMedia(this.videoElement);
+                    hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+                        hls.loadSource(gamevar.selectedBase.video.path);
+                    });
+                } else if (this.videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                    this.videoElement.src = gamevar.selectedBase.video.path;
+                }
+            } else {
+                this.videoElement.src = gamevar.selectedBase.video.path;
+            }
+            if (gamevar.selectedBase.video.vocals) {
+                songVar.isVocal = true;
+                vocals.src = gamevar.selectedBase.video.vocals;
+                slider.classList.add('enabled')
+            }
+            slider.oninput = function () {
+                vocals.volume = this.value / 100;
+            }
+            this.videoElement.currentTime = songVar.startVideo / 1000;
+
+            // Flag to track readiness of video and vocals
+            let videoReady = false;
+            let vocalsReady = false;
+
+            this.videoElement.addEventListener('waiting', () => {
+                document.querySelector('.video-loading').style.display = "block";
+            });
+            this.videoElement.addEventListener('playing', () => {
+                document.querySelector('.video-loading').style.display = "none";
+                if (this.videoElement.videoWidth == 0) {
+                    document.querySelector('.song-metadata').classList.add('show');
+                    document.querySelector('.metadata-layout').classList.add('playing');
+                } else {
+                    document.querySelector('.song-metadata').classList.remove('show');
+                    document.querySelector('.metadata-layout').classList.add('playing');
+                }
+            });
+            this.videoElement.addEventListener("timeupdate", (event) => {
+                document.querySelector(".song-metadata .time").innerHTML = getVideoTime(this.videoElement.currentTime - (songVar.startVideo / 1000), this.videoElement.duration - (songVar.startVideo / 1000));
+            });
+            this.videoElement.addEventListener("loadedmetadata", (event) => {
+                document.querySelector(".song-metadata .time").innerHTML = getVideoTime(this.videoElement.currentTime - (songVar.startVideo / 1000), this.videoElement.duration - (songVar.startVideo / 1000));
+                if (this.videoElement.videoWidth == 0) {
+                    document.querySelector('.video').classList.add('showbanner');
+                } else {
+                    document.querySelector('.video').classList.remove('showbanner');
+                }
+            });
+
+            // Check if both video and vocals are ready, then start playing
+            function checkReadyAndPlay() {
+                console.log(`videoReady: ${videoReady}\nisVocal: ${songVar.isVocal}\nvocalsReady: ${vocalsReady}`)
+                if (videoReady && (!songVar.isVocal || vocalsReady)) {
+                    setTimeout(function () {
+                        songVar.isRunning = true
+                        this.videoElement.play();
+                        if (songVar.isVocal) vocals.play();
+                    }, 550)
+
+                }
+            }
+
+            this.videoElement.oncanplaythrough = (event) => {
+                videoReady = true;
+                if (!songVar.isRunning) checkReadyAndPlay();
+            };
+
+            vocals.oncanplaythrough = (event) => {
+                vocalsReady = true;
+                if (!songVar.isRunning) checkReadyAndPlay();
+            };
+
+            this.videoElement.onplaying = (event) => {
+                if (songVar.isVocal) {
+                    vocals.currentTime = this.videoElement.currentTime;
+                    vocals.play();
+                }
+            };
+            this.videoElement.onpause = (event) => {
+                if (songVar.isVocal) {
+                    vocals.pause();
+                    vocals.currentTime = this.videoElement.currentTime;
+                }
+            };
+            this.videoElement.onerror = function (evt) {
+                if (this.videoElement.src !== "" || this.videoElement.src == undefined || this.videoElement.src == null) {
+                    alert('Can\'t Play this maps, reason: ' + evt.toString());
+                    globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
+                    clearInterval(jsonplayer);
+                }
+            };
+            this.videoElement.load();
+            if (songVar.isVocal) vocals.load();
+        }
+
+        onPlayerReady(event) {
+            this.ytPlayer.setVolume(100); // You can make this dynamic based on controls
+            this.ytPlayer.seekTo(this.songVar.startVideo / 1000, true);
+            this.checkReadyAndPlay();
+        }
+
+        getVideoDuration() {
+            return this.isYouTubeVideo ? this.ytPlayer.getDuration() || 0 : this.videoElement.duration;
+        }
+
+        getCurrentTime() {
+            return this.isYouTubeVideo ? this.isYtPlayerReady ? this.ytPlayer.getCurrentTime()|| 0 : 0 : this.videoElement.currentTime;
+        }
+
+        isPlayingAds() {
+            return (this.ytPlayer.getCurrentTime() || 0) > 0.5 && !this.isYtPlayerReady;
+        }
+
+        checkReadyAndPlay() {
+            if (this.isYouTubeVideo) {
+                if (this.ytPlayer && this.ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                    this.songVar.isRunning = true;
+                } else {
+                    this.ytPlayer.playVideo();
+                }
+            } else {
+                if (this.videoElement.readyState >= 2 && (!this.songVar.isVocal || this.vocalsReady)) {
+                    this.songVar.isRunning = true;
+                    this.videoElement.play();
+                    if (this.songVar.isVocal) this.vocals.play();
+                }
+            }
+        }
+
+        play() {
+            if (this.isYouTubeVideo) {
+                if (this.ytPlayer) {
+                    try {
+                    this.ytPlayer.playVideo();
+                    } catch(err){
+                        console.log(err)
+                    }
+                }
+            } else {
+                this.videoElement.play();
+            }
+            this.songVar.isRunning = true;
+        }
+
+        seekTo(time) {
+            if (this.isYouTubeVideo) {
+                if (this.ytPlayer) {
+                    try {
+                    this.ytPlayer.seekTo(time);
+                    } catch(err){
+                        console.log(err)
+                    }
+                }
+            } else {
+                this.videoElement.currentTime = time;
+            }
+            this.songVar.isRunning = true;
+        }
+    
+        pause() {
+            if (this.isYouTubeVideo) {
+                this.ytPlayer.pauseVideo();
+            } else {
+                this.videoElement.pause();
+            }
+            this.songVar.isRunning = false;
+        }
+    
+        unload() {
+            this.songVar.isDone = true;
+    
+            if (this.isYouTubeVideo && this.ytPlayer) {
+                this.ytPlayer.stopVideo();
+                this.ytPlayer.destroy();
+                this.ytPlayer = null;
+            } else {
+                this.videoElement.pause();
+                this.videoElement.removeAttribute('src');
+                this.videoElement.load();
+    
+                if (this.songVar.isVocal) {
+                    const vocals = document.querySelector('.vocals');
+                    vocals.pause();
+                    vocals.removeAttribute('src');
+                    vocals.load();
+                }
+            }
+        }
+    }
+
     var debugVocal = document.querySelector('.VocalOffsetV')
     let offset = {
         beat: 0,
@@ -130,108 +386,8 @@ playSong = (cdn, data) => {
         document.querySelector('#lyrics').classList.add(songVar.lyricsStyle);
     } catch (err) { }
 
-    //Initial Videoplayer --
-    var video = document.querySelector(".video");
-    video.volume = 1
-    var vocals = document.querySelector(".vocals");
-    if (gamevar.selectedBase.video.isHls) {
-        if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-                hls.loadSource(gamevar.selectedBase.video.path);
-            });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = gamevar.selectedBase.video.path;
-        }
-    } else {
-        video.src = gamevar.selectedBase.video.path;
-    }
-    if (gamevar.selectedBase.video.vocals) {
-        songVar.isVocal = true;
-        vocals.src = gamevar.selectedBase.video.vocals;
-        slider.classList.add('enabled')
-    }
-    slider.oninput = function () {
-        vocals.volume = this.value / 100;
-    }
-    video.currentTime = songVar.startVideo / 1000;
-
-    // Flag to track readiness of video and vocals
-    let videoReady = false;
-    let vocalsReady = false;
-
-    video.addEventListener('waiting', () => {
-        document.querySelector('.video-loading').style.display = "block";
-    });
-    video.addEventListener('playing', () => {
-        document.querySelector('.video-loading').style.display = "none";
-        if (video.videoWidth == 0) {
-            document.querySelector('.song-metadata').classList.add('show');
-            document.querySelector('.metadata-layout').classList.add('playing');
-        } else {
-            document.querySelector('.song-metadata').classList.remove('show');
-            document.querySelector('.metadata-layout').classList.add('playing');
-        }
-    });
-    video.addEventListener("timeupdate", (event) => {
-        document.querySelector(".song-metadata .time").innerHTML = getVideoTime(video.currentTime - (songVar.startVideo / 1000), video.duration - (songVar.startVideo / 1000));
-    });
-    video.addEventListener("loadedmetadata", (event) => {
-        document.querySelector(".song-metadata .time").innerHTML = getVideoTime(video.currentTime - (songVar.startVideo / 1000), video.duration - (songVar.startVideo / 1000));
-        if (video.videoWidth == 0) {
-            document.querySelector('.video').classList.add('showbanner');
-        } else {
-            document.querySelector('.video').classList.remove('showbanner');
-        }
-    });
-
-    // Check if both video and vocals are ready, then start playing
-    function checkReadyAndPlay() {
-        console.log(`videoReady: ${videoReady}\nisVocal: ${songVar.isVocal}\nvocalsReady: ${vocalsReady}`)
-        if (videoReady && (!songVar.isVocal || vocalsReady)) {
-            setTimeout(function () {
-                songVar.isRunning = true
-                video.play();
-                if (songVar.isVocal) vocals.play();
-            }, 550)
-
-        }
-    }
-
-    video.oncanplaythrough = (event) => {
-        videoReady = true;
-        if(!songVar.isRunning)checkReadyAndPlay();
-    };
-
-    vocals.oncanplaythrough = (event) => {
-        vocalsReady = true;
-        if(!songVar.isRunning)checkReadyAndPlay();
-    };
-
-    video.onplaying = (event) => {
-        if (songVar.isVocal) {
-            vocals.currentTime = video.currentTime;
-            vocals.play();
-        }
-    };
-    video.onpause = (event) => {
-        if (songVar.isVocal) {
-            vocals.pause();
-            vocals.currentTime = video.currentTime;
-        }
-    };
-    video.onerror = function (evt) {
-        if (video.src !== "" || video.src == undefined || video.src == null) {
-            alert('Can\'t Play this maps, reason: ' + evt.toString());
-            globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
-            jsonplayer = clearInterval(jsonplayer);
-        }
-    };
-    video.load();
-    if (songVar.isVocal) vocals.load();
-
-
+    player = new VideoPlayer(document.querySelector('.video'), isYouTubeVideo, songVar);
+    setTimeout(player.play(), 1000)
 
     //Initial Hud
     songVar.Lyrics.push({ time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0 });
@@ -244,8 +400,14 @@ playSong = (cdn, data) => {
     }
 
     jsonplayer = setInterval(function () {
-        songVar.currentTime = Math.round(video.currentTime * 1000);
-        songVar.duration = Math.round(video.duration * 1000);
+        songVar.currentTime = Math.round(player.getCurrentTime() * 1000);
+        songVar.duration = Math.round(player.getVideoDuration() * 1000);
+
+        if(isYouTubeVideo && player.isPlayingAds()){
+            player.unload()
+            player = new VideoPlayer(document.querySelector('.video'), isYouTubeVideo, songVar);
+            console.log('Ads Detected')
+        }
 
         // Simple Beat Working
         if ((songVar.Beat[offset.beat] - songVar.gameOffset) < songVar.currentTime) {
@@ -269,15 +431,12 @@ playSong = (cdn, data) => {
         }
 
         // SelfStop
-        if ((songVar.Beat[songVar.Beat.length - 1] - songVar.gameOffset) < songVar.currentTime || video.currentTime == video.duration || video.currentTime > video.duration) {
+        if ((songVar.Beat[songVar.Beat.length - 1] - songVar.gameOffset) < songVar.currentTime || songVar.currentTime == songVar.duration || songVar.currentTime > songVar.duration) {
             if (!songVar.isDone) {
                 songVar.isDone = true;
-                video.removeAttribute('src');
-                video.load();
-                vocals.removeAttribute('src');
-                vocals.load();
+                player.unload()
                 globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
-                jsonplayer = clearInterval(jsonplayer);
+                clearInterval(jsonplayer);
                 document.querySelector('.metadata-layout').classList.remove('playing');
                 slider.classList.remove('enabled')
                 return;
@@ -511,10 +670,10 @@ document.querySelectorAll('.itempause').forEach((item, index) => {
         if (selectedPause == index) {
             setTimeout(() => {
                 if (index == 0) {
-                    document.querySelector('.video').currentTime = document.querySelector('.video').duration || document.querySelector('.video').currentTime + 200000000000
+                     player.seekTo(player.getVideoDuration() || player.getCurrentTime() + 200000000000)
                 }
                 if (index == 1) {
-                    document.querySelector('.video').play()
+                    player.play();
                     document.querySelector('#pausescreen').style.opacity = 0;
                     document.querySelector('#pausescreen').style.transition = 'opacity .5s'
                     setTimeout(function () { document.querySelector('#pausescreen').style.display = 'none' }, 500)
