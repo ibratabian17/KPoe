@@ -215,6 +215,11 @@ globalfunc.startTransition = (changeScene = false, htmlPath, jsPath, scrollTime 
   const transitionScene = document.querySelector('.sceneTransition');
   transitionScene.classList.add('fadeIn');
   transitionScene.style.visibility = "visible"
+  let ingame = false
+  if (scrollTime == 4) {
+    ingame = true;
+    transitionScene.classList.add('ingame');
+  }
   if (scrollTime == 0) globalfunc.playSfx(3000, 4700, 1)
   setTimeout(function () {
     transitionScene.classList.remove('fadeIn');
@@ -223,10 +228,11 @@ globalfunc.startTransition = (changeScene = false, htmlPath, jsPath, scrollTime 
     if (scrollTime == 1) globalfunc.playSfx(2900, 4700, 1)
     setTimeout(function () {
       transitionScene.classList.remove('fadeOut');
+      transitionScene.classList.remove('ingame');
       transitionScene.style.visibility = "hidden"
       if (scrollTime == 3) globalfunc.playSfx(2900, 4700, 1)
-    }, 500)
-  }, 500)
+    }, ingame ? 500 : 500)
+  }, ingame ? 700 : 500)
 }
 
 
@@ -234,7 +240,7 @@ function detectFullscreen() {
   if (document.fullscreenElement || document.mozFullScreenElement ||
     document.webkitFullscreenElement || document.msFullscreenElement) {
     document.querySelector('.shortcut-ui .button.fullscreen').classList.remove('active')
-  } else {
+  } else if (document.exitFullscreen) {
     document.querySelector('.shortcut-ui .button.fullscreen').classList.add('active')
 
   }

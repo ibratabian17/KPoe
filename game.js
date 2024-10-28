@@ -15,17 +15,24 @@ function createWindow() {
       nodeIntegration: true,
       sandbox: false,
     },
-    icon: path.join(__dirname, 'game/assets/textures/ui/JD_Series.webp')
+    icon: path.join(__dirname, 'game/assets/textures/JD_Series.ico')
   });
   /*const emptyMenu = Menu.buildFromTemplate([]);
   mainWindow.setMenu(emptyMenu);*/
 
   const mainSession = mainWindow.webContents.session;
   mainSession.webRequest.onBeforeSendHeaders({ urls: ['*://*/*'] }, (details, callback) => {
-    details.requestHeaders['Referer'] = 'https://ibratabian17.github.io';
-
+    // Check if the domain is youtube-nocookie.com
+    if (details.url.includes('youtube-nocookie.com')) {
+      details.requestHeaders['Referer'] = 'https://www.youtube.com';
+    } else {
+      // Set default referer if not youtube-nocookie.com
+      details.requestHeaders['Referer'] = 'https://ibratabian17.github.io';
+    }
+  
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
+  
 
   mainWindow.loadURL(
     url.format({

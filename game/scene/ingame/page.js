@@ -5,11 +5,19 @@ var songDebugger;
 var instrument;
 var isVocalEnabled = false;
 // Video element references
-var isYouTubeVideo = gamevar.selectedBase.video.isYouTube && gamevar.selectedBase.video.youtubeId; // Indicate if it's a YouTube video
+var youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+var isYouTubeVideo = 
+    (gamevar.selectedBase.video.isYouTube && 
+    gamevar.selectedBase.video.youtubeId) || 
+    youtubeRegex.test(gamevar.selectedBase.video.path);
 var player; // player
 
 
-
+getYoutubeId = (url) => {
+    let VID_REGEX =
+    /(?:youtube(?:-nocookie)?\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    return url.match(VID_REGEX)[1]
+}
 
 updateLoadingState = () => {
     document.querySelector(".overlay-hi .shortcut").innerHTML = '';
@@ -106,7 +114,30 @@ generateLineLyrics = (data) => {
 
 playSong = (cdn, data) => {
     var slider = document.querySelector("#vocalsSlider");
+    var vocals = document.querySelector(".vocals");
+    var nativeVideo = document.querySelector(".video");
     var hud = document.querySelector(".hud");
+    var debugVocal = document.querySelector('.VocalOffsetV')
+    let offset = {
+        beat: 0,
+        lyrics: 0,
+        lyricsLine: 0
+    };
+    const songVar = {
+        Beat: data.beats,
+        Odieven: false,
+        Lyrics: data.lyrics,
+        LyricsLine: generateLineLyrics(data.lyrics),
+        currentTime: 0,
+        isDone: false,
+        gameOffset: data.gameOffset || 0,
+        startVideo: data.startVideo || 0,
+        lyricsStyle: gamevar.overrideLyricsStyle || data.lyricsStyle || "normal",
+        style: data.css || "",
+        isVocal: false,
+        isRunning: false,
+    };
+    songDebugger = this;
 
     class VideoPlayer {
         constructor(videoElement, isYouTubeVideo) {
@@ -127,13 +158,14 @@ playSong = (cdn, data) => {
             window.YTConfig = {host: 'https://www.youtube.com/iframe_api'}
             this.ytPlayer = new YT.Player('youtubeVideo', {
                 host: "https://www.youtube-nocookie.com" || "https://www.youtube.com",
-                videoId: gamevar.selectedBase.video.youtubeId,
+                videoId: gamevar.selectedBase.video.youtubeId ||  gamevar.selectedBase.video.videoId || getYoutubeId(gamevar.selectedBase.video.path),
                 events: {
                     'onReady': this.onPlayerReady.bind(this),
                     'onStateChange': this.onPlayerStateChange.bind(this),
                 },
-                playerVars: { 'autoplay': 1, 'controls': 0, "rel": 0, "disablekb": 1, "fs": 0, "hd": 1 },
+                playerVars: { 'autoplay': 1, 'controls': 0, "rel": 0, "disablekb": 1, "fs": 0, "hd": 1, "start": Math.round(songVar.startVideo), },
             });
+            document.querySelector('#youtubeVideo').classList.add('hidden');
             window.YTConfig = {host: 'https://www.youtube.com/iframe_api'}
               
         }
@@ -141,7 +173,12 @@ playSong = (cdn, data) => {
 
         onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.PLAYING) {
+                if(songVar.currentTime < songVar.startVideo){
+                    player.seekTo(songVar.startVideo  / 1000, true)
+                }
                 this.isYtPlayerReady = true
+                document.querySelector('.video').classList.remove('showbanner');
+                document.querySelector('#youtubeVideo').classList.remove('hidden');
                 document.querySelector('.video-loading').style.display = "none";
                     document.querySelector('.song-metadata').classList.remove('show');
                     document.querySelector('.metadata-layout').classList.add('playing');
@@ -161,7 +198,7 @@ playSong = (cdn, data) => {
         setupNativeVideo() {
             //Initial Videoplayer --
             this.videoElement.volume = 1
-            var vocals = document.querySelector(".vocals");
+            const video = this.videoElement
             if (gamevar.selectedBase.video.isHls) {
                 if (Hls.isSupported()) {
                     const hls = new Hls();
@@ -214,13 +251,15 @@ playSong = (cdn, data) => {
                 }
             });
 
+
+
             // Check if both video and vocals are ready, then start playing
             function checkReadyAndPlay() {
                 console.log(`videoReady: ${videoReady}\nisVocal: ${songVar.isVocal}\nvocalsReady: ${vocalsReady}`)
                 if (videoReady && (!songVar.isVocal || vocalsReady)) {
                     setTimeout(function () {
                         songVar.isRunning = true
-                        this.videoElement.play();
+                        video.play();
                         if (songVar.isVocal) vocals.play();
                     }, 550)
 
@@ -267,15 +306,31 @@ playSong = (cdn, data) => {
         }
 
         getVideoDuration() {
-            return this.isYouTubeVideo ? this.ytPlayer.getDuration() || 0 : this.videoElement.duration;
+            if (this.isYouTubeVideo) {
+                try {
+                    return this.ytPlayer.getDuration() || NaN;
+                } catch (error) {
+                    return NaN;
+                }
+            } else {
+                return this.videoElement.duration;
+            }
         }
-
+        
         getCurrentTime() {
-            return this.isYouTubeVideo ? this.isYtPlayerReady ? this.ytPlayer.getCurrentTime()|| 0 : 0 : this.videoElement.currentTime;
+            if (this.isYouTubeVideo && this.isYtPlayerReady) {
+                try {
+                    return this.ytPlayer.getCurrentTime() || 0;
+                } catch (error) {
+                    return 0;
+                }
+            } else {
+                return this.videoElement.currentTime;
+            }
         }
 
         isPlayingAds() {
-            return (this.ytPlayer.getCurrentTime() || 0) > 0.5 && !this.isYtPlayerReady;
+            return (this.getCurrentTime() || 0) > 0.2 && !this.isYtPlayerReady;
         }
 
         checkReadyAndPlay() {
@@ -321,7 +376,6 @@ playSong = (cdn, data) => {
             } else {
                 this.videoElement.currentTime = time;
             }
-            this.songVar.isRunning = true;
         }
     
         pause() {
@@ -355,27 +409,7 @@ playSong = (cdn, data) => {
         }
     }
 
-    var debugVocal = document.querySelector('.VocalOffsetV')
-    let offset = {
-        beat: 0,
-        lyrics: 0,
-        lyricsLine: 0
-    };
-    const songVar = {
-        Beat: data.beats,
-        Odieven: false,
-        Lyrics: data.lyrics,
-        LyricsLine: generateLineLyrics(data.lyrics),
-        currentTime: 0,
-        isDone: false,
-        gameOffset: data.gameOffset || 0,
-        startVideo: data.startVideo || 0,
-        lyricsStyle: gamevar.overrideLyricsStyle || data.lyricsStyle || "normal",
-        style: data.css || "",
-        isVocal: false,
-        isRunning: false,
-    };
-    songDebugger = this;
+    
 
     //Add CSS
     try {
@@ -386,8 +420,9 @@ playSong = (cdn, data) => {
         document.querySelector('#lyrics').classList.add(songVar.lyricsStyle);
     } catch (err) { }
 
-    player = new VideoPlayer(document.querySelector('.video'), isYouTubeVideo, songVar);
-    setTimeout(player.play(), 1000)
+    player = new VideoPlayer(nativeVideo, isYouTubeVideo, songVar);
+    var vocals = document.querySelector(".vocals");
+    setTimeout(player.play(), 550)
 
     //Initial Hud
     songVar.Lyrics.push({ time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0 });
@@ -407,7 +442,11 @@ playSong = (cdn, data) => {
             player.unload()
             player = new VideoPlayer(document.querySelector('.video'), isYouTubeVideo, songVar);
             console.log('Ads Detected')
+        } else {
+            
         }
+        
+        
 
         // Simple Beat Working
         if ((songVar.Beat[offset.beat] - songVar.gameOffset) < songVar.currentTime) {
@@ -451,13 +490,13 @@ playSong = (cdn, data) => {
             const MAX_PLAYBACK_RATE = 1.15;
             const DAMPING_FACTOR = 0.9;
 
-            const timeDifference = vocals.currentTime - video.currentTime;
+            const timeDifference = vocals.currentTime - nativeVideo.currentTime;
             const absTimeDifference = Math.abs(timeDifference);
 
             if (absTimeDifference > SYNC_THRESHOLD) {
                 if (absTimeDifference > MAX_ALLOWED_DIFFERENCE) {
                     // If difference is too large, directly seek to video position
-                    vocals.currentTime = video.currentTime;
+                    vocals.currentTime = nativeVideo.currentTime;
                     console.log(`Too far out of sync: ${timeDifference.toFixed(2)}s. Seeking to match video.`);
                 } else {
                     // Adjust playback rate dynamically based on time difference with more aggressive adjustment

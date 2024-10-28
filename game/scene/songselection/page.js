@@ -198,7 +198,7 @@ function sing() {
         $('.itemsong.selected').addClass('choosed');
 
         setTimeout(() => {
-            globalfunc.startTransition(true, 'scene/ingame/page.html', 'scene/ingame/page.js', 0);
+            globalfunc.startTransition(true, 'scene/ingame/page.html', 'scene/ingame/page.js', 4);
             $('.video--preview').stop(true, true).animate({ volume: 0 }, 500);
         }, 1000);
     }

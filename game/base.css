@@ -42,6 +42,12 @@ body {
   background-size: 100% 100%;
   /* Add your content styling here */
 }
+.sceneTransition.ingame {
+  background-color: #000000;
+  background-position: center;
+  background-size: 100% 100%;
+  /* Add your content styling here */
+}
 
 #Game {
   position: relative;
@@ -94,6 +100,9 @@ body {
   background-size: contain;
   background-position: center;
 }
+.sceneTransition.ingame::after {
+  display: none;
+}
 
 .sceneTransition.fadeIn::after {
   animation: startTransition .4s;
@@ -102,6 +111,15 @@ body {
 .sceneTransition.fadeIn {
   animation: fadeIn .4s ease-out;
   -webkit-animation: fadeIn .4s ease-out;
+}
+.sceneTransition.ingame.fadeIn {
+  animation: fadeIn .6s ease-out;
+  -webkit-animation: fadeIn .6s ease-out;
+}
+.sceneTransition.ingame.fadeOut {
+  opacity: 0;
+  animation: fadeOut .3s ease-in;
+  -webkit-animation: fadeOut .3s ease-in;
 }
 
 .sceneTransition.fadeOut {
@@ -332,10 +350,13 @@ input[type="range"]::-moz-range-thumb {
 }
 
 iframe#youtubeVideo {
-  height: 100%;
-  width: 100%;
+  height: 100.1%;
+  width: 100.1%;
   position: absolute;
   top: 0;
   left: 0;
   pointer-events: none;
+}
+iframe#youtubeVideo.hidden {
+  opacity: 0;
 }
