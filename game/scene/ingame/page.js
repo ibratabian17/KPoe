@@ -8,7 +8,7 @@ var isVocalEnabled = false;
 var youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
 var isYouTubeVideo = 
     (gamevar.selectedBase.video.isYouTube && 
-    gamevar.selectedBase.video.youtubeId) || 
+    (gamevar.selectedBase.video.youtubeId || gamevar.selectedBase.video.videoId)) || 
     youtubeRegex.test(gamevar.selectedBase.video.path);
 var player; // player
 
