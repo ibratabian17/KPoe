@@ -3,7 +3,7 @@ var selectedSong = -1;
 document.title = "KaraokePoe - Selecting Song";
 var songdb = localStorage.getItem('songdb');
 var fetchUrl = songdb ? songdb : "/songdb.json";
-var timer = 0
+var timer = 0;
 
 // Update UI elements
 updateShortcutKeys();
@@ -109,7 +109,7 @@ function setSelectedItem(cdn, item, index) {
     if (timer) clearInterval(timer);
     showLoadingIndicator();
     updatePreviewDetails(item);
-    setupVideoPlayer(item);
+    setupVideoPlayer(item, index);
     selectedSong = index;
     gamevar.selectedSong = index;
     gamevar.selectedBase = item;
@@ -141,32 +141,63 @@ function updateBackgroundImages(banner) {
     document.querySelector(".video--preview").removeAttribute('poster');
 }
 
-function setupVideoPlayer(item) {
+function setupVideoPlayer(item, index) {
     const videoplayer = document.querySelector("#preview .video--preview");
-    videoplayer.src = "";
-    videoplayer.load();
+    $('.video--preview').stop(true, true).animate({ volume: 0.07 }, { duration: 500, queue: false });
 
-    if (item.previewOffset === 0 && item.video.preview !== item.video.path) {
-        fetch(item.video.preview)
-            .then(response => response.blob())
-            .then(blob => {
-                videoplayer.src = window.URL.createObjectURL(blob);
-            });
-    } else {
-        videoplayer.src = item.video.preview;
-    }
-
-    videoplayer.currentTime = item.previewOffset / 1000;
-    videoplayer.volume = 0;
-
-    videoplayer.oncanplay = () => videoplayer.play();
-    videoplayer.onplay = () => startVideoPlayer(videoplayer, item.assets.banner);
+    videoplayer.oncanplay = () => {
+        videoplayer.volume = 0; // Atur volume
+        startVideoPlayer(videoplayer, item.assets.banner);
+    };
+    // Event tambahan
     setupVideoPlayerEvents(videoplayer);
     startPreviewGlowEffect(videoplayer);
+
+    // Cek apakah video preview sama dengan video path
+    if (item.video.preview === item.video.path) {
+        // Jika sama, lakukan fetch HEAD untuk memeriksa ketersediaan video
+        fetch(item.video.preview, { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    // Jika respons OK, atur sumber video dan mulai memutar
+                    videoplayer.src = item.video.preview; 
+                    videoplayer.currentTime = item.previewOffset / 1000; // Atur waktu mulai
+                    videoplayer.volume = 0; // Atur volume
+                    videoplayer.play(); // Mulai memutar video
+                } else {
+                    console.error('Video does not exist:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('Error Failed:', error);
+            });
+    } else {
+        // Jika berbeda, buat elemen video sementara
+        const tempVideoPlayer = document.createElement('video'); 
+        tempVideoPlayer.src = item.video.preview; // Set sumber video baru
+        tempVideoPlayer.currentTime = item.previewOffset / 1000; // Atur waktu mulai
+        tempVideoPlayer.volume = 0; // Atur volume
+
+        // Ketika video baru sudah bisa diputar
+        tempVideoPlayer.oncanplay = () => {
+            // Ganti sumber video yang sedang diputar dengan video baru
+            if (selectedSong === index) {
+                videoplayer.src = tempVideoPlayer.src; 
+                videoplayer.currentTime = tempVideoPlayer.currentTime; // Set waktu yang sama
+                videoplayer.play(); // Mulai memutar video baru
+            }
+            
+            // Hapus elemen video sementara
+            tempVideoPlayer.remove();
+        };
+
+        // Muat video baru
+        tempVideoPlayer.load();
+    }
 }
 
 function startVideoPlayer(videoplayer, banner) {
-    $('.video--preview').stop(true, true).animate({ volume: 0.6 }, { duration: 500, queue: false });
+    $('.video--preview').stop(true, true).animate({ volume: 0.6 }, { duration: 100, queue: false });
     videoplayer.setAttribute('poster', banner);
 }
 

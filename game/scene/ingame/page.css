@@ -1,13 +1,15 @@
 /*DO NOT REMOVE*/
 #sceneDraw {
     visibility: visible;
-  }
+}
+
 /*======*/
 
 
 #video-player {
     display: block !important;
 }
+
 #debugger .filler {
     width: 100%;
     overflow: hidden;
@@ -21,9 +23,11 @@
     right: 0;
     opacity: 1;
 }
+
 #debugger .filler.show {
     color: orange;
 }
+
 #debugger .fill {
     position: relative;
 }
@@ -223,10 +227,12 @@
 #lyrics .line.previous {
     opacity: .0;
 }
-#lyrics .line.overlap.previous{
+
+#lyrics .line.overlap.previous {
     opacity: .0;
     transform: translateY(-205%);
 }
+
 #lyrics .line.overlap.previous {
     transition: opacity .2s;
 }
@@ -240,7 +246,8 @@
     transform: translateY(-205%);
     transition: transform .2s;
 }
-#lyrics .line.previous2{
+
+#lyrics .line.previous2 {
     opacity: 0;
     transform: translateY(-205%);
 }
@@ -260,10 +267,12 @@
     position: absolute;
     text-align: center;
 }
-#lyrics:has(.line.current .fill[data-singer="v2"]) #beat{
+
+#lyrics:has(.line.current .fill[data-singer="v2"]) #beat {
     background: var(--menu-color-2, #ff0000);
 }
-#lyrics .fill[data-singer="v2"]{
+
+#lyrics .fill[data-singer="v2"] {
     --menu-color: var(--menu-color-2, #ff0000)
 }
 
@@ -704,7 +713,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     top: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(0deg, black, transparent);
+    background: linear-gradient(0deg, black, transparent) no-repeat;
     color: white;
     font-size: 0.3em;
     text-align: left;
@@ -910,21 +919,314 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
 
 
 /*Experimental*/
-.blur-enabled #pausescreen{
+.blur-enabled #pausescreen {
     backdrop-filter: blur(0.1em);
     background-color: #2121215b;
 }
-.blur-enabled .song-metadata.show{
-backdrop-filter: blur(0.16em);
+
+.blur-enabled .song-metadata.show {
+    backdrop-filter: blur(0.16em);
 }
 
 .shortcut-ui .button.vocalbutton.on {
     background-image: url(../../assets/textures/ui/ic_mic_enabled.webp);
-  }
-  .shortcut-ui .button.vocalbutton.off {
-    background-image: url(../../assets/textures/ui/ic_mic_disabled.webp);
-  }
+}
 
-  .hud.paused * {
-    animation-play-state: paused!important;
-  }
+.shortcut-ui .button.vocalbutton.off {
+    background-image: url(../../assets/textures/ui/ic_mic_disabled.webp);
+}
+
+.hud.paused * {
+    animation-play-state: paused !important;
+}
+
+#players {
+    width: 2em;
+    height: 1.2em;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    right: 0.5em;
+    top: 0.25em;
+}
+
+.player-name {
+    width: 100%;
+    font-size: 0.25em;
+    color: white;
+    text-shadow: 0.03em 0.03em black;
+    top: 18%;
+    position: absolute;
+    text-align: right;
+    z-index: 1;
+}
+
+span.scores {
+    color: white;
+    text-shadow: 0.03em 0.03em black;
+    font-size: 0.22em;
+    top: 0;
+    position: absolute;
+    right: 0em;
+    z-index: 1;
+}
+
+.player-color {
+    width: 50%;
+    background: var(--PlayerColorBlue);
+    height: 0.07em;
+    position: absolute;
+    z-index: -1;
+    border-radius: 1em;
+    top: 35%;
+    z-index: -1;
+}
+
+.perfect-bkg {
+    width: 2em;
+    height: 0.54em;
+    background: linear-gradient(-90deg, #00ff13, transparent) no-repeat;
+    display: block;
+    opacity: 0;
+    z-index: -1;
+    top: 0;
+    left: 0.1em;
+    border-radius: 0.05em;
+    position: absolute
+}
+
+.perfect-text {
+    position: absolute;
+    height: 0.36em;
+    width: 1.2em;
+    background: url(../../assets/textures/ui/feedback_perfect.webp) no-repeat center;
+    background-size: cover;
+    transform: rotate(354deg);
+    top: 0.1em;
+    left: 0.1em;
+    opacity: 0;
+    z-index: 22;
+}
+
+.feedback-perfect.animate .perfect-bkg {
+    animation: feedbackbg .8s;
+}
+
+.feedback-perfect.animate .perfect-text {
+    animation: feedbackperfect .8s;
+}
+
+.yeah-bkg {
+    width: 2em;
+    height: 0.54em;
+    background: linear-gradient(-90deg, #fff200, transparent) no-repeat right;
+    display: block;
+    opacity: 0;
+    z-index: -1;
+    top: 0;
+    left: 0.1em;
+    border-radius: 0.05em;
+    position: absolute
+}
+
+.yeah-text {
+    position: absolute;
+    height: 0.36em;
+    width: 1.2em;
+    background: url(../../assets/textures/ui/feedback_gold.webp) no-repeat center;
+    background-size: cover;
+    transform: rotate(354deg);
+    top: 0.1em;
+    left: 0.1em;
+    opacity: 0;
+    z-index: 22;
+}
+
+.feedback-yeah.animate .yeah-bkg {
+    animation: feedbackbg .8s;
+}
+
+.feedback-yeah.animate .yeah-text {
+    animation: feedbackyeah .8s;
+}
+
+.good-bkg {
+    width: 2em;
+    height: 0.54em;
+    background: linear-gradient(-90deg, #00aeff, transparent) no-repeat center;
+    display: block;
+    opacity: 0;
+    z-index: -1;
+    top: 0;
+    left: 0.1em;
+    border-radius: 0.05em;
+    position: absolute
+}
+
+.good-text {
+    position: absolute;
+    height: 0.36em;
+    width: 1.2em;
+    background: url(../../assets/textures/ui/feedback_good.webp) no-repeat center;
+    background-size: cover;
+    transform: rotate(354deg);
+    top: 0.1em;
+    left: 0.1em;
+    opacity: 0;
+    z-index: 22;
+}
+
+.feedback-good.animate .good-bkg {
+    animation: feedbackbg .8s;
+}
+
+.feedback-good.animate .good-text {
+    animation: feedback .8s;
+}
+
+.ok-bkg {
+    width: 2em;
+    height: 0.54em;
+    background: linear-gradient(-90deg, #6a00ff, transparent) no-repeat center;
+    display: block;
+    opacity: 0;
+    z-index: -1;
+    top: 0;
+    left: 0.1em;
+    border-radius: 0.05em;
+    position: absolute
+}
+
+.ok-text {
+    position: absolute;
+    height: 0.36em;
+    width: 1.2em;
+    background: url(../../assets/textures/ui/feedback_ok.webp) no-repeat center;
+    background-size: contain;
+    transform: rotate(354deg);
+    top: 0.1em;
+    left: 0.1em;
+    opacity: 0;
+    z-index: 22;
+}
+
+.feedback-ok.animate .ok-bkg {
+    animation: feedbackbg .8s;
+}
+
+.feedback-ok.animate .ok-text {
+    animation: feedback .8s;
+}
+
+
+.bad-bkg {
+    width: 2em;
+    height: 0.54em;
+    background: linear-gradient(-90deg, #ff0000, transparent) center;
+    display: block;
+    opacity: 0;
+    z-index: -1;
+    top: 0;
+    left: 0.1em;
+    border-radius: 0.05em;
+    position: absolute
+}
+
+.bad-text {
+    position: absolute;
+    height: 0.36em;
+    width: 1.2em;
+    background: url(../../assets/textures/ui/feedback_bad.webp) no-repeat center;
+    background-size: contain;
+    transform: rotate(354deg);
+    top: 0.1em;
+    left: 0.1em;
+    opacity: 0;
+    z-index: 22;
+}
+
+.feedback-container {
+    height: 100%;
+    position: absolute;
+    z-index: 0;
+    display: block;
+
+}
+
+
+.feedback-bad.animate .bad-bkg {
+    animation: feedbackbg .8s;
+}
+
+.feedback-bad.animate .bad-text {
+    animation: feedback .8s;
+}
+
+@keyframes feedbackbg {
+    100% {
+        opacity: 0;
+    }
+
+    0% {
+        opacity: 1;
+    }
+}
+
+@keyframes feedbackperfect {
+    0% {
+        opacity: 0;
+        -webkit-transform: scale3d(1, 1, 1) rotate(354deg) translateZ(30px);
+        transform: scale3d(1, 1, 1) rotate(354deg) translateZ(30px)
+    }
+
+    15% {
+        opacity: 1;
+        -webkit-transform: scale3d(0.8, 0.8, 1) rotate(354deg) translateZ(30px);
+        transform: scale3d(1.2, 1.2, 1.2) rotate(354deg) translateZ(30px)
+    }
+
+    24% {
+        -webkit-transform: scale3d(1, 1, 1) rotate(354deg);
+        transform: scale3d(1, 1, 1) rotate(354deg)
+    }
+
+    30% {
+        opacity: 1;
+        -webkit-transform: scale3d(0.8, 0.8, 1) rotate(354deg);
+        transform: scale3d(1.1, 1.1, 1.1) rotate(354deg)
+    }
+
+    43% {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0) rotate(354deg);
+        transform: translate3d(0, 0, 0) rotate(354deg)
+    }
+
+    100% {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 5px, 0) scale3d(0.95, 0.95, 1) rotate(354deg);
+        transform: translate3d(0, 0, 0) scale3d(0.95, 0.95, 1) rotate(354deg)
+    }
+}
+
+@keyframes feedback {
+    0% {
+        opacity: 0;
+        transform: scale3d(1, 1, 1) rotate(354deg) translateZ(30px)
+    }
+
+    15% {
+        opacity: 1;
+        transform: scale3d(1.2, 1.2, 1.2) rotate(354deg) translateZ(30px)
+    }
+
+    43% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) rotate(354deg)
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale3d(0.95, 0.95, 1) rotate(354deg)
+    }
+}

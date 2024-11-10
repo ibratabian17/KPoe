@@ -6,16 +6,16 @@ var instrument;
 var isVocalEnabled = false;
 // Video element references
 var youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
-var isYouTubeVideo = 
-    (gamevar.selectedBase.video.isYouTube && 
-    (gamevar.selectedBase.video.youtubeId || gamevar.selectedBase.video.videoId)) || 
+var isYouTubeVideo =
+    (gamevar.selectedBase.video.isYouTube &&
+        (gamevar.selectedBase.video.youtubeId || gamevar.selectedBase.video.videoId)) ||
     youtubeRegex.test(gamevar.selectedBase.video.path);
 var player; // player
 
 
 getYoutubeId = (url) => {
     let VID_REGEX =
-    /(?:youtube(?:-nocookie)?\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        /(?:youtube(?:-nocookie)?\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     return url.match(VID_REGEX)[1]
 }
 
@@ -121,7 +121,8 @@ playSong = (cdn, data) => {
     let offset = {
         beat: 0,
         lyrics: 0,
-        lyricsLine: 0
+        lyricsLine: 0,
+        vocalKeys: 0
     };
     const songVar = {
         Beat: data.beats,
@@ -136,6 +137,9 @@ playSong = (cdn, data) => {
         style: data.css || "",
         isVocal: false,
         isRunning: false,
+        vocalKeys: data.vocalKeys || [],
+        score: 0,
+        lastDiff: 0,
     };
     songDebugger = this;
 
@@ -155,33 +159,34 @@ playSong = (cdn, data) => {
         }
 
         loadYouTubeAPI() {
-            window.YTConfig = {host: 'https://www.youtube.com/iframe_api'}
+            window.YTConfig = { host: 'https://www.youtube.com/iframe_api' }
             this.ytPlayer = new YT.Player('youtubeVideo', {
                 host: "https://www.youtube-nocookie.com" || "https://www.youtube.com",
-                videoId: gamevar.selectedBase.video.youtubeId ||  gamevar.selectedBase.video.videoId || getYoutubeId(gamevar.selectedBase.video.path),
+                videoId: gamevar.selectedBase.video.youtubeId || gamevar.selectedBase.video.videoId || getYoutubeId(gamevar.selectedBase.video.path),
                 events: {
                     'onReady': this.onPlayerReady.bind(this),
                     'onStateChange': this.onPlayerStateChange.bind(this),
                 },
-                playerVars: { 'autoplay': 1, 'controls': 0, "rel": 0, "disablekb": 1, "fs": 0, "hd": 1, "start": Math.round(songVar.startVideo), },
+                playerVars: { 'autoplay': 1, 'controls': 0, "rel": 0, "disablekb": 1, "fs": 0, "hd": 1, "start": Math.round(songVar.startVideo), 'mute': songVar.startVideo && songVar.startVideo !== 0 ? 0 : 0 },
             });
             document.querySelector('#youtubeVideo').classList.add('hidden');
-            window.YTConfig = {host: 'https://www.youtube.com/iframe_api'}
-              
+            window.YTConfig = { host: 'https://www.youtube.com/iframe_api' }
+
         }
 
 
         onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.PLAYING) {
-                if(songVar.currentTime < songVar.startVideo){
-                    player.seekTo(songVar.startVideo  / 1000, true)
+                if (songVar.currentTime < songVar.startVideo) {
+                    player.seekTo(songVar.startVideo / 1000, true)
                 }
                 this.isYtPlayerReady = true
                 document.querySelector('.video').classList.remove('showbanner');
                 document.querySelector('#youtubeVideo').classList.remove('hidden');
                 document.querySelector('.video-loading').style.display = "none";
-                    document.querySelector('.song-metadata').classList.remove('show');
-                    document.querySelector('.metadata-layout').classList.add('playing');
+                document.querySelector('.song-metadata').classList.remove('show');
+                document.querySelector('.metadata-layout').classList.add('playing');
+                if (player.isMuted()) player.unMute()
             }
             if (event.data == YT.PlayerState.BUFFERING) {
                 document.querySelector('.video-loading').style.display = "block";
@@ -199,7 +204,7 @@ playSong = (cdn, data) => {
             //Initial Videoplayer --
             this.videoElement.volume = 1
             const video = this.videoElement
-            if (gamevar.selectedBase.video.isHls) {
+            if (gamevar.selectedBase.video.isHls || gamevar.selectedBase.video.path.includes('.m3u8')) {
                 if (Hls.isSupported()) {
                     const hls = new Hls();
                     hls.attachMedia(this.videoElement);
@@ -316,7 +321,7 @@ playSong = (cdn, data) => {
                 return this.videoElement.duration;
             }
         }
-        
+
         getCurrentTime() {
             if (this.isYouTubeVideo && this.isYtPlayerReady) {
                 try {
@@ -353,8 +358,8 @@ playSong = (cdn, data) => {
             if (this.isYouTubeVideo) {
                 if (this.ytPlayer) {
                     try {
-                    this.ytPlayer.playVideo();
-                    } catch(err){
+                        this.ytPlayer.playVideo();
+                    } catch (err) {
                         console.log(err)
                     }
                 }
@@ -368,8 +373,8 @@ playSong = (cdn, data) => {
             if (this.isYouTubeVideo) {
                 if (this.ytPlayer) {
                     try {
-                    this.ytPlayer.seekTo(time);
-                    } catch(err){
+                        this.ytPlayer.seekTo(time);
+                    } catch (err) {
                         console.log(err)
                     }
                 }
@@ -377,7 +382,7 @@ playSong = (cdn, data) => {
                 this.videoElement.currentTime = time;
             }
         }
-    
+
         pause() {
             if (this.isYouTubeVideo) {
                 this.ytPlayer.pauseVideo();
@@ -386,10 +391,10 @@ playSong = (cdn, data) => {
             }
             this.songVar.isRunning = false;
         }
-    
+
         unload() {
             this.songVar.isDone = true;
-    
+
             if (this.isYouTubeVideo && this.ytPlayer) {
                 this.ytPlayer.stopVideo();
                 this.ytPlayer.destroy();
@@ -398,7 +403,7 @@ playSong = (cdn, data) => {
                 this.videoElement.pause();
                 this.videoElement.removeAttribute('src');
                 this.videoElement.load();
-    
+
                 if (this.songVar.isVocal) {
                     const vocals = document.querySelector('.vocals');
                     vocals.pause();
@@ -409,7 +414,7 @@ playSong = (cdn, data) => {
         }
     }
 
-    
+
 
     //Add CSS
     try {
@@ -428,25 +433,48 @@ playSong = (cdn, data) => {
     songVar.Lyrics.push({ time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0 });
     hud.style.setProperty("--menu-color", data.lyricsColor);
     hud.style.setProperty("--menu-color-2", data.lyricsColor2 || data.lyricsColor);
+    if(songVar.vocalKeys.length == 0)document.querySelector('#players').style.display = 'none'
+    if(gamevar.DebugMode)document.querySelector('#debugger').style.display = 'block'
     try {
         setTimeout(function () { LyricsScroll(songVar.LyricsLine[offset.lyricsLine]) }, (songVar.LyricsLine[offset.lyricsLine].time - 1000 - songVar.startVideo));
     } catch (err) {
         console.log(err);
     }
 
+    // Lyrics Scoring System with Average Pitch Check
+    let pitchSamples = []; // History of recent micPitch values
+    const feedbackClasses = {
+        0: "feedback-bad",
+        10: "feedback-ok",
+        50: "feedback-good",
+        91: "feedback-perfect",
+    };
+
+    function getFeedbackClass(percentage) {
+        if (percentage >= 91) return feedbackClasses[91];
+        if (percentage >= 50) return feedbackClasses[50];
+        if (percentage >= 10) return feedbackClasses[10];
+        return feedbackClasses[0];
+    }
+
+    function calculateScore(isGoldMove, totalMoves) {
+        const baseScore = 200000 / totalMoves;
+        return baseScore;
+    }
+
     jsonplayer = setInterval(function () {
         songVar.currentTime = Math.round(player.getCurrentTime() * 1000);
         songVar.duration = Math.round(player.getVideoDuration() * 1000);
 
-        if(isYouTubeVideo && player.isPlayingAds()){
+        if (isYouTubeVideo && player.isPlayingAds()) {
             player.unload()
             player = new VideoPlayer(document.querySelector('.video'), isYouTubeVideo, songVar);
             console.log('Ads Detected')
         } else {
-            
+
         }
-        
-        
+
+
 
         // Simple Beat Working
         if ((songVar.Beat[offset.beat] - songVar.gameOffset) < songVar.currentTime) {
@@ -519,7 +547,78 @@ playSong = (cdn, data) => {
             }
         }
 
-
+        try {
+            // Calculate score per vocal key
+            const totalScore = 200000;
+            const numVocalKeys = songVar.vocalKeys.length;
+            const scorePerKey = totalScore / numVocalKeys;
+        
+            // Check if offset.vocalKeys is within the bounds of the vocalKeys array
+            if (offset.vocalKeys < numVocalKeys) {
+                const currentVocalKey = songVar.vocalKeys[offset.vocalKeys];
+        
+                // Check if the vocal key is within the time range
+                if (currentVocalKey && currentVocalKey.time - songVar.gameOffset < songVar.currentTime) {
+                    const startTime = currentVocalKey.time - songVar.gameOffset;
+                    const endTime = startTime + currentVocalKey.duration;
+        
+                    // If the vocal key's time window has passed, calculate pitch score
+                    if (endTime < songVar.currentTime) {
+                        // Calculate the average pitch from the samples collected
+                        let averagePitch = pitchSamples.length > 0 ? pitchSamples.reduce((sum, pitch) => sum + pitch, 0) / pitchSamples.length : 0;
+        
+                        // Calculate pitch difference
+                        let pitchDiff = Math.abs(averagePitch - currentVocalKey.key);
+                        let matchLevel = "x";  // Default match level
+                        let score = 0; // Initialize score variable
+        
+                        // Determine the match level and score (scaled to the score per key)
+                        if (pitchDiff < 20) {
+                            matchLevel = "perfect";
+                            score = scorePerKey * 1.0;  // Perfect match gets full score
+                        } else if (pitchDiff < 50) {
+                            matchLevel = "good";
+                            score = scorePerKey * 0.75;  // Good match gets 75% of the score
+                        } else if (pitchDiff < 150) {
+                            matchLevel = "ok";
+                            score = scorePerKey * 0.5;   // OK match gets 50% of the score
+                        }
+        
+                        // Calculate the feedback percentage (based on the score out of the possible max score)
+                        const percentageFeedback = (score / scorePerKey) * 100;  // Calculate percentage based on score per key
+                        const feedbackClass = getFeedbackClass(percentageFeedback);  // Get feedback class based on percentage
+        
+                        // Update the total score and the feedback text
+                        songVar.score += score;
+                        document.querySelector('.scores').innerText = Math.round(songVar.score);
+                        document.querySelector(".MicPitchV").innerHTML = `${currentVocalKey.time} ${currentVocalKey.key} (${Math.round(score)} pts) - ${matchLevel}`;
+        
+                        // Handle animation or feedback effects
+                        const feedbackElement = document.querySelector('.' + feedbackClass);
+                        feedbackElement.classList.remove('animate');
+                        feedbackElement.offsetHeight; // trigger reflow
+                        feedbackElement.classList.add('animate');
+                        feedbackElement.classList.add(feedbackClass);  // Add the feedback class for visual feedback
+        
+                        // Reset pitch samples and move to next vocal key
+                        offset.vocalKeys++;
+                        pitchSamples = [];
+                    } else {
+                        // Collect pitch samples within the time window (check every 10ms)
+                        for (let t = startTime; t <= endTime; t++) {
+                            if (songVar.currentTime >= t && songVar.currentTime < t + 10) {
+                                pitchSamples.push(micPitch); // Assume micPitch is defined elsewhere
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            console.error(err.stack);  // Handle errors
+        }
+        
+        
+        
 
 
         // Debug Lyrics
@@ -563,7 +662,8 @@ playSong = (cdn, data) => {
         //End Of Loop
         if (gamevar.DebugMode) {
             document.querySelector(".currentTimeV").innerHTML = songVar.currentTime; //stop delay
-            debugVocal.innerText = `${(vocals.currentTime - video.currentTime).toFixed(4)}ms, ${vocals.playbackRate * 100}`
+            debugVocal.innerText = `${(vocals.currentTime - nativeVideo.currentTime).toFixed(4)}ms, ${vocals?.playbackRate * 100}`
+            document.querySelector('.MicPitchV').innerText = micPitch
         }
     }, 1);
 };
@@ -709,7 +809,7 @@ document.querySelectorAll('.itempause').forEach((item, index) => {
         if (selectedPause == index) {
             setTimeout(() => {
                 if (index == 0) {
-                     player.seekTo(player.getVideoDuration() || player.getCurrentTime() + 200000000000)
+                    player.seekTo(player.getVideoDuration() || player.getCurrentTime() + 200000000000)
                 }
                 if (index == 1) {
                     player.play();
