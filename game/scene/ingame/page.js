@@ -604,9 +604,9 @@ playSong = (cdn, data) => {
                         offset.vocalKeys++;
                         pitchSamples = [];
                     } else {
-                        // Collect pitch samples within the time window (check every 10ms)
+                        // Collect pitch samples within the time window (check every 5ms)
                         for (let t = startTime; t <= endTime; t++) {
-                            if (songVar.currentTime >= t && songVar.currentTime < t + 10) {
+                            if (songVar.currentTime >= t && songVar.currentTime < t + (currentVocalKey.duration / 2)) {
                                 pitchSamples.push(micPitch); // Assume micPitch is defined elsewhere
                             }
                         }
