@@ -160,7 +160,7 @@ function setupVideoPlayer(item, index) {
             .then(response => {
                 if (response.ok) {
                     // Jika respons OK, atur sumber video dan mulai memutar
-                    videoplayer.src = item.video.preview; 
+                    videoplayer.src = item.video.preview;
                     videoplayer.currentTime = item.previewOffset / 1000; // Atur waktu mulai
                     videoplayer.volume = 0; // Atur volume
                     videoplayer.play(); // Mulai memutar video
@@ -173,7 +173,7 @@ function setupVideoPlayer(item, index) {
             });
     } else {
         // Jika berbeda, buat elemen video sementara
-        const tempVideoPlayer = document.createElement('video'); 
+        const tempVideoPlayer = document.createElement('video');
         tempVideoPlayer.src = item.video.preview; // Set sumber video baru
         tempVideoPlayer.currentTime = item.previewOffset / 1000; // Atur waktu mulai
         tempVideoPlayer.volume = 0; // Atur volume
@@ -182,11 +182,11 @@ function setupVideoPlayer(item, index) {
         tempVideoPlayer.oncanplay = () => {
             // Ganti sumber video yang sedang diputar dengan video baru
             if (selectedSong === index) {
-                videoplayer.src = tempVideoPlayer.src; 
+                videoplayer.src = tempVideoPlayer.src;
                 videoplayer.currentTime = tempVideoPlayer.currentTime; // Set waktu yang sama
                 videoplayer.play(); // Mulai memutar video baru
             }
-            
+
             // Hapus elemen video sementara
             tempVideoPlayer.remove();
         };
@@ -214,12 +214,20 @@ function startPreviewGlowEffect(videoplayer) {
     const canvas = document.querySelector(".preview--glow");
     const ctx = canvas.getContext("2d");
 
-    timer = setInterval(() => {
+    function Glow() {
+        canvas.classList.add('show');
+        ctx.drawImage(videoplayer, 0, 0, 20, 20);
         if (gamevar.UIBlur) {
-            canvas.classList.add('show');
-            ctx.drawImage(videoplayer, 0, 0, 20, 20);
+            window.requestAnimationFrame(Glow)
         }
-    }, 1);
+    }
+
+    if (gamevar.UIBlur) {
+        Glow()
+    } else {
+        canvas.classList.remove('show'); 
+    }
+    
 }
 
 function sing() {

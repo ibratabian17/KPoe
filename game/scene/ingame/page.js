@@ -142,6 +142,9 @@ playSong = (cdn, data) => {
         lastDiff: 0,
     };
     songDebugger = this;
+    if (songVar.vocalKeys.length != 0) {
+        startDetection()
+    }
 
     class VideoPlayer {
         constructor(videoElement, isYouTubeVideo) {
@@ -433,8 +436,8 @@ playSong = (cdn, data) => {
     songVar.Lyrics.push({ time: songVar.Beat[songVar.Beat.length - 1] + 2000, duration: "0", text: "", isLineEnding: 0 });
     hud.style.setProperty("--menu-color", data.lyricsColor);
     hud.style.setProperty("--menu-color-2", data.lyricsColor2 || data.lyricsColor);
-    if(songVar.vocalKeys.length == 0)document.querySelector('#players').style.display = 'none'
-    if(gamevar.DebugMode)document.querySelector('#debugger').style.display = 'block'
+    if (songVar.vocalKeys.length == 0) document.querySelector('#players').style.display = 'none'
+    if (gamevar.DebugMode) document.querySelector('#debugger').style.display = 'block'
     try {
         setTimeout(function () { LyricsScroll(songVar.LyricsLine[offset.lyricsLine]) }, (songVar.LyricsLine[offset.lyricsLine].time - 1000 - songVar.startVideo));
     } catch (err) {
@@ -462,166 +465,113 @@ playSong = (cdn, data) => {
         return baseScore;
     }
 
+    // Set the update intervals for specific tasks to reduce CPU usage
+    const DOM_UPDATE_INTERVAL = 20; // Throttle DOM updates to every 50ms
+    const DEBUG_UPDATE_INTERVAL = 50; // Throttle debug updates if enabled
+    let lastDomUpdate = 0;
+    let lastDebugUpdate = 0;
+
     jsonplayer = setInterval(function () {
+        const currentTime = Date.now();
+
         songVar.currentTime = Math.round(player.getCurrentTime() * 1000);
         songVar.duration = Math.round(player.getVideoDuration() * 1000);
 
         if (isYouTubeVideo && player.isPlayingAds()) {
-            player.unload()
+            player.unload();
             player = new VideoPlayer(document.querySelector('.video'), isYouTubeVideo, songVar);
-            console.log('Ads Detected')
-        } else {
-
+            console.log('Ads Detected');
         }
 
+        // Simple Beat Detection
+        if (songVar.Beat[offset.beat] - songVar.gameOffset < songVar.currentTime) {
+            if (gamevar.DebugMode && currentTime - lastDebugUpdate >= DEBUG_UPDATE_INTERVAL) {
+                document.querySelector(".currentBeatV").innerHTML = songVar.Beat[offset.beat];
+                lastDebugUpdate = currentTime;
+            }
 
-
-        // Simple Beat Working
-        if ((songVar.Beat[offset.beat] - songVar.gameOffset) < songVar.currentTime) {
-            hud.classList.add("show");
-            if (gamevar.DebugMode) document.querySelector(".currentBeatV").innerHTML = songVar.Beat[offset.beat];
-            document.querySelector("#beat").style.animationDuration = `${Math.round(songVar.Beat[offset.beat + 1] - songVar.Beat[offset.beat])}.${0}ms`;
-            hud.classList.remove("beat");
-            hud.classList.remove("beat");
-            hud.offsetWidth; //redraw
-            hud.classList.add("beat");
-            if (songVar.Odieven == true) {
-                hud.classList.remove("even");
-                hud.classList.add("odd");
-                songVar.Odieven = false;
-            } else {
-                hud.classList.remove("odd");
-                hud.classList.add("even");
-                songVar.Odieven = true;
+            const beatInterval = Math.round(songVar.Beat[offset.beat + 1] - songVar.Beat[offset.beat]) || 0;
+            if (currentTime - lastDomUpdate >= DOM_UPDATE_INTERVAL) {
+                hud.classList.toggle("show", true);
+                document.querySelector("#beat").style.animationDuration = `${beatInterval}ms`;
+                hud.classList.remove("beat", "even", "odd"); hud.offsetWidth; // trigger reflow
+                hud.classList.add("beat", songVar.Odieven ? "even" : "odd");
+                songVar.Odieven = !songVar.Odieven;
+                lastDomUpdate = currentTime;
             }
             offset.beat++;
         }
 
-        // SelfStop
-        if ((songVar.Beat[songVar.Beat.length - 1] - songVar.gameOffset) < songVar.currentTime || songVar.currentTime == songVar.duration || songVar.currentTime > songVar.duration) {
+        // Self-stop condition
+        if (songVar.Beat[songVar.Beat.length - 1] - songVar.gameOffset < songVar.currentTime || songVar.currentTime >= songVar.duration) {
             if (!songVar.isDone) {
                 songVar.isDone = true;
-                player.unload()
+                player.unload();
                 globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
                 clearInterval(jsonplayer);
                 document.querySelector('.metadata-layout').classList.remove('playing');
-                slider.classList.remove('enabled')
+                slider.classList.remove('enabled');
+                if (songVar.vocalKeys.length) stopDetection();
                 return;
             }
         }
 
+        // Vocal Sync and Scoring
         if (songVar.isVocal) {
             const SYNC_THRESHOLD = 0.005;
-            const MAX_ALLOWED_DIFFERENCE = 0.2;
-            const BASE_ADJUSTMENT_FACTOR = 2;
-            const MIN_PLAYBACK_RATE = -0.05;
-            const MAX_PLAYBACK_RATE = 1.15;
-            const DAMPING_FACTOR = 0.9;
-
+            const MAX_DIFF = 0.2, BASE_FACTOR = 2, MIN_RATE = -0.05, MAX_RATE = 1.15, DAMP_FACTOR = 0.9;
             const timeDifference = vocals.currentTime - nativeVideo.currentTime;
-            const absTimeDifference = Math.abs(timeDifference);
+            const absDiff = Math.abs(timeDifference);
 
-            if (absTimeDifference > SYNC_THRESHOLD) {
-                if (absTimeDifference > MAX_ALLOWED_DIFFERENCE) {
-                    // If difference is too large, directly seek to video position
+            if (absDiff > SYNC_THRESHOLD) {
+                if (absDiff > MAX_DIFF) {
                     vocals.currentTime = nativeVideo.currentTime;
-                    console.log(`Too far out of sync: ${timeDifference.toFixed(2)}s. Seeking to match video.`);
+                    console.log(`Sync issue: ${timeDifference.toFixed(2)}s. Seeking.`);
                 } else {
-                    // Adjust playback rate dynamically based on time difference with more aggressive adjustment
-                    const dynamicAdjustmentFactor = BASE_ADJUSTMENT_FACTOR * absTimeDifference;
-
-                    // Calculate the adjustment rate based on the time difference
-                    let adjustmentRate = 1 - (timeDifference * dynamicAdjustmentFactor);
-
-                    // Clamp the adjustment rate within the allowable playback rate range
-                    adjustmentRate = Math.max(MIN_PLAYBACK_RATE, Math.min(MAX_PLAYBACK_RATE, adjustmentRate));
-
-                    // Smoothly transition to the new playback rate using a damping factor
-                    vocals.playbackRate = (vocals.playbackRate * DAMPING_FACTOR) + (adjustmentRate * (1 - DAMPING_FACTOR));
+                    let adjustRate = 1 - (timeDifference * BASE_FACTOR * absDiff);
+                    adjustRate = Math.max(MIN_RATE, Math.min(MAX_RATE, adjustRate));
+                    vocals.playbackRate = vocals.playbackRate * DAMP_FACTOR + adjustRate * (1 - DAMP_FACTOR);
                 }
             } else if (Math.abs(vocals.playbackRate - 1) > 0.01) {
-                // Gradually reset playback rate when sync is achieved
-                vocals.playbackRate += (1 - vocals.playbackRate) * 0.1; // Increased reset speed
+                vocals.playbackRate += (1 - vocals.playbackRate) * 0.1;
             } else {
                 vocals.playbackRate = 1;
             }
         }
 
         try {
-            // Calculate score per vocal key
-            const totalScore = 200000;
-            const numVocalKeys = songVar.vocalKeys.length;
-            const scorePerKey = totalScore / numVocalKeys;
-        
-            // Check if offset.vocalKeys is within the bounds of the vocalKeys array
-            if (offset.vocalKeys < numVocalKeys) {
-                const currentVocalKey = songVar.vocalKeys[offset.vocalKeys];
-        
-                // Check if the vocal key is within the time range
-                if (currentVocalKey && currentVocalKey.time - songVar.gameOffset < songVar.currentTime) {
-                    const startTime = currentVocalKey.time - songVar.gameOffset;
-                    const endTime = startTime + currentVocalKey.duration;
-        
-                    // If the vocal key's time window has passed, calculate pitch score
-                    if (endTime < songVar.currentTime) {
-                        // Calculate the average pitch from the samples collected
-                        let averagePitch = pitchSamples.length > 0 ? pitchSamples.reduce((sum, pitch) => sum + pitch, 0) / pitchSamples.length : 0;
-        
-                        // Calculate pitch difference
-                        let pitchDiff = Math.abs(averagePitch - currentVocalKey.key);
-                        let matchLevel = "x";  // Default match level
-                        let score = 0; // Initialize score variable
-        
-                        // Determine the match level and score (scaled to the score per key)
-                        if (pitchDiff < 20) {
-                            matchLevel = "perfect";
-                            score = scorePerKey * 1.0;  // Perfect match gets full score
-                        } else if (pitchDiff < 50) {
-                            matchLevel = "good";
-                            score = scorePerKey * 0.75;  // Good match gets 75% of the score
-                        } else if (pitchDiff < 150) {
-                            matchLevel = "ok";
-                            score = scorePerKey * 0.5;   // OK match gets 50% of the score
-                        }
-        
-                        // Calculate the feedback percentage (based on the score out of the possible max score)
-                        const percentageFeedback = (score / scorePerKey) * 100;  // Calculate percentage based on score per key
-                        const feedbackClass = getFeedbackClass(percentageFeedback);  // Get feedback class based on percentage
-        
-                        // Update the total score and the feedback text
+            // Score calculation per vocal key (only if vocalKeys are present)
+            if (songVar.vocalKeys.length != 0) {
+                const totalScore = 200000, scorePerKey = totalScore / songVar.vocalKeys.length;
+                const vocalKey = songVar.vocalKeys[offset.vocalKeys];
+
+                if (vocalKey.time - songVar.gameOffset < songVar.currentTime) {
+                    const keyEnd = vocalKey.time - songVar.gameOffset + vocalKey.duration;
+                    if (keyEnd < songVar.currentTime) {
+                        const avgPitch = pitchSamples.reduce((sum, pitch) => sum + pitch, 0) / (pitchSamples.length || 1);
+                        const diff = Math.abs(avgPitch - vocalKey.key);
+                        let match = "x", score = 0;
+
+                        if (diff < 20) { match = "perfect"; score = scorePerKey; }
+                        else if (diff < 50) { match = "good"; score = scorePerKey * 0.75; }
+                        else if (diff < 150) { match = "ok"; score = scorePerKey * 0.5; }
+
                         songVar.score += score;
-                        document.querySelector('.scores').innerText = Math.round(songVar.score);
-                        document.querySelector(".MicPitchV").innerHTML = `${currentVocalKey.time} ${currentVocalKey.key} (${Math.round(score)} pts) - ${matchLevel}`;
-        
-                        // Handle animation or feedback effects
-                        const feedbackElement = document.querySelector('.' + feedbackClass);
-                        feedbackElement.classList.remove('animate');
-                        feedbackElement.offsetHeight; // trigger reflow
-                        feedbackElement.classList.add('animate');
-                        feedbackElement.classList.add(feedbackClass);  // Add the feedback class for visual feedback
-        
-                        // Reset pitch samples and move to next vocal key
+                        if (currentTime - lastDomUpdate >= DOM_UPDATE_INTERVAL) {
+                            document.querySelector('.scores').innerText = Math.round(songVar.score);
+                            document.querySelector(".MicPitchV").innerHTML = `${vocalKey.time} ${vocalKey.key} (${Math.round(score)} pts) - ${match}`;
+                            lastDomUpdate = currentTime;
+                        }
                         offset.vocalKeys++;
                         pitchSamples = [];
-                    } else {
-                        // Collect pitch samples within the time window (check every 5ms)
-                        for (let t = startTime; t <= endTime; t++) {
-                            if (songVar.currentTime >= t && songVar.currentTime < t + (currentVocalKey.duration / 2)) {
-                                pitchSamples.push(micPitch); // Assume micPitch is defined elsewhere
-                            }
-                        }
+                    } else if (songVar.currentTime >= vocalKey.time && songVar.currentTime < keyEnd / 2) {
+                        pitchSamples.push(micPitch);
                     }
                 }
             }
-        } catch (err) {
-            console.error(err.stack);  // Handle errors
-        }
-        
-        
-        
+        } catch (err) { console.error(err.stack); }
 
-
-        // Debug Lyrics
+        // Update Lyrics (throttled)
         try {
             if (songVar.LyricsLine[offset.lyricsLine] && songVar.LyricsLine[offset.lyricsLine].time - songVar.gameOffset - 150 < songVar.currentTime) {
                 if (gamevar.DebugMode) document.querySelector(".currentLyricsLineV").innerHTML = songVar.LyricsLine[offset.lyricsLine].text;
@@ -638,34 +588,25 @@ playSong = (cdn, data) => {
         } catch (err) { }
 
         try {
-            songVar.Lyrics.forEach((lyric, index) => {
-                var isrunned = songVar.Lyrics[index].finished
-                if ((!isrunned) && (lyric.time - songVar.gameOffset) < songVar.currentTime) {
-                    let isLineEnding = lyric.isLineEnding === 1;
-                    const isMore = lyric.isLineEnding === 1 && songVar.Lyrics[index + 1] && lyric.time >= songVar.Lyrics[index + 1].time;
-
-                    if (gamevar.DebugMode) document.querySelector(".currentLyricsV").innerHTML = lyric.text;
-                    if (true) {
-                        LyricsFill(lyric.text, lyric.duration, index, isLineEnding);
-                    }
-
-                    try {
-                        current.querySelector(`#debugger .fill[offset="${offset}"] .filler`).classList.add('show')
-                    } catch (err) { }
-                    songVar.Lyrics[index].finished = true
-
-                    if (offset.lyrics > index || offset.lyrics == index) offset.lyrics++;
+            songVar.Lyrics.forEach((lyric, i) => {
+                if (!lyric.finished && lyric.time - songVar.gameOffset < songVar.currentTime) {
+                    if (gamevar.DebugMode) document.querySelector(".currentLyricsV").innerText = lyric.text;
+                    LyricsFill(lyric.text, lyric.duration, i, lyric.isLineEnding === 1);
+                    lyric.finished = true;
+                    if (offset.lyrics <= i) offset.lyrics++;
                 }
             });
         } catch (err) { }
 
-        //End Of Loop
-        if (gamevar.DebugMode) {
-            document.querySelector(".currentTimeV").innerHTML = songVar.currentTime; //stop delay
-            debugVocal.innerText = `${(vocals.currentTime - nativeVideo.currentTime).toFixed(4)}ms, ${vocals?.playbackRate * 100}`
-            document.querySelector('.MicPitchV').innerText = micPitch
+        // Debug updates
+        if (gamevar.DebugMode && currentTime - lastDebugUpdate >= DEBUG_UPDATE_INTERVAL) {
+            document.querySelector(".currentTimeV").innerText = songVar.currentTime;
+            debugVocal.innerText = `${(vocals.currentTime - nativeVideo.currentTime).toFixed(4)}ms, ${vocals?.playbackRate * 100}`;
+            document.querySelector('.MicPitchV').innerText = micPitch;
+            lastDebugUpdate = currentTime;
         }
-    }, 1);
+    }, 2);
+
 };
 
 //Lyrics Area

@@ -112,7 +112,7 @@
     left: 0;
     filter: drop-shadow(.057em 0.057em 0.001em #00000070) !important;
     position: relative;
-    will-change: width;
+    will-change: width, background, font-size, filter;
     float: left;
 }
 
@@ -144,6 +144,7 @@
     -moz-transition: width, left;
     -ms-transition: width, left;
     -o-transition: width, left;
+    will-change: width, background, font-size, filter;
 }
 
 #lyrics .line.rtl .filler {
@@ -188,7 +189,7 @@
     -webkit-background-clip: text;
     color: transparent;
     background-repeat: no-repeat;
-    will-change: background, background-size;
+    will-change: width, background, background-size, background-position, font-size, filter;
 }
 
 #lyrics .line.current .fill,
@@ -982,251 +983,94 @@ span.scores {
     z-index: -1;
 }
 
-.perfect-bkg {
-    width: 2em;
-    height: 0.54em;
-    background: linear-gradient(-90deg, #00ff13, transparent) no-repeat;
-    display: block;
-    opacity: 0;
-    z-index: -1;
-    top: 0;
-    left: 0.1em;
-    border-radius: 0.05em;
-    position: absolute
-}
-
-.perfect-text {
-    position: absolute;
-    height: 0.36em;
-    width: 1.2em;
-    background: url(../../assets/textures/ui/feedback_perfect.webp) no-repeat center;
-    background-size: cover;
-    transform: rotate(354deg);
-    top: 0.1em;
-    left: 0.1em;
-    opacity: 0;
-    z-index: 22;
-}
-
-.feedback-perfect.animate .perfect-bkg {
-    animation: feedbackbg .8s;
-}
-
-.feedback-perfect.animate .perfect-text {
-    animation: feedbackperfect .8s;
-}
-
-.yeah-bkg {
-    width: 2em;
-    height: 0.54em;
-    background: linear-gradient(-90deg, #fff200, transparent) no-repeat right;
-    display: block;
-    opacity: 0;
-    z-index: -1;
-    top: 0;
-    left: 0.1em;
-    border-radius: 0.05em;
-    position: absolute
-}
-
-.yeah-text {
-    position: absolute;
-    height: 0.36em;
-    width: 1.2em;
-    background: url(../../assets/textures/ui/feedback_gold.webp) no-repeat center;
-    background-size: cover;
-    transform: rotate(354deg);
-    top: 0.1em;
-    left: 0.1em;
-    opacity: 0;
-    z-index: 22;
-}
-
-.feedback-yeah.animate .yeah-bkg {
-    animation: feedbackbg .8s;
-}
-
-.feedback-yeah.animate .yeah-text {
-    animation: feedbackyeah .8s;
-}
-
-.good-bkg {
-    width: 2em;
-    height: 0.54em;
-    background: linear-gradient(-90deg, #00aeff, transparent) no-repeat center;
-    display: block;
-    opacity: 0;
-    z-index: -1;
-    top: 0;
-    left: 0.1em;
-    border-radius: 0.05em;
-    position: absolute
-}
-
-.good-text {
-    position: absolute;
-    height: 0.36em;
-    width: 1.2em;
-    background: url(../../assets/textures/ui/feedback_good.webp) no-repeat center;
-    background-size: cover;
-    transform: rotate(354deg);
-    top: 0.1em;
-    left: 0.1em;
-    opacity: 0;
-    z-index: 22;
-}
-
-.feedback-good.animate .good-bkg {
-    animation: feedbackbg .8s;
-}
-
-.feedback-good.animate .good-text {
-    animation: feedback .8s;
-}
-
-.ok-bkg {
-    width: 2em;
-    height: 0.54em;
-    background: linear-gradient(-90deg, #6a00ff, transparent) no-repeat center;
-    display: block;
-    opacity: 0;
-    z-index: -1;
-    top: 0;
-    left: 0.1em;
-    border-radius: 0.05em;
-    position: absolute
-}
-
-.ok-text {
-    position: absolute;
-    height: 0.36em;
-    width: 1.2em;
-    background: url(../../assets/textures/ui/feedback_ok.webp) no-repeat center;
-    background-size: contain;
-    transform: rotate(354deg);
-    top: 0.1em;
-    left: 0.1em;
-    opacity: 0;
-    z-index: 22;
-}
-
-.feedback-ok.animate .ok-bkg {
-    animation: feedbackbg .8s;
-}
-
-.feedback-ok.animate .ok-text {
-    animation: feedback .8s;
-}
-
-
-.bad-bkg {
-    width: 2em;
-    height: 0.54em;
-    background: linear-gradient(-90deg, #ff0000, transparent) center;
-    display: block;
-    opacity: 0;
-    z-index: -1;
-    top: 0;
-    left: 0.1em;
-    border-radius: 0.05em;
-    position: absolute
-}
-
-.bad-text {
-    position: absolute;
-    height: 0.36em;
-    width: 1.2em;
-    background: url(../../assets/textures/ui/feedback_bad.webp) no-repeat center;
-    background-size: contain;
-    transform: rotate(354deg);
-    top: 0.1em;
-    left: 0.1em;
-    opacity: 0;
-    z-index: 22;
-}
-
 .feedback-container {
     height: 100%;
     position: absolute;
     z-index: 0;
     display: block;
-
 }
 
+.feedback-bkg,
+.feedback-text {
+    width: 2em;
+    height: 0.54em;
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0.1em;
+    opacity: 0;
+    border-radius: 0.05em;
+}
 
+.feedback-text {
+    height: 0.36em;
+    width: 1.2em;
+    background-size: cover;
+    transform: rotate(354deg);
+    z-index: 22;
+    top: 0.1em;
+}
+
+.feedback-perfect .perfect-bkg { background: linear-gradient(-90deg, #00ff13, transparent) no-repeat; }
+.feedback-yeah .yeah-bkg { background: linear-gradient(-90deg, #fff200, transparent) no-repeat right; }
+.feedback-good .good-bkg { background: linear-gradient(-90deg, #00aeff, transparent) no-repeat center; }
+.feedback-ok .ok-bkg { background: linear-gradient(-90deg, #6a00ff, transparent) no-repeat center; }
+.feedback-bad .bad-bkg { background: linear-gradient(-90deg, #ff0000, transparent) center; }
+
+.feedback-perfect .perfect-text {
+    background: url(../../assets/textures/ui/feedback_perfect.webp) no-repeat center;
+}
+.feedback-yeah .yeah-text {
+    background: url(../../assets/textures/ui/feedback_gold.webp) no-repeat center;
+}
+.feedback-good .good-text {
+    background: url(../../assets/textures/ui/feedback_good.webp) no-repeat center;
+}
+.feedback-ok .ok-text {
+    background: url(../../assets/textures/ui/feedback_ok.webp) no-repeat center;
+    background-size: contain;
+}
+.feedback-bad .bad-text {
+    background: url(../../assets/textures/ui/feedback_bad.webp) no-repeat center;
+    background-size: contain;
+}
+
+.feedback-perfect.animate .perfect-bkg,
+.feedback-yeah.animate .yeah-bkg,
+.feedback-good.animate .good-bkg,
+.feedback-ok.animate .ok-bkg,
 .feedback-bad.animate .bad-bkg {
-    animation: feedbackbg .8s;
+    animation: feedbackbg 0.8s;
 }
 
+.feedback-perfect.animate .perfect-text,
+.feedback-yeah.animate .yeah-text,
+.feedback-good.animate .good-text,
+.feedback-ok.animate .ok-text,
 .feedback-bad.animate .bad-text {
-    animation: feedback .8s;
+    animation: feedback 0.8s;
 }
 
 @keyframes feedbackbg {
-    100% {
-        opacity: 0;
-    }
-
-    0% {
-        opacity: 1;
-    }
-}
-
-@keyframes feedbackperfect {
-    0% {
-        opacity: 0;
-        -webkit-transform: scale3d(1, 1, 1) rotate(354deg) translateZ(30px);
-        transform: scale3d(1, 1, 1) rotate(354deg) translateZ(30px)
-    }
-
-    15% {
-        opacity: 1;
-        -webkit-transform: scale3d(0.8, 0.8, 1) rotate(354deg) translateZ(30px);
-        transform: scale3d(1.2, 1.2, 1.2) rotate(354deg) translateZ(30px)
-    }
-
-    24% {
-        -webkit-transform: scale3d(1, 1, 1) rotate(354deg);
-        transform: scale3d(1, 1, 1) rotate(354deg)
-    }
-
-    30% {
-        opacity: 1;
-        -webkit-transform: scale3d(0.8, 0.8, 1) rotate(354deg);
-        transform: scale3d(1.1, 1.1, 1.1) rotate(354deg)
-    }
-
-    43% {
-        opacity: 1;
-        -webkit-transform: translate3d(0, 0, 0) rotate(354deg);
-        transform: translate3d(0, 0, 0) rotate(354deg)
-    }
-
-    100% {
-        opacity: 0;
-        -webkit-transform: translate3d(0, 5px, 0) scale3d(0.95, 0.95, 1) rotate(354deg);
-        transform: translate3d(0, 0, 0) scale3d(0.95, 0.95, 1) rotate(354deg)
-    }
+    0% { opacity: 1; }
+    100% { opacity: 0; }
 }
 
 @keyframes feedback {
     0% {
         opacity: 0;
-        transform: scale3d(1, 1, 1) rotate(354deg) translateZ(30px)
+        transform: scale3d(1, 1, 1) rotate(354deg) translateZ(30px);
     }
-
     15% {
         opacity: 1;
-        transform: scale3d(1.2, 1.2, 1.2) rotate(354deg) translateZ(30px)
+        transform: scale3d(1.2, 1.2, 1.2) rotate(354deg) translateZ(30px);
     }
-
     43% {
         opacity: 1;
-        transform: translate3d(0, 0, 0) rotate(354deg)
+        transform: translate3d(0, 0, 0) rotate(354deg);
     }
-
     100% {
         opacity: 0;
-        transform: translate3d(0, 0, 0) scale3d(0.95, 0.95, 1) rotate(354deg)
+        transform: translate3d(0, 0, 0) scale3d(0.95, 0.95, 1) rotate(354deg);
     }
 }
