@@ -911,8 +911,6 @@
   
     function onFocus(evt) {
       var target = evt.target;
-      target.scrollIntoView();
-      console.log(target)
       if (target !== window && target !== document &&
           _sectionCount && !_duringFocusChange) {
         var sectionId = getSectionId(target);

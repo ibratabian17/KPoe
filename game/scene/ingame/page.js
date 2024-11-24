@@ -57,7 +57,8 @@ fetchSongData = () => {
         })
         .catch(error => {
             alert('Failed to load map data, reason: ' + error);
-            globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
+            if (!gamevar.isHomescreen) { globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js'); }
+            else { globalfunc.startTransition(true, 'scene/homescreen/page.html', 'scene/homescreen/page.js') }
         });
 };
 
@@ -197,7 +198,8 @@ playSong = (cdn, data) => {
             if (event.data == YT.PlayerState.ENDED) {
                 clearInterval(jsonplayer);
                 this.unload()
-                globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
+                if (!gamevar.isHomescreen) { globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js'); }
+                else { globalfunc.startTransition(true, 'scene/homescreen/page.html', 'scene/homescreen/page.js') }
                 document.querySelector('.metadata-layout').classList.remove('playing');
                 slider.classList.remove('enabled')
             }
@@ -299,7 +301,8 @@ playSong = (cdn, data) => {
             this.videoElement.onerror = function (evt) {
                 if (this.videoElement.src !== "" || this.videoElement.src == undefined || this.videoElement.src == null) {
                     alert('Can\'t Play this maps, reason: ' + evt.toString());
-                    globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
+                    if (!gamevar.isHomescreen) { globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js'); }
+                    else { globalfunc.startTransition(true, 'scene/homescreen/page.html', 'scene/homescreen/page.js') }
                     clearInterval(jsonplayer);
                 }
             };
@@ -507,7 +510,8 @@ playSong = (cdn, data) => {
             if (!songVar.isDone) {
                 songVar.isDone = true;
                 player.unload();
-                globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js');
+                if (!gamevar.isHomescreen) { globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js'); }
+                else { globalfunc.startTransition(true, 'scene/homescreen/page.html', 'scene/homescreen/page.js') }
                 clearInterval(jsonplayer);
                 document.querySelector('.metadata-layout').classList.remove('playing');
                 slider.classList.remove('enabled');
@@ -559,7 +563,7 @@ playSong = (cdn, data) => {
                         // Calculate the feedback percentage (based on the score out of the possible max score)
                         const percentageFeedback = (score / scorePerKey) * 100;  // Calculate percentage based on score per key
                         const feedbackClass = getFeedbackClass(percentageFeedback);  // Get feedback class based on percentage
-        
+
 
                         songVar.score += score;
                         if (currentTime - lastDomUpdate >= DOM_UPDATE_INTERVAL) {
@@ -578,7 +582,7 @@ playSong = (cdn, data) => {
                         pitchSamples = [];
                     } else if (songVar.currentTime >= vocalKey.time - songVar.gameOffset && songVar.currentTime < keyEnd / 4) {
                         pitchSamples.push(micPitch);
-                    } 
+                    }
                 }
             }
         } catch (err) { console.error(err.stack); }

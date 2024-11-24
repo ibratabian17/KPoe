@@ -10,7 +10,7 @@ document.querySelector('.song-metadata').classList.add('show');
 SpatialNavigation.uninit();
 
 // Generate the carousel dynamically
-const generateCarousel = (data) => {
+generateCarousel = (data) => {
     const carousel = document.querySelector('.carousel');
 
     // Hero section
@@ -36,6 +36,7 @@ const generateCarousel = (data) => {
             document.querySelector('#gamevar').style.setProperty('--song-codename', data.bigPic.id);
             document.querySelector("#video-banner").style.background = `center / cover url(${data.bigPic.assets.banner})`;
             sing()
+            gamevar.lastClicked = ".hero .btn"
         }
     }
     carousel.appendChild(hero);
@@ -43,7 +44,7 @@ const generateCarousel = (data) => {
     // Categories
     data.categories.forEach(category => {
         const categoryDiv = document.createElement('div');
-        categoryDiv.className = 'category';
+        categoryDiv.className = `category ${category.name.replace(" ", "")}`;
         categoryDiv.innerHTML = `<h2>${category.name}</h2>`;
 
         const itemsDiv = document.createElement('div');
@@ -67,6 +68,7 @@ const generateCarousel = (data) => {
                     document.querySelector('#gamevar').style.setProperty('--song-codename', item.id);
                     document.querySelector("#video-banner").style.background = `center / cover url(${item.assets.banner})`;
                     sing()
+                    gamevar.lastClicked = `.category.${category.name.replace(" ", "")} .${item.id}`
                 }
             }
             itemsDiv.appendChild(itemDiv);
@@ -82,15 +84,19 @@ const generateCarousel = (data) => {
     });
     SpatialNavigation.makeFocusable();
     SpatialNavigation.focus();
+    try {
+        document.querySelector(gamevar.lastClicked).focus()
+    } catch (err) {
+    }
 };
 
 // Fetch and Initialize Song List
 initializeSongList();
+updateShortcutKeys();
 
 function updateShortcutKeys() {
     document.querySelector(".overlay-hi .shortcut").innerHTML = `
-        <img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> ${getLocalizedLang('sing')}  
-        <img class="key_textures" src="${getPlatformKey("REFRESH")}"></img> ${getLocalizedLang('refresh_songlist')}    
+        <img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> ${getLocalizedLang('sing')}     
         <img class="key_textures" src="${getPlatformKey("BACK")}"></img> ${getLocalizedLang('back')}`;
 }
 

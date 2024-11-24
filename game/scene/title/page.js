@@ -15,6 +15,15 @@ function startGame() {
         clicked = true
         saveToLocalStorage()
         globalfunc.startTransition(true, 'scene/songselection/page.html', 'scene/songselection/page.js')
+        gamevar.isHomescreen = false
+    }
+}
+function startHome() {
+    if (!clicked) {
+        clicked = true
+        saveToLocalStorage()
+        globalfunc.startTransition(true, 'scene/homescreen/page.html', 'scene/homescreen/page.js')
+        gamevar.isHomescreen = true
     }
 }
 document.querySelector(".overlay-hi .shortcut").innerHTML = `<img class="key_textures" src="${getPlatformKey("VALIDATE")}"></img> ${getLocalizedLang('confirm')}`;
