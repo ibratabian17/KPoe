@@ -1,0 +1,226 @@
+#sceneDraw {
+    visibility: visible;
+    background-color: #1c1c1e;
+    color: #fff;
+    padding: 0.25em;
+}
+:focus {
+    outline-width: 0;
+    
+}
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #1c1c1e;
+}
+.navbar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 0 0 0.5em;
+    font-size: 0.15em;
+    padding: 0.5em;
+}
+.navbar a:focus {
+    background-color: #3a3a3c;
+    border-radius: 5px;
+}
+.navbar .search-icon {
+    margin-left: auto;
+    font-size: 20px;
+}
+.navbar .brand {
+    margin-left: auto;
+    font-size: 20px;
+    font-weight: bold;
+}
+.hero {
+    position: relative;
+    margin: 0.1em;
+    height: 3em;
+    border-radius: 0.1em;
+    overflow: hidden;
+    opacity: 0.8;
+    border: #cccccc00 0.02em solid;
+    transition: all .2s;
+    
+    scroll-margin-top: 1.4em;
+}
+.hero:has(:focus){
+    opacity: 1;
+    border: #ccc 0.02em solid;
+}
+.hero:has(:focus) .content .btn{
+    opacity: 1;
+}
+.hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 0;
+}
+.hero .content {
+    position: absolute;
+    bottom: 0.1em;
+    left: 0.3em;
+    color: #fff;
+    transition: transform 0.2s;
+    z-index: 2;
+}
+.hero .content h1 {
+    font-size: .4em;
+    margin: 0;
+    bottom: 1.5em;
+    width: 22em;
+    position: absolute;
+}
+.hero .content p {
+    font-size: .17em;
+    margin: 0;
+    bottom: 6em;
+    width: 22em;
+    position: absolute;
+    color: #ccc;
+}
+.hero .content .btn {
+    display: inline-block;
+    padding: 0.5em 1em;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.14em;
+    opacity: 0;
+    transition: opacity .2s;
+    scroll-margin-top: 18em;
+}
+.hero .overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-image: linear-gradient(to top right, #000, #0000 70%);
+    z-index: 1;
+}
+.hero .content .btn i {
+    margin-right: 0.1em;
+}
+.category {
+    padding: 0em 0.0em 0 0.1em;
+}
+.category h2 {
+    font-size: 0.2em;
+    margin-bottom: 0.4em;
+}
+.category .items {
+    gap: 0.1em;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.itemsong {
+    width: 1.4em;
+    height: 1.8em;
+    top: 0;
+    display: inline-block;
+}
+
+.carousel {
+    height: 100%;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+    display: block;
+    top: 0;
+    scroll-padding-top: 1em;
+    scroll-padding: 1em;
+}
+.carousel::-webkit-scrollbar, .items::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+.carousel::-webkit-scrollbar-thumb, .items::-webkit-scrollbar-thumb {
+    background: #FF0000;
+}
+
+
+.song--decoration {
+    width: 100%;
+    height: 80%;
+    padding: 0.09em;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.itemsong .song-title {
+    color: #fff;
+    width: 100%;
+    font-size: 0.17em;
+    position: relative;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+    z-index: 3;
+    display: block;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: clip;
+    overflow: hidden
+}
+
+.itemsong img {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.13em;
+    -o-object-fit: cover;
+    object-fit: cover;
+    overflow: hidden;
+    background-color: #00000073;
+    transform: scale(0.95);
+}
+
+.itemsong .song--decoration::after {
+    content: '';
+    width: 92%;
+    height: 92.4%;
+    position: absolute;
+    border: 0.03em solid white;
+    border-radius: 0.2em;
+    display: block;
+    z-index: 1;
+    top: 2%;
+    left: 2%;
+    transition: opacity .2s, transform .2s .2s;
+    transform: scale(1.1);
+    opacity: 0;
+    will-change: transform, opacity, border;
+}
+
+.itemsong:focus .song--decoration::after, .itemsong:has(:focus) .song--decoration::after {
+    animation: decorationselected 4s 1s infinite;
+    opacity: 1;
+    transform: none;
+    transition: all .2s;
+    -webkit-transition: all .2s;
+    -moz-transition: all .2s;
+    -ms-transition: all .2s;
+    -o-transition: all .2s;
+}
+
+.fakebutton{
+    width: 0;
+    height: 0;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    position: relative;
+    display: block;
+}

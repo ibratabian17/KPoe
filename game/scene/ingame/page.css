@@ -22,6 +22,7 @@
     left: 0;
     right: 0;
     opacity: 1;
+    transform: translateZ(0); /*GPU ACCELL IG?*/
 }
 
 #debugger .filler.show {
@@ -112,7 +113,7 @@
     left: 0;
     filter: drop-shadow(.057em 0.057em 0.001em #00000070) !important;
     position: relative;
-    will-change: width, background, font-size, filter;
+    will-change: width, background, font-size, filter, transform;
     float: left;
 }
 
@@ -130,7 +131,7 @@
     width: 0;
     overflow: hidden;
     transition: width, left;
-    will-change: width, left;
+    will-change: width, background, font-size, filter;
     position: absolute;
     z-index: 1;
     top: 0;
@@ -140,11 +141,6 @@
     color: var(--menu-color, #fff);
     white-space: pre;
     transition-timing-function: ease;
-    -webkit-transition: width, left;
-    -moz-transition: width, left;
-    -ms-transition: width, left;
-    -o-transition: width, left;
-    will-change: width, background, font-size, filter;
 }
 
 #lyrics .line.rtl .filler {
@@ -201,7 +197,7 @@
 #lyrics .line.previous {
     opacity: 1;
     z-index: 2;
-    transform: translateY(-101%);
+    transform: translateY(-101%) translateZ(0);
 }
 
 #lyrics .line {
@@ -217,7 +213,7 @@
     -webkit-animation: nextLineInf 0.28s;
     animation: nextLineInf 0.28s !important;
     margin-top: 0.13% !important;
-    transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9);
+    transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9) translateZ(0);
 }
 
 #lyrics .line.current {
@@ -231,7 +227,7 @@
 
 #lyrics .line.overlap.previous {
     opacity: .0;
-    transform: translateY(-205%);
+    transform: translateY(-205%) translateZ(0);
 }
 
 #lyrics .line.overlap.previous {
@@ -244,13 +240,13 @@
 
 #lyrics .line.overlap.previous:has(.fill:not(.done)) {
     opacity: 1;
-    transform: translateY(-205%);
+    transform: translateY(-205%) translateZ(0);
     transition: transform .2s;
 }
 
 #lyrics .line.previous2 {
     opacity: 0;
-    transform: translateY(-205%);
+    transform: translateY(-205%) translateZ(0);
 }
 
 #beat {
@@ -509,7 +505,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     0%,
     20% {
         opacity: 0;
-        transform: perspective(0px) translateY(1.5em) rotateX(0deg)scale(0.8);
+        transform: perspective(0px) translateY(1.5em) rotateX(0deg) scale3d(0.8,0.8,0.8) translateZ(0);
     }
 
     40% {
@@ -518,7 +514,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
 
     100% {
         opacity: 1;
-        transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9);
+        transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale3d(0.9,0.9,0.9) translateZ(0);
     }
 }
 
@@ -527,7 +523,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
     0%,
     20% {
         opacity: 0;
-        transform: perspective(0px) translateY(1.5em) rotateX(0deg)scale(0.8);
+        transform: perspective(0px) translateY(1.5em) rotateX(0deg)scale(0.8) translateZ(0);
     }
 
     60% {
@@ -537,7 +533,7 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
 
     100% {
         opacity: 1;
-        transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9);
+        transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9) translateZ(0);
         filter: blur(0.06em);
     }
 }
@@ -847,11 +843,11 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
 
 @media (pointer:coarse) {
     #Game .shortcut-ui {
-        transform: scale(1.2) translateX(-1.08em) translateY(-1.08em);
-        -webkit-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em);
-        -moz-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em);
-        -ms-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em);
-        -o-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em);
+        transform: scale(1.2) translateX(-1.08em) translateY(-1.08em) translateZ(0);
+        -webkit-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em) translateZ(0);
+        -moz-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em) translateZ(0);
+        -ms-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em) translateZ(0);
+        -o-transform: scale(1.2) translateX(-1.08em) translateY(-1.08em) translateZ(0);
     }
 }
 

@@ -547,7 +547,7 @@ playSong = (cdn, data) => {
 
                 if (vocalKey.time - songVar.gameOffset < songVar.currentTime) {
                     const keyEnd = vocalKey.time - songVar.gameOffset + vocalKey.duration;
-                    if (keyEnd < songVar.currentTime) {
+                    if (keyEnd < songVar.currentTime && !(keyEnd + 100 < songVar.currentTime)) {
                         const avgPitch = pitchSamples.reduce((sum, pitch) => sum + pitch, 0) / (pitchSamples.length || 1);
                         const diff = Math.abs(avgPitch - vocalKey.key);
                         let match = "x", score = 0;
@@ -556,17 +556,29 @@ playSong = (cdn, data) => {
                         else if (diff < 50) { match = "good"; score = scorePerKey * 0.75; }
                         else if (diff < 150) { match = "ok"; score = scorePerKey * 0.5; }
 
+                        // Calculate the feedback percentage (based on the score out of the possible max score)
+                        const percentageFeedback = (score / scorePerKey) * 100;  // Calculate percentage based on score per key
+                        const feedbackClass = getFeedbackClass(percentageFeedback);  // Get feedback class based on percentage
+        
+
                         songVar.score += score;
                         if (currentTime - lastDomUpdate >= DOM_UPDATE_INTERVAL) {
                             document.querySelector('.scores').innerText = Math.round(songVar.score);
                             document.querySelector(".MicPitchV").innerHTML = `${vocalKey.time} ${vocalKey.key} (${Math.round(score)} pts) - ${match}`;
                             lastDomUpdate = currentTime;
                         }
+                        // Handle animation or feedback effects
+                        const feedbackElement = document.querySelector('.' + feedbackClass);
+                        feedbackElement.classList.remove('animate');
+                        feedbackElement.offsetHeight; // trigger reflow
+                        feedbackElement.classList.add('animate');
+                        feedbackElement.classList.add(feedbackClass);  // Add the feedback class for visual feedback
+
                         offset.vocalKeys++;
                         pitchSamples = [];
-                    } else if (songVar.currentTime >= vocalKey.time && songVar.currentTime < keyEnd / 2) {
+                    } else if (songVar.currentTime >= vocalKey.time - songVar.gameOffset && songVar.currentTime < keyEnd / 4) {
                         pitchSamples.push(micPitch);
-                    }
+                    } 
                 }
             }
         } catch (err) { console.error(err.stack); }

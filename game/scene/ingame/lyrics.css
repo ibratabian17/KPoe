@@ -10,7 +10,7 @@
 }
 
 #lyrics.one-line {
-    transform: scale(1.1) translateY(2em);
+    transform: scale3d(1.1,1.1,1.1) translate3d(0,2em,1);
 }
 
 /*two-line Style*/
@@ -84,7 +84,7 @@
     animation: appleFocused 5s;
     -webkit-animation: appleFocused 5s;
     filter: drop-shadow(0 0 0.15em rgb(255, 255, 255)) drop-shadow(0 0 0.18em rgba(244, 245, 174, 0.63));
-    transform: translateY(-5%);
+    transform: translate3d(0, -5%, 0.1);
 }
 
 #lyrics.apple .line.rtl .fill.filled {
@@ -118,7 +118,7 @@
 #lyrics.apple .line.previous {
     transition: .3s 0.1s opacity, .2s .01s transform !important;
     opacity: 0;
-    transform: translateY(-231%) scale(0.95);
+    transform: translateY(-231%) scale(0.95) translateZ(0);
 }
 
 #lyrics.apple .line.next {
@@ -126,7 +126,7 @@
     -webkit-animation: nextLineInfApple 0.38s;
     animation: nextLineInfApple 0.38s !important;
     margin-top: 0.13% !important;
-    transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9);
+    transform: translateY(0.3em) perspective(0px) rotateX(0deg) scale(0.9)  translateZ(0);
 }
 #lyrics.apple .line.hidden {
     visibility: visible;
@@ -149,13 +149,13 @@
 
 @keyframes appleFocused {
     0% {
-        transform: translateY(0%);
+        transform: translate3d(0%, 0%,1);
 
     }
 
     20%,
     100% {
-        transform: translateY(-5%);
+        transform: translate3d(0%,-5%,1);
     }
 }
 
