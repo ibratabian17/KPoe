@@ -178,16 +178,16 @@ body {
   background-color: #000;
 }
 
-.video-loading {
+.video-loading, .ui-loading {
   border: 0.1em solid #f3f3f326;
   border-top: 0.1em solid #ffffff;
   border-radius: 50%;
   width: 0.6em;
   height: 0.6em;
   animation: spin 0.6s linear infinite;
-  top: calc(50% - 0.25em);
+  top: calc(50% - 0.3em);
   position: absolute;
-  left: calc(50% - 0.25em);
+  left: calc(50% - 0.3em);
   filter: drop-shadow(0em 0px 0.1em rgba(255, 255, 255, 0.671));
 }
 

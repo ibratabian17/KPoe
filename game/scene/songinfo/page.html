@@ -1,0 +1,32 @@
+<link rel="stylesheet" href="scene/songinfo/page.css">
+
+<div class="info">
+    <div id="banner"></div>
+    <div id="preview">
+        <div class="song--details notranslate">
+            <div class="song-title"></div>
+            <div class="song-logos"></div>
+            <div class="song-artist"></div>
+            <div class="song-tags"></div>
+        </div>
+        <canvas width="20" height="20" aria-hidden="true" class="preview--glow" id="glow"></canvas>
+        <div class="video--preview-container">
+            <video class="video--preview" src="" autoplay="" loop=""></video>
+            <iframe class="video--youtube"></iframe>
+            <div class="video-loading"></div>
+        </div>
+        <div class="button--sing" onclick="sing()"><span class="txt-sing" dict-lang-id="sing_button">SING!</span></div>
+    </div>
+    <div id="playerStats">
+        <div class="taber highscores">
+            <div class="Title" dict-lang-id="taber_highscore">Your Highscores:</div>
+        </div>
+        <div class="taber mapInfo">
+            <div class="Title" dict-lang-id="taber_info">Information:</div>
+        </div>
+        <div class="taber credit">
+            <div class="Title" dict-lang-id="taber_credits">Song Credits:</div>
+            <div class="song-credits"></div>
+        </div>
+    </div>
+</div>

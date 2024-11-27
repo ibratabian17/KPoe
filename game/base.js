@@ -107,6 +107,15 @@ function onPlayerClick() {
   }
 }
 
+
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
 document.querySelector(".video").addEventListener('mousemove', showControls);
 document.querySelector(".video").addEventListener('click', showControls);
 

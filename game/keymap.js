@@ -6,7 +6,7 @@ let clickCooldown = {
 };
 var keytask = {
     enter: (event) => {//Title Scene
-        if (getState() == 'songselection') {
+        if (getState() == 'songselection' || getState() == 'songinfo' ) {
             document.querySelector('.button--sing').click();
         }
         if (getState() == 'start') {
@@ -83,9 +83,13 @@ var keytask = {
         }
     },
     ESC: (event) => {
-        if (getState() == 'songselection') {
+        if (getState() == 'songselection' || getState() == 'homescreen') {
             event.preventDefault()
             globalfunc.startTransition(true, 'scene/title/page.html', 'scene/title/page.js')
+        }
+        if (getState() == 'songinfo') {
+            event.preventDefault()
+            loadAnotherHTML('scene/homescreen/page.html', 'scene/homescreen/page.js')
         }
         if (getState() == 'ingame') {
             event.preventDefault()

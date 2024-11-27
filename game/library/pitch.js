@@ -26,7 +26,6 @@ function init() {
               detectPitch();  // Start detecting pitch
           })
           .catch(function (err) {
-              alert('Allow Microphone for more experience');
           });
   }
 

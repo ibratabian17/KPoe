@@ -87,9 +87,14 @@
     transform: translate3d(0, -5%, 0.1);
 }
 
+#lyrics.apple .line.rtl .fill {
+    filter: none!important;
+    transform: none!important;
+}
+
 #lyrics.apple .line.rtl .fill.filled {
-    background-size: 3em 100%, 103% 100%;
-    background-position: calc(0% - 3em) 0%, 100% 0%;
+    background-size: 3em 100%, 100% 100%;
+    background-position: calc(-10% - 3em) 0%, 106% 0%;
 }
 
 #lyrics.apple .line .fill.filled:not(.done) {
