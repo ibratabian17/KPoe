@@ -18,6 +18,10 @@ var keytask = {
         if (getState() == 'ingame') {
             if (gamevar.isPaused) document.querySelector('.selected').click()
         }
+        if (getState() == 'homescreen') {
+            document.querySelector(':focus')?.click()
+            event.preventDefault()
+        }
     },
     arrowLeft: (event) => {
         if (getState() == 'songselection') {
