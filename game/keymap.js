@@ -6,7 +6,7 @@ let clickCooldown = {
 };
 var keytask = {
     enter: (event) => {//Title Scene
-        if (getState() == 'songselection' || getState() == 'songinfo' ) {
+        if (getState() == 'songselection' || getState() == 'songinfo') {
             document.querySelector('.button--sing').click();
         }
         if (getState() == 'start') {
@@ -46,6 +46,10 @@ var keytask = {
                 }, 100);
             }
         }
+        if (getState() == 'homescreen') {
+            event.preventDefault()
+            SpatialNavigation.move('left')
+        }
     },
     arrowRight: (event) => {
         if (getState() == 'songselection') {
@@ -74,6 +78,22 @@ var keytask = {
                 }, 100);
             }
         }
+        if (getState() == 'homescreen') {
+            event.preventDefault()
+            SpatialNavigation.move('right')
+        }
+    },
+    arrowUp: (event) => {
+        if (getState() == 'homescreen') {
+            event.preventDefault()
+            SpatialNavigation.move('up')
+        }
+    },
+    arrowDown: (event) => {
+        if (getState() == 'homescreen') {
+            event.preventDefault()
+            SpatialNavigation.move('down')
+        }
     },
     F1: (event) => {
         if (getState() == 'songselection') {
@@ -90,6 +110,9 @@ var keytask = {
         if (getState() == 'songinfo') {
             event.preventDefault()
             loadAnotherHTML('scene/homescreen/page.html', 'scene/homescreen/page.js')
+            const preview = document.querySelector('.video--preview');
+            preview.src = ""
+            preview.load()
         }
         if (getState() == 'ingame') {
             event.preventDefault()
@@ -130,6 +153,12 @@ function keymap(event) {
     if (event.key === 'ArrowRight') {
         keytask.arrowRight(event)
     }
+    if (event.key === 'ArrowUp') {
+        keytask.arrowUp(event)
+    }
+    if (event.key === 'ArrowDown') {
+        keytask.arrowDown(event)
+    }
     if (event.key === 'F1') {
         keytask.F1(event)
     }
@@ -169,7 +198,6 @@ function handleGamepadInput(gamepad) {
     const axes = gamepad.axes;
 
     // Map gamepad input to keyboard keys
-    // You can customize this based on your needs
     const keyMappings = {
         0: 'enter',
         1: 'ESC',
@@ -184,14 +212,28 @@ function handleGamepadInput(gamepad) {
     // Iterate through buttons
     buttons.forEach((button, index) => {
         if (button.pressed) {
-            gamevar.isGamepad = true
+            gamevar.isGamepad = true;
             try {
-                keytask[keyMappings[index]]({ preventDefault: function () { } })
+                keytask[keyMappings[index]]({ preventDefault: function () { } });
             } catch (err) {
-                console.log(index)
+                console.log(index);
             }
         }
     });
+
+    // Handle thumbstick (left stick) as D-pad
+    const threshold = 0.5; // Adjust threshold for sensitivity
+    if (axes[0] < -threshold) {
+        keytask['arrowLeft']({ preventDefault: function () { } });
+    } else if (axes[0] > threshold) {
+        keytask['arrowRight']({ preventDefault: function () { } });
+    }
+
+    if (axes[1] < -threshold) {
+        keytask['arrowUp']({ preventDefault: function () { } });
+    } else if (axes[1] > threshold) {
+        keytask['arrowDown']({ preventDefault: function () { } });
+    }
 }
 
 

@@ -35,12 +35,22 @@ function setPreview(data) {
             preview.currentTime = data.previewOffset / 1000; // Set start time
             preview.volume = 0; // Start with low volume
             preview.oncanplay = () => {
-                preview.play(); // Play video
-                $(preview).stop(true, true).animate({ volume: 0.5 }, 500);
+                if (getState() == "songinfo") {
+                    preview.play(); // Play video
+                    $(preview).stop(true, true).animate({ volume: 0.5 }, 500);
+                }
+                else {
+                    preview.src = ""
+                    preview.load()
+                }
             }
         }
         preview.style.display = 'block'; // Show regular video preview
         previewYoutube.style.display = 'none'; // Hide YouTube iframe
+    }
+    if(data.assets.titlecard && data.assets.titlecard.length > 0){
+        document.querySelector('.song--details').classList.add('hastitle');
+        document.querySelector('.song-logos').src = data.assets.titlecard;
     }
 
     updatePreviewDetails(data);
@@ -75,18 +85,23 @@ function sing() {
         $('.button--sing').addClass('clicked');
 
         setTimeout(() => {
+            const preview = document.querySelector('.video--preview');
+            setTimeout(() => {
+                preview.src = ""
+                preview.load()
+            }, 1000);
             globalfunc.startTransition(true, 'scene/ingame/page.html', 'scene/ingame/page.js', 4);
             $('.video--preview, .video--youtube').stop(true, true).animate({ volume: 0 }, 500);
         }, 1000);
     }
 }
 
-function timeConverter(UNIX_timestamp){
+function timeConverter(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var year = a.getFullYear();
     var month = months[a.getMonth()];
     var date = a.getDate();
     var time = date + ' ' + month + ' ' + year;
     return time;
-  }
+}

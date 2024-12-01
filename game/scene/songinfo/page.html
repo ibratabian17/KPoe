@@ -5,7 +5,7 @@
     <div id="preview">
         <div class="song--details notranslate">
             <div class="song-title"></div>
-            <div class="song-logos"></div>
+            <img class="song-logos loading" onload="this.classList.remove('loading')" onerror="this.parentNode.classList.remove('hastitle')"></img>
             <div class="song-artist"></div>
             <div class="song-tags"></div>
         </div>

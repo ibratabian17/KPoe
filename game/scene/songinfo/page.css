@@ -184,6 +184,36 @@ div#playerStats {
     font-size: 0.2em;
 }
 
+.hastitle .song-logos {
+    height: 07em;
+    width: 14em;
+    top: 1.5em;
+    position: absolute;
+    object-fit: contain;
+    transform: scale(0.8);
+    object-position: top left;
+    transform-origin: top left;
+    pointer-events: none;
+    animation: fadeIn 1s
+}
+.hastitle .song-logos.loading {
+    background-image: linear-gradient(70deg, #ffffff07 20%, #ffffff64 40%, #ffffff07 60%);
+    animation: loadinglogos 1s linear infinite;
+}
+.song--details:not(.hastitle) .song-logos{
+    display: none;
+}
+.song--details:not(.hastitle) .song-title {
+    top: 3em;
+    font-size: 1.4em;
+    white-space: pre-wrap;
+    /* line-break: revert; */
+    height: 2.48em;
+    text-align: left;
+    text-anchor: start;
+    vertical-align: bottom;
+}
+
 @-webkit-keyframes clicksing {
 
     0%,
@@ -287,5 +317,14 @@ div#playerStats {
     }
     100% {
         opacity: 1;
+    }
+}
+
+@keyframes loadinglogos {
+    0% {
+        background-position: 0em 0;
+    }
+    100% {
+        background-position:14em 0;
     }
 }
