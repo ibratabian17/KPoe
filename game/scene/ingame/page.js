@@ -467,7 +467,7 @@ playSong = (cdn, data) => {
 
     function getFeedbackClass(percentage) {
         if (percentage >= 91) return feedbackClasses[91];
-        if (percentage >= 75) return feedbackClasses[75];
+        if (percentage >= 60) return feedbackClasses[75];
         if (percentage >= 25) return feedbackClasses[25];
         return feedbackClasses[0];
     }
@@ -479,7 +479,7 @@ playSong = (cdn, data) => {
     let lastDebugUpdate = 0;
 
     const totalScore = 200000, scorePerKey = totalScore / songVar.vocalKeys.length - 1;
-    let MAX_SCORE_FRAME = 5
+    let MAX_SCORE_FRAME = 4
     let currentScoreFrame = 0
 
     jsonplayer = setInterval(function () {
@@ -563,7 +563,7 @@ playSong = (cdn, data) => {
                         const diff = Math.abs(avgPitch - vocalKey.key);
                         let match = "x", score = 0;
                         if (diff < 20) { match = "perfect"; score = scorePerKey; }
-                        else if (diff < 50) { match = "good"; score = scorePerKey * 0.75; }
+                        else if (diff < 75) { match = "good"; score = scorePerKey * 0.75; }
                         else if (diff < 150) { match = "ok"; score = scorePerKey * 0.25; }
 
                         // Calculate the feedback percentage (based on the score out of the possible max score)
