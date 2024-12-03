@@ -11,6 +11,7 @@ const gamevar = {
 const globalfunc = {}
 let jsonplayer;
 var micPitch = 0;
+var micDb = -9999999999999999999;
 var elem = document.documentElement;
 
 function isDeviceMobile() {

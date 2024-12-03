@@ -185,6 +185,7 @@
     -webkit-background-clip: text;
     color: transparent;
     background-repeat: no-repeat;
+    transform: translateZ(0.01);
     will-change: width, background, background-size, background-position, font-size, filter;
 }
 
@@ -433,6 +434,22 @@ html:not(.ipad) .hud.beat>#lyrics>#beat {
 
     100% {
         transform: scale(1.0);
+    }
+}
+@keyframes scoreBeat {
+    0% {
+        transform: scale(1.0);
+        opacity: 0.5;
+    }
+
+    15% {
+        transform: scale(1.1, 1.1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
     }
 }
 
@@ -969,15 +986,27 @@ span.scores {
 }
 
 .player-color {
-    width: 50%;
-    background: var(--PlayerColorBlue);
-    height: 0.07em;
+    width: 1em;
+    height: 0.03em;
+    background-image: linear-gradient(to left, var(--menu-color) 50%, #0000 100%);
+    background-repeat: no-repeat;
+    background-position: right;
+    z-index: 1;
+    top: 0.25em;
+    right: -0.0em;
     position: absolute;
-    z-index: -1;
     border-radius: 1em;
-    top: 35%;
-    z-index: -1;
+    transform-origin: right top;
+    transition: background .5s;
+    will-change: transform, background;
+    opacity: 0.5;
+    background-size: 0%, 100%;
 }
+
+.hud.beat .player-color {
+    animation: scoreBeat .2s;
+}
+
 
 .feedback-container {
     height: 100%;
@@ -987,7 +1016,7 @@ span.scores {
 }
 
 .feedback-bkg,
-.feedback-text {
+.feedlabel {
     width: 2em;
     height: 0.54em;
     position: absolute;
@@ -998,10 +1027,10 @@ span.scores {
     border-radius: 0.05em;
 }
 
-.feedback-text {
+.feedlabel {
     height: 0.36em;
     width: 1.2em;
-    background-size: cover;
+    background-size: contain!important;
     transform: rotate(354deg);
     z-index: 22;
     top: 0.1em;

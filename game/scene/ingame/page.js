@@ -11,6 +11,8 @@ var isYouTubeVideo =
         (gamevar.selectedBase.video.youtubeId || gamevar.selectedBase.video.videoId)) ||
     youtubeRegex.test(gamevar.selectedBase.video.path);
 var player; // player
+micDb = -9999999999;
+micPitch = 0
 
 
 getYoutubeId = (url) => {
@@ -145,7 +147,14 @@ playSong = (cdn, data) => {
     songDebugger = this;
     if (songVar.vocalKeys.length != 0) {
         startDetection()
+        songVar.vocalKeys.push({
+            time: 2 ^ 53,
+            duration: 0,
+            key: 0,
+            pitch: 0
+        })
     }
+    console.log(songVar.vocalKeys)
 
     class VideoPlayer {
         constructor(videoElement, isYouTubeVideo) {
@@ -451,21 +460,16 @@ playSong = (cdn, data) => {
     let pitchSamples = []; // History of recent micPitch values
     const feedbackClasses = {
         0: "feedback-bad",
-        10: "feedback-ok",
-        50: "feedback-good",
+        25: "feedback-ok",
+        75: "feedback-good",
         91: "feedback-perfect",
     };
 
     function getFeedbackClass(percentage) {
         if (percentage >= 91) return feedbackClasses[91];
-        if (percentage >= 50) return feedbackClasses[50];
-        if (percentage >= 10) return feedbackClasses[10];
+        if (percentage >= 75) return feedbackClasses[75];
+        if (percentage >= 25) return feedbackClasses[25];
         return feedbackClasses[0];
-    }
-
-    function calculateScore(isGoldMove, totalMoves) {
-        const baseScore = 200000 / totalMoves;
-        return baseScore;
     }
 
     // Set the update intervals for specific tasks to reduce CPU usage
@@ -473,6 +477,10 @@ playSong = (cdn, data) => {
     const DEBUG_UPDATE_INTERVAL = 50; // Throttle debug updates if enabled
     let lastDomUpdate = 0;
     let lastDebugUpdate = 0;
+
+    const totalScore = 200000, scorePerKey = totalScore / songVar.vocalKeys.length - 1;
+    let MAX_SCORE_FRAME = 5
+    let currentScoreFrame = 0
 
     jsonplayer = setInterval(function () {
         const currentTime = Date.now();
@@ -523,7 +531,7 @@ playSong = (cdn, data) => {
         // Vocal Sync and Scoring
         if (songVar.isVocal) {
             const SYNC_THRESHOLD = 0.005;
-            const MAX_DIFF = 0.2, BASE_FACTOR = 2, MIN_RATE = -0.05, MAX_RATE = 1.15, DAMP_FACTOR = 0.9;
+            const MAX_DIFF = 0.2, BASE_FACTOR = 10, MIN_RATE = -0.05, MAX_RATE = 1.15, DAMP_FACTOR = 0.9;
             const timeDifference = vocals.currentTime - nativeVideo.currentTime;
             const absDiff = Math.abs(timeDifference);
 
@@ -545,20 +553,18 @@ playSong = (cdn, data) => {
 
         try {
             // Score calculation per vocal key (only if vocalKeys are present)
-            if (songVar.vocalKeys.length != 0) {
-                const totalScore = 200000, scorePerKey = totalScore / songVar.vocalKeys.length;
+            if (songVar.vocalKeys.length != 0 && currentScoreFrame > MAX_SCORE_FRAME) {
+                currentScoreFrame = 0
                 const vocalKey = songVar.vocalKeys[offset.vocalKeys];
-
                 if (vocalKey.time - songVar.gameOffset < songVar.currentTime) {
                     const keyEnd = vocalKey.time - songVar.gameOffset + vocalKey.duration;
-                    if (keyEnd < songVar.currentTime && !(keyEnd + 100 < songVar.currentTime)) {
-                        const avgPitch = pitchSamples.reduce((sum, pitch) => sum + pitch, 0) / (pitchSamples.length || 1);
+                    if (keyEnd < songVar.currentTime) {
+                        const avgPitch = Math.round(pitchSamples.reduce((sum, pitch) => sum + pitch, 0) / (pitchSamples.length || 1));
                         const diff = Math.abs(avgPitch - vocalKey.key);
                         let match = "x", score = 0;
-
                         if (diff < 20) { match = "perfect"; score = scorePerKey; }
                         else if (diff < 50) { match = "good"; score = scorePerKey * 0.75; }
-                        else if (diff < 150) { match = "ok"; score = scorePerKey * 0.5; }
+                        else if (diff < 150) { match = "ok"; score = scorePerKey * 0.25; }
 
                         // Calculate the feedback percentage (based on the score out of the possible max score)
                         const percentageFeedback = (score / scorePerKey) * 100;  // Calculate percentage based on score per key
@@ -568,7 +574,8 @@ playSong = (cdn, data) => {
                         songVar.score += score;
                         if (currentTime - lastDomUpdate >= DOM_UPDATE_INTERVAL) {
                             document.querySelector('.scores').innerText = Math.round(songVar.score);
-                            document.querySelector(".MicPitchV").innerHTML = `${vocalKey.time} ${vocalKey.key} (${Math.round(score)} pts) - ${match}`;
+                            document.querySelector(".MicStats").innerHTML = `${vocalKey.key} = ${avgPitch} (${Math.round(score)} pts) - ${match}`;
+                            document.querySelector('.player-color').style.backgroundSize = `${(songVar.score / 200000) * 100}% 100%`;
                             lastDomUpdate = currentTime;
                         }
                         // Handle animation or feedback effects
@@ -580,10 +587,12 @@ playSong = (cdn, data) => {
 
                         offset.vocalKeys++;
                         pitchSamples = [];
-                    } else if (songVar.currentTime >= vocalKey.time - songVar.gameOffset && songVar.currentTime < keyEnd / 4) {
+                    } else if (songVar.currentTime >= vocalKey.time - songVar.gameOffset) {
                         pitchSamples.push(micPitch);
                     }
                 }
+            } else {
+                currentScoreFrame++
             }
         } catch (err) { console.error(err.stack); }
 
