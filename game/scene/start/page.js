@@ -27,6 +27,14 @@ async function cacheFile() {
             "scene/ingame/page.html": await a('scene/ingame/page.html'),
             "scene/ingame/page.js": await a('scene/ingame/page.js'),
             "scene/ingame/page.css": await a('scene/ingame/page.css')
+            ,
+            "scene/homescreen/page.html": await a('scene/homescreen/page.html'),
+            "scene/homescreen/page.js": await a('scene/homescreen/page.js'),
+            "scene/homescreen/page.css": await a('scene/homescreen/page.css')
+            ,
+            "scene/songinfo/page.html": await a('scene/songinfo/page.html'),
+            "scene/songinfo/page.js": await a('scene/songinfo/page.js'),
+            "scene/songinfo/page.css": await a('scene/songinfo/page.css')
         }
         document.querySelector('.txt-wait').innerHTML = `Fetching Done!`
         document.querySelector('.button--initgame').classList.add('readya')

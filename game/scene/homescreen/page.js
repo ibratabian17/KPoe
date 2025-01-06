@@ -6,6 +6,8 @@ var songdb = localStorage.getItem('songdb');
 var fetchSongdbUrl = songdb ? songdb : "/songdb.json";
 var timer = 0;
 var isClicked = false
+var replaceTimeout;
+var previewTimeout;
 document.querySelector('.song-metadata').classList.add('show');
 SpatialNavigation.uninit();
 var
@@ -19,7 +21,7 @@ var
         hero.className = 'hero';
         hero.innerHTML = `
 <div class="overlay"></div>
-<img alt="${data.bigPic.title} Banner" src="${data.bigPic.assets.banner}" />
+<img alt="${data.bigPic.title} Banner" src="${data.bigPic.assets.poster || data.bigPic.assets.banner}" />
 <div class="content">
 <a class="btn focusable" href="#">
     <i class="fas fa-play"></i>
@@ -37,7 +39,16 @@ var
                 document.querySelector('#gamevar').style.setProperty('--song-codename', data.bigPic.id);
                 document.querySelector("#video-banner").style.background = `center / cover url(${data.bigPic.assets.banner})`;
                 sing()
-                gamevar.lastClicked = ".hero .btn"
+                gamevar.lastFocused = ".hero .btn"
+                const previewHandCurrent = document.querySelector('.previewHand.current');
+                if (previewHandCurrent) {
+                    previewHandCurrent.src = ""; // Menghapus sumber video
+                }
+
+                const previewHandNext = document.querySelector('.previewHand.next');
+                if (previewHandNext) {
+                    previewHandNext.src = ""; // Menghapus sumber video
+                }
             }
         }
         hero.querySelector('.btn').onfocus = () => {
@@ -72,11 +83,21 @@ var
                         document.querySelector('#gamevar').style.setProperty('--song-codename', item.id);
                         document.querySelector("#video-banner").style.background = `center / cover url(${item.assets.banner})`;
                         sing()
-                        gamevar.lastClicked = `.category.${category.name.replaceAll(" ", "")} .${item.id} .fakebutton`
+                        gamevar.lastFocused = `.category.${category.name.replaceAll(" ", "")} .${item.id} .fakebutton`
+                        const previewHandCurrent = document.querySelector('.previewHand.current');
+                        if (previewHandCurrent) {
+                            previewHandCurrent.src = ""; // Menghapus sumber video
+                        }
+
+                        const previewHandNext = document.querySelector('.previewHand.next');
+                        if (previewHandNext) {
+                            previewHandNext.src = ""; // Menghapus sumber video
+                        }
                     }
                 }
                 itemDiv.querySelector('.fakebutton').onfocus = () => {
                     debounce(playPreview(item, itemDiv), 500)
+                    gamevar.lastFocused = `.category.${category.name.replaceAll(" ", "")} .${item.id} .fakebutton`
                 }
                 itemsDiv.appendChild(itemDiv);
             });
@@ -92,7 +113,7 @@ var
             straightOverlapThreshold: 0.1,
             rememberSource: true,
             disabled: false,
-            defaultElement: gamevar.lastClicked || ".hero",
+            defaultElement: gamevar.lastFocused || ".hero",
             enterTo: 'last-focused',
             leaveFor: null,
             restrict: 'self-first',
@@ -100,9 +121,9 @@ var
             navigableFilter: null
         })
         SpatialNavigation.makeFocusable();
-        SpatialNavigation.focus(gamevar.lastClicked);
+        SpatialNavigation.focus(gamevar.lastFocused);
         try {
-            document.querySelector(gamevar.lastClicked).focus()
+            document.querySelector(gamevar.lastFocused).focus()
         } catch (err) {
         }
         document.querySelector('.carousel').classList.add('loaded')
@@ -203,39 +224,54 @@ function playPreview(data, div) {
     const currentPreview = document.querySelector('.previewHand.current');
     const nextPreview = document.querySelector('.previewHand.next');
     const previewUrl = data.video.previewAudio || data.video.preview;
-
+    const previewId = data.id; // Menggunakan data.id sebagai pengenal unik
     if (!currentPreview || !nextPreview) {
         return;
     }
 
-    if (true) {
-        return; //disable this shit
-    }
-
-    if (previewUrl === currentPreview.src && !currentPreview.paused) {
+    // Cegah reset jika preview sudah diputar dan tidak di-pause berdasarkan data-id
+    if ((currentPreview.dataset.id === previewId && !currentPreview.paused) ||
+        (nextPreview.dataset.id === previewId && !nextPreview.paused)) {
+        console.log('Skipping preview audio', previewId);
         return;
     }
 
+    // Set atribut data-id untuk elemen nextPreview
+    nextPreview.dataset.id = previewId;
     nextPreview.src = previewUrl;
-    nextPreview.currentTime = data.previewOffset / 1000;
+    nextPreview.currentTime = (data.previewOffset || 0) / 1000;
     nextPreview.volume = 0;
 
     nextPreview.oncanplay = () => {
-        $(currentPreview).stop(true, true).animate({ volume: 0 }, 500);
-        currentPreview.classList.remove('current');
-        currentPreview.classList.add('next');
+        // Jika ada pergantian sebelum timeout selesai, batalkan perubahan
+        if (replaceTimeout) clearTimeout(replaceTimeout);
 
-        setTimeout(() => {
-            currentPreview.pause();
+        previewTimeout = setTimeout(() => {
+            // Pastikan hanya satu audio yang diputar
+            if (!currentPreview.paused) {
+                $(currentPreview).stop(true, true).animate({ volume: 0 }, 500);
+            }
 
-            nextPreview.classList.remove('next');
-            nextPreview.classList.add('current');
-            nextPreview.volume = 0;
-            if (getState() == 'homescreen') nextPreview.play();
-            $(nextPreview).stop(true, true).animate({ volume: 0.5 }, 500);
-        }, 500)
+            currentPreview.classList.remove('current');
+            currentPreview.classList.add('next');
 
+            setTimeout(() => {
+                currentPreview.pause();
+
+                nextPreview.classList.remove('next');
+                nextPreview.classList.add('current');
+
+                if (getState() === 'homescreen') {
+                    nextPreview.play();
+                }
+
+                $(nextPreview).stop(true, true).animate({ volume: 0.1 }, 500);
+            }, 500);
+        }, 500); // Delay 500mili sebelum pergantian
     };
 
     nextPreview.load();
 }
+
+
+

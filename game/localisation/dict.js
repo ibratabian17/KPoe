@@ -1,7 +1,7 @@
 var dictionary = {
     "en": {
         "sing_button": "SING!",
-        "intro": "Welcome To KPoe!<br> We didn't give you a song list, but you can search it in the repository. Please put your songdb files here.",
+        "intro": "Welcome To KPoe!<br> Press enter to start. Old UI may require your own songdb",
         "please_wait": "Please Wait",
         "songlist_warn": "This game requires a song list from the user",
         "click_start_web": "Click me to start the game",
@@ -17,7 +17,7 @@ var dictionary = {
     },
     "id": {
         "sing_button": "NYANYI!",
-        "intro": "Selamat Datang di KPoe!<br> Kami tidak memberikan daftar lagu, tetapi Anda dapat mencarinya di repositori. Silakan letakkan file songdb Anda di sini.",
+        "intro": "Selamat Datang di KPoe!<br> Tekan enter untuk memulai. UI lama mungkin memerlukan database lagu Anda sendiri",
         "please_wait": "Tunggu Sebentar",
         "songlist_warn": "Game ini membutuhkan daftar lagu dari pengguna",
         "click_start_web": "Klik saya untuk memulai permainan",
@@ -33,7 +33,7 @@ var dictionary = {
     },
     "ar": {
         "sing_button": "!غنّي",
-        "intro": "مرحبًا بك في KPoe!<br> لم نقدم لك قائمة الأغاني، ولكن يمكنك البحث عنها في المستودع. يرجى وضع ملفات الأغاني الخاصة بك هنا.",
+        "intro": "مرحبًا بك في KPoe!<br> لبدء اللعبة، اضغط على Enter. قد تتطلب واجهة المستخدم القديمة قاعدة بيانات الأغاني الخاصة بك",
         "please_wait": "انتظر لحظة",
         "songlist_warn": "تتطلب هذه اللعبة قائمة أغاني من المستخدم",
         "click_start_web": "انقر فوقي لبدء اللعبة",

@@ -52,6 +52,7 @@ var keytask = {
         }
         if (getState() == 'homescreen') {
             event.preventDefault()
+            if (!document.querySelector(":focus")) document.querySelector(gamevar.lastFocused).focus();
             SpatialNavigation.move('left')
         }
     },
@@ -84,18 +85,21 @@ var keytask = {
         }
         if (getState() == 'homescreen') {
             event.preventDefault()
+            if (!document.querySelector(":focus")) document.querySelector(gamevar.lastFocused).focus();
             SpatialNavigation.move('right')
         }
     },
     arrowUp: (event) => {
         if (getState() == 'homescreen') {
             event.preventDefault()
+            if (!document.querySelector(":focus")) document.querySelector(gamevar.lastFocused).focus();
             SpatialNavigation.move('up')
         }
     },
     arrowDown: (event) => {
         if (getState() == 'homescreen') {
             event.preventDefault()
+            if (!document.querySelector(":focus")) document.querySelector(gamevar.lastFocused).focus();
             SpatialNavigation.move('down')
         }
     },
@@ -109,7 +113,16 @@ var keytask = {
     ESC: (event) => {
         if (getState() == 'songselection' || getState() == 'homescreen') {
             event.preventDefault()
-            globalfunc.startTransition(true, 'scene/title/page.html', 'scene/title/page.js')
+            globalfunc.startTransition(true, 'scene/title/page.html', 'scene/title/page.js');
+            const previewHandCurrent = document.querySelector('.previewHand.current');
+            if (previewHandCurrent) {
+                previewHandCurrent.src = ""; // Menghapus sumber video
+            }
+
+            const previewHandNext = document.querySelector('.previewHand.next');
+            if (previewHandNext) {
+                previewHandNext.src = ""; // Menghapus sumber video
+            }
         }
         if (getState() == 'songinfo') {
             event.preventDefault()
