@@ -4,6 +4,8 @@ document.title = "KaraokePoe - Selecting Song";
 var songdb = localStorage.getItem('songdb');
 var fetchUrl = songdb ? songdb : "/songdb.json";
 var timer = 0;
+// We will rely on the browser's native HTTP cache, which is the most efficient
+// way to handle progressive downloads of video assets.
 
 // Update UI elements
 updateShortcutKeys();
@@ -143,61 +145,43 @@ function updateBackgroundImages(banner) {
 
 function setupVideoPlayer(item, index) {
     const videoplayer = document.querySelector("#preview .video--preview");
-    $('.video--preview').stop(true, true).animate({ volume: 0.07 }, { duration: 500, queue: false });
 
-    videoplayer.oncanplay = () => {
-        videoplayer.volume = 0; // Atur volume
-        startVideoPlayer(videoplayer, item.assets.banner);
+    document.querySelector('.video--preview-container .video-loading').style.display = "block";
+
+    // Create an in-memory video element for preloading.
+    // This allows the browser to progressively download the video in the background
+    // without interrupting the currently playing one.
+    const tempVideo = document.createElement('video');
+    
+    tempVideo.oncanplay = () => {
+        // Race condition check: Only swap if the user is still on this song.
+        if (selectedSong === index) {
+            // The new video is ready to play. Swap its source to the main player.
+            // This is near-instantaneous as the browser has already buffered the start of the file.
+            videoplayer.src = tempVideo.src;
+            videoplayer.currentTime = tempVideo.currentTime;
+            videoplayer.play();
+
+            // Fade in the volume and apply other UI changes.
+            startVideoPlayer(videoplayer, item.assets.banner);
+        }
     };
-    // Event tambahan
+    
+    // Configure the temporary video and tell it to start loading.
+    tempVideo.src = item.video.preview;
+    tempVideo.currentTime = item.previewOffset / 1000;
+    tempVideo.loop = true;
+    tempVideo.volume = 0; // Preloader is always silent.
+    tempVideo.load();
+    
+    // Set up listeners for the main player.
     setupVideoPlayerEvents(videoplayer);
     startPreviewGlowEffect(videoplayer);
-
-    // Cek apakah video preview sama dengan video path
-    if (item.video.preview === item.video.path) {
-        // Jika sama, lakukan fetch HEAD untuk memeriksa ketersediaan video
-        fetch(item.video.preview, { method: 'HEAD' })
-            .then(response => {
-                if (response.ok) {
-                    // Jika respons OK, atur sumber video dan mulai memutar
-                    videoplayer.src = item.video.preview;
-                    videoplayer.currentTime = item.previewOffset / 1000; // Atur waktu mulai
-                    videoplayer.volume = 0; // Atur volume
-                    videoplayer.play(); // Mulai memutar video
-                } else {
-                    console.error('Video does not exist:', response.status);
-                }
-            })
-            .catch(error => {
-                console.error('Error Failed:', error);
-            });
-    } else {
-        // Jika berbeda, buat elemen video sementara
-        const tempVideoPlayer = document.createElement('video');
-        tempVideoPlayer.src = item.video.preview; // Set sumber video baru
-        tempVideoPlayer.currentTime = item.previewOffset / 1000; // Atur waktu mulai
-        tempVideoPlayer.volume = 0; // Atur volume
-
-        // Ketika video baru sudah bisa diputar
-        tempVideoPlayer.oncanplay = () => {
-            // Ganti sumber video yang sedang diputar dengan video baru
-            if (selectedSong === index) {
-                videoplayer.src = tempVideoPlayer.src;
-                videoplayer.currentTime = tempVideoPlayer.currentTime; // Set waktu yang sama
-                videoplayer.play(); // Mulai memutar video baru
-            }
-
-            // Hapus elemen video sementara
-            tempVideoPlayer.remove();
-        };
-
-        // Muat video baru
-        tempVideoPlayer.load();
-    }
 }
 
+
 function startVideoPlayer(videoplayer, banner) {
-    $('.video--preview').stop(true, true).animate({ volume: 0.6 }, { duration: 100, queue: false });
+    $(videoplayer).stop(true, true).animate({ volume: 0.6 }, { duration: 500, queue: false });
     videoplayer.setAttribute('poster', banner);
 }
 
@@ -227,7 +211,6 @@ function startPreviewGlowEffect(videoplayer) {
     } else {
         canvas.classList.remove('show'); 
     }
-    
 }
 
 function sing() {

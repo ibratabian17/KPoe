@@ -343,3 +343,142 @@ window.clearInterval = (intervalCode) => {
     window._clearInterval(intervalCode)
     window._breakInterval[intervalCode] = true
 }
+
+
+class VocalScorer {
+    constructor(totalNotes, totalScore) {
+        // --- Configuration ---
+        this.SINGING_DB_THRESHOLD = -50; // Minimum decibels to be considered 'singing'. Adjust based on testing.
+        this.PITCH_TOLERANCE_PERFECT = 0.5; // Semitones for a 'perfect' pitch
+        this.PITCH_TOLERANCE_GOOD = 1.0;   // Semitones for a 'good' pitch
+        this.PITCH_TOLERANCE_OK = 2.0;     // Semitones for an 'ok' pitch
+
+        // --- Scoring Weights ---
+        this.SCORE_WEIGHT_PITCH = 0.7; // 70% of score is from pitch accuracy
+        this.SCORE_WEIGHT_DURATION = 0.3; // 30% of score is from holding the note
+
+        // --- State ---
+        this.totalScore = 0;
+        this.scorePerNote = (totalScore / (totalNotes || 1)) || 1; // Score available for each note
+
+        this.currentNote = null;
+        this.pitchSamples = [];
+        this.segmentsScored = 0;
+        this.segmentsSung = 0;
+    }
+
+    /**
+     * Called when a new vocal note should start.
+     * @param {object} vocalKey - The note object from your song data { time, duration, key }
+     */
+    startNote(vocalKey) {
+        this.currentNote = vocalKey;
+        this.pitchSamples = [];
+        this.segmentsScored = 0;
+        this.segmentsSung = 0;
+    }
+
+    /**
+     * Called on every frame/tick of the game loop to update the scoring for the current note.
+     * @param {number} micPitch - The current pitch from the microphone (in MIDI note number).
+     * @param {number} micDb - The current decibel level from the microphone.
+     */
+    update(micPitch, micDb) {
+        if (!this.currentNote) return;
+
+        this.segmentsScored++;
+
+        // 1. Check if the user is actively singing
+        if (micDb < this.SINGING_DB_THRESHOLD || micPitch <= 0) {
+            return; // Not singing or no pitch detected, do not score this segment
+        }
+
+        this.segmentsSung++;
+        this.pitchSamples.push(micPitch);
+    }
+
+    /**
+     * Called when a vocal note has ended. Calculates the score for the completed note.
+     * @returns {object} An object containing the score and feedback details for the note.
+     */
+    endNote() {
+        if (!this.currentNote) return { score: 0, feedback: 'miss', details: { avgPitch: 0, target: 0 } };
+
+        const targetNoteKey = this.currentNote.key;
+
+        // --- Calculate Duration Score ---
+        const durationRatio = this.segmentsSung / (this.segmentsScored || 1);
+        const durationScore = this.scorePerNote * durationRatio * this.SCORE_WEIGHT_DURATION;
+
+        // --- Calculate Pitch Score ---
+        if (this.pitchSamples.length === 0) {
+            this.currentNote = null;
+            return { score: 0, feedback: 'miss', details: { avgPitch: 0, target: targetNoteKey } };
+        }
+
+        let totalPitchScore = 0;
+        this.pitchSamples.forEach(sample => {
+            let diff = Math.abs(sample - targetNoteKey);
+
+            // Octave correction: check if the difference is a multiple of 12
+            const octaveDiff = diff % 12;
+            if (octaveDiff < diff) { // If it's in a different octave...
+                diff = Math.min(octaveDiff, 12 - octaveDiff); // ...find the closest note in the correct octave
+            }
+
+            if (diff <= this.PITCH_TOLERANCE_PERFECT) {
+                totalPitchScore += 1.0; // Perfect
+            } else if (diff <= this.PITCH_TOLERANCE_GOOD) {
+                totalPitchScore += 0.7; // Good
+            } else if (diff <= this.PITCH_TOLERANCE_OK) {
+                totalPitchScore += 0.3; // OK
+            } // else: 0 points for this sample
+        });
+
+        const avgPitchAccuracy = totalPitchScore / this.pitchSamples.length;
+        const pitchScore = this.scorePerNote * avgPitchAccuracy * this.SCORE_WEIGHT_PITCH;
+
+        const finalNoteScore = pitchScore + durationScore;
+        this.totalScore += finalNoteScore;
+
+        // --- Determine Feedback ---
+        let feedback = 'bad';
+        if (avgPitchAccuracy >= 0.9) feedback = 'perfect';
+        else if (avgPitchAccuracy >= 0.6) feedback = 'good';
+        else if (avgPitchAccuracy >= 0.25) feedback = 'ok';
+
+        if (durationRatio < 0.2) feedback = 'miss'; // Override if not held long enough
+
+        const result = {
+            score: finalNoteScore,
+            feedback: feedback,
+            details: {
+                avgPitch: Math.round(this.pitchSamples.reduce((a, b) => a + b, 0) / (this.pitchSamples.length || 1)),
+                target: targetNoteKey
+            }
+        };
+
+        this.currentNote = null;
+        return result;
+    }
+
+    /**
+     * Gets the current total score.
+     * @returns {number} The total accumulated score.
+     */
+    getTotalScore() {
+        return Math.round(this.totalScore);
+    }
+}
+
+const feedbackClasses = {
+    'miss': "feedback-bad",
+    'bad': "feedback-bad",
+    'ok': "feedback-ok",
+    'good': "feedback-good",
+    'perfect': "feedback-perfect",
+};
+
+function getFeedbackClass(feedbackString) {
+    return feedbackClasses[feedbackString] || 'feedback-bad';
+}
